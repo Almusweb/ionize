@@ -1,0 +1,105 @@
+
+body {
+	margin: 0; padding: 30px;
+	
+	background: url('images/squairy_light.png') repeat top left;
+	
+	font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+	font-size: 62.5%;
+	
+	text-align: left; color: #000;
+}
+
+#installer_wizard {
+	width: 640px; padding: 20px; margin: 0 auto;
+	background: #fff; border: 1px solid #ddd;
+	border-top-color: #5994CE;
+	
+	-webkit-box-shadow: 0 0 50px rgba(0,0,0,0.1), inset 0 10px 40px rgba(108, 169, 230, 0.1);
+	-khtml-box-shadow: 0 0 50px rgba(0,0,0,0.1), inset 0 10px 40px rgba(108, 169, 230, 0.1);
+	-moz-box-shadow: 0 0 50px rgba(0,0,0,0.1), inset 0 10px 40px rgba(108, 169, 230, 0.1);
+	-ms-box-shadow: 0 0 50px rgba(0,0,0,0.1), inset 0 10px 40px rgba(108, 169, 230, 0.1);
+	-o-box-shadow: 0 0 50px rgba(0,0,0,0.1), inset 0 10px 40px rgba(108, 169, 230, 0.1);
+	box-shadow: 0 0 50px rgba(0,0,0,0.1), inset 0 10px 40px rgba(108, 169, 230, 0.1);
+}
+
+#installer_navigation {
+	display: table; width: 100%; margin: 5px auto;
+	border-top: 1px solid #eee; border-bottom: 1px solid #eee;
+}
+
+#installer_navigation > a {
+	display: table-cell; text-align: center;
+	color: #5994CE; text-decoration: none;
+	padding: 8px 10px;
+}
+
+#installer_navigation > a.active {
+	text-decoration: underline; color: #3974AE;
+	font-weight: bolder;
+}
+
+#installer_navigation > a.done {
+	color: #888; text-decoration: line-through;
+}
+
+#installer_content {
+	padding: 10px; font-size: 120%;
+}
+
+#installer_content p {
+	text-align: justify;
+}
+
+#installer_content .next_step {
+	float: right; display: inline-block;
+	padding: 10px 5px;
+}
+
+#installer_content .check {
+	margin: 3px 3px 3px -10px;
+}
+
+#installer_content .check li {
+	margin: 3px; padding: 5px; background-color: #fdfdfd;
+	border: 1px dotted #ddd;
+	
+	background-repeat: no-repeat;
+	background-position: 96% 5px;
+	
+	-webkit-border-radius: 2px; -khtml-border-radius: 2px;
+	-moz-border-radius: 2px; -ms-border-radius: 2px;
+	-o-border-radius: 2px; border-radius: 2px;
+}
+
+#installer_content .check li span.div {
+	color: #aaa;
+}
+
+#installer_content .check li.ok {
+	background-image: url('images/icon_16_ok.png');
+	
+}
+
+#installer_content .check li.fail {
+	background-image: url('images/icon_16_alert.png');
+	background-color: rgba(238, 166, 43, 0.3);
+	border-color: rgb(238, 166, 43);
+}
+
+#installer_footer {
+	border-top: 1px solid #eee; margin: 5px auto;
+	display: table; width: 100%; font-size: 80%;
+}
+
+#installer_footer > div {
+	display: table-cell; padding: 5px;
+}
+
+#installer_footer .benchmark {
+	text-align: right;
+}
+
+#installer_footer .benchmark span {
+	padding: 0 5px;
+}
