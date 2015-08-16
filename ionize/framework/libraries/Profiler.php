@@ -162,7 +162,7 @@ class CI_Profiler {
 			if (preg_match('/(.+?)_end$/i', $key, $match)
 				&& isset($this->CI->benchmark->marker[$match[1].'_end'], $this->CI->benchmark->marker[$match[1].'_start']))
 			{
-				$profile[$match[1]] = $this->CI->benchmark->elapsed_time($match[1].'_start', $key);
+				$profile[$match[1]] = $this->CI->benchmark->elapsed_time($match[1].'_start', $key, 8);
 			}
 		}
 
@@ -181,7 +181,7 @@ class CI_Profiler {
 			$key = ucwords(str_replace(array('_', '-'), ' ', $key));
 			$output .= '<tr><td style="padding:5px;width:50%;color:#000;font-weight:bold;background-color:#ddd;">'
 					.$key.'&nbsp;&nbsp;</td><td style="padding:5px;width:50%;color:#900;font-weight:normal;background-color:#ddd;">'
-					.$val."</td></tr>\n";
+					.'<span style="display: inline-block; width: 30%">'.($val*1000)."ms</span> (<small>".$val."</small>)</td></tr>\n";
 		}
 
 		return $output."</table>\n</fieldset>";
@@ -269,7 +269,7 @@ class CI_Profiler {
 			{
 				foreach ($db->queries as $key => $val)
 				{
-					$time = number_format($db->query_times[$key], 4);
+					$time = number_format($db->query_times[$key], 8);
 					$val = highlight_code($val);
 
 					foreach ($highlight as $bold)

@@ -11,10 +11,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 ::-moz-selection { background-color: #E13300; color: white; }
 
 body {
-	background-color: #fff;
-	margin: 40px;
-	font: 13px/20px normal Helvetica, Arial, sans-serif;
-	color: #4F5155;
+	margin: 0; padding: 30px;
+	
+	background: url('ionize/assets/images/squairy_light.png') repeat top left;
+	
+	font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+	font-size: 62.5%;
+	
+	text-align: left; color: #000;
 }
 
 a {
@@ -26,7 +30,7 @@ a {
 h1 {
 	color: #444;
 	background-color: transparent;
-	border-bottom: 1px solid #D0D0D0;
+	border-bottom: 1px dotted #D0D0D0;
 	font-size: 19px;
 	font-weight: normal;
 	margin: 0 0 14px 0;
@@ -45,9 +49,16 @@ code {
 }
 
 #container {
-	margin: 10px;
-	border: 1px solid #D0D0D0;
-	box-shadow: 0 0 8px #D0D0D0;
+	width: 640px; padding: 10px; margin: 0 auto;
+	background: #fff; border: 1px solid #ddd;
+	border-top-color: #5994CE;
+	
+	-webkit-box-shadow: 0 0 50px rgba(0,0,0,0.1), inset 0 10px 40px rgba(108, 169, 230, 0.1);
+	-khtml-box-shadow: 0 0 50px rgba(0,0,0,0.1), inset 0 10px 40px rgba(108, 169, 230, 0.1);
+	-moz-box-shadow: 0 0 50px rgba(0,0,0,0.1), inset 0 10px 40px rgba(108, 169, 230, 0.1);
+	-ms-box-shadow: 0 0 50px rgba(0,0,0,0.1), inset 0 10px 40px rgba(108, 169, 230, 0.1);
+	-o-box-shadow: 0 0 50px rgba(0,0,0,0.1), inset 0 10px 40px rgba(108, 169, 230, 0.1);
+	box-shadow: 0 0 50px rgba(0,0,0,0.1), inset 0 10px 40px rgba(108, 169, 230, 0.1);
 }
 
 p {

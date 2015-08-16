@@ -1,0 +1,26 @@
+#header_container {
+	background: #3f73a5;
+	padding: 22px 0;
+}
+
+#header_container > header,
+#content_container > #content {
+	width: 996px; margin: 0 auto;
+}
+
+#header_container > header h1 {
+	color: #eee; font-weight: bold;
+}
+
+#content_container {
+
+}
+
+#content_container pre {
+	font-size: 80%; height: 500px; padding: 5px; overflow: auto;
+	background: #eee; color: #222; margin: 5px;
+}
+
+#content_container > #content {
+
+}

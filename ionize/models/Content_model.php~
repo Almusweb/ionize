@@ -1,6 +1,12 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Content_model extends Base
+/**
+ * @package	Ionize
+ * @author	Adam Liszkai <contact@liszkaiadam.hu>
+ * @link	http://ionizecms.com
+ * @since	Version 2.0.0
+ */
+class Content_model extends Base_model
 {
 	public $table 			= 'contents';
 	public $id_field 		= 'id_content';
@@ -10,5 +16,10 @@ class Content_model extends Base
 	
 	public $view 			= 'content';
 	
-	public $database 		= 'default';
+	public function __construct()
+    {
+    	parent::__construct();
+    }
 }
+/* End of file: Content_model.php */
+/* Location: ./ionize/models/Content_model.php */

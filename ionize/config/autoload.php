@@ -32,26 +32,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 /*
 | -------------------------------------------------------------------
-|  Auto-load Libraries
-| -------------------------------------------------------------------
-| These are the classes located in system/libraries/ or your
-| application/libraries/ directory, with the addition of the
-| 'database' library, which is somewhat of a special case.
-|
-| Prototype:
-|
-|	$autoload['libraries'] = array('database', 'email', 'session');
-|
-| You can also supply an alternative library name to be assigned
-| in the controller:
-|
-|	$autoload['libraries'] = array('user_agent' => 'ua');
-*/
-$autoload['libraries'] = array('session','database');
-$autoload['libraries']['user_agent'] = "client";
-
-/*
-| -------------------------------------------------------------------
 |  Auto-load Drivers
 | -------------------------------------------------------------------
 | These classes are located in system/libraries/ or in your
@@ -63,7 +43,7 @@ $autoload['libraries']['user_agent'] = "client";
 |
 |	$autoload['drivers'] = array('cache');
 */
-$autoload['drivers'] = array();
+$autoload['drivers'] = array('cache');
 
 /*
 | -------------------------------------------------------------------
@@ -73,7 +53,7 @@ $autoload['drivers'] = array();
 |
 |	$autoload['helper'] = array('url', 'file');
 */
-$autoload['helper'] = array('url','file','html','language');
+$autoload['helper'] = array('url','file','html','language','directory');
 
 /*
 | -------------------------------------------------------------------
@@ -105,6 +85,52 @@ $autoload['language'] = array();
 
 /*
 | -------------------------------------------------------------------
+|  Auto-load Interfaces
+| -------------------------------------------------------------------
+| Prototype:
+|
+|   $autoload['interfaces'] = array('interface1', 'interface2');
+|
+*/
+
+$autoload['interfaces'] = array();
+
+
+/*
+| -------------------------------------------------------------------
+|  Auto-load Abstracts
+| -------------------------------------------------------------------
+| Prototype:
+|
+|   $autoload['abstracts'] = array('abstract1', 'abstract2');
+|
+*/
+
+$autoload['abstracts'] = array('Base_model');
+
+/*
+| -------------------------------------------------------------------
+|  Auto-load Libraries
+| -------------------------------------------------------------------
+| These are the classes located in system/libraries/ or your
+| application/libraries/ directory, with the addition of the
+| 'database' library, which is somewhat of a special case.
+|
+| Prototype:
+|
+|	$autoload['libraries'] = array('database', 'email', 'session');
+|
+| You can also supply an alternative library name to be assigned
+| in the controller:
+|
+|	$autoload['libraries'] = array('user_agent' => 'ua');
+*/
+$autoload['libraries'] = array('session','theme','renderer','tagmanager','ionize');
+$autoload['libraries']['user_agent'] = "client";
+
+
+/*
+| -------------------------------------------------------------------
 |  Auto-load Models
 | -------------------------------------------------------------------
 | Prototype:
@@ -116,7 +142,13 @@ $autoload['language'] = array();
 |
 |	$autoload['model'] = array('first_model' => 'first');
 */
-$autoload['model'] = array('Base');
+$autoload['model'] = array();
+
+// Content models and classes
+$autoload['model']['Content'] = 'content';
 $autoload['model']['Content_model'] = 'contents'; 
+
+// Settings models and classes
+$autoload['model']['Settings'] = 'setting';
 
 

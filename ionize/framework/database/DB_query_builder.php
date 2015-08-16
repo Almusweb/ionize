@@ -2251,7 +2251,7 @@ abstract class CI_DB_query_builder extends CI_DB_driver {
 	 * @return	string
 	 */
 	protected function _compile_select($select_override = FALSE)
-	{
+	{		
 		// Combine any cached components with the current statements
 		$this->_merge_cache();
 
@@ -2295,17 +2295,17 @@ abstract class CI_DB_query_builder extends CI_DB_driver {
 			$sql .= "\n".implode("\n", $this->qb_join);
 		}
 
-		$sql .= $this->_compile_wh('qb_where')
-			.$this->_compile_group_by()
-			.$this->_compile_wh('qb_having')
-			.$this->_compile_order_by(); // ORDER BY
-
+		$sql .= $this->_compile_wh('qb_where');
+		$sql .= $this->_compile_group_by();
+		$sql .= $this->_compile_wh('qb_having');
+		$sql .= $this->_compile_order_by();	
+		
 		// LIMIT
 		if ($this->qb_limit)
 		{
 			return $this->_limit($sql."\n");
 		}
-
+		
 		return $sql;
 	}
 

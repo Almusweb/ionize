@@ -70,7 +70,7 @@ $config['url_suffix'] = '';
 | than english.
 |
 */
-$config['language']	= 'english';
+$config['language']	= 'en_US';
 
 /*
 |--------------------------------------------------------------------------
@@ -277,7 +277,7 @@ $config['error_views_path'] = '';
 | application/cache/ directory.  Use a full server path with trailing slash.
 |
 */
-$config['cache_path'] = BASEPATH.'cache';
+$config['cache_path'] = FCPATH.'cache/';
 
 /*
 |--------------------------------------------------------------------------

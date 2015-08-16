@@ -1,5 +1,11 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
+/**
+ * @package	Ionize
+ * @author	Adam Liszkai <contact@liszkaiadam.hu>
+ * @link	http://ionizecms.com
+ * @since	Version 2.0.0
+ */
 class Base extends CI_Model
 {
 	/* ------------------------------------------------------------------------------------------------------------- */	
@@ -26,8 +32,8 @@ class Base extends CI_Model
 		
 		$this->benchmark->mark('Base_model_load_database_start');
 		
-		if( ! property_exists($this, $this->database) && $this->{$this->database} == NULL)
-			$this->{$this->database} = $this->load->database($this->database, TRUE);
+		if( ! property_exists($this, $this->database) ) $this->{$this->database} = NULL;		
+		if($this->{$this->database} == NULL) $this->{$this->database} = $this->load->database($this->database, TRUE);
 			
 		$this->benchmark->mark('Base_model_load_database_end');
 	}	
@@ -36,7 +42,13 @@ class Base extends CI_Model
 	{
 		$this->{$this->database}->select($select);
 		return $this;
-	}	
+	}
+	/* ------------------------------------------------------------------------------------------------------------- */
+	public function set($name, $value = '', $escape = NULL)
+	{
+		$this->{$this->database}->set($name, $value, $escape);
+		return $this;
+	}
 	/* ------------------------------------------------------------------------------------------------------------- */	
 	public function like($name, $value, $format=TRUE)
 	{
@@ -181,7 +193,7 @@ class Base extends CI_Model
 			return $this->update(array('deleted' => date('Y-m-d H:i:s')));
 		
 		return FALSE;
-	}	
+	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 }
 /* End of file: Base.php */
