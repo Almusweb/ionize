@@ -31,7 +31,7 @@ abstract class Base_model extends CI_Model
 		parent::__construct();
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
-	private function initialize()
+	public function __call($name, $arguments)
 	{
 		$this->benchmark->mark('Base_model_load_database_start');
 		
@@ -43,21 +43,18 @@ abstract class Base_model extends CI_Model
 	/* ------------------------------------------------------------------------------------------------------------- */		
 	public function select($select)
 	{
-		$this->initialize();
 		$this->{$this->database}->select($select);
 		return $this;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	public function set($name, $value = '', $escape = NULL)
 	{
-		$this->initialize();
 		$this->{$this->database}->set($name, $value, $escape);
 		return $this;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */	
 	public function like($name, $value, $format=TRUE)
 	{
-		$this->initialize();
 		$this->{$this->database}->like($name, $value, $format);
 		$this->where_count = $this->where_count+1;
 		return $this;
@@ -65,7 +62,6 @@ abstract class Base_model extends CI_Model
 	/* ------------------------------------------------------------------------------------------------------------- */
 	public function or_like($name, $value, $format=TRUE)
 	{
-		$this->initialize();
 		$this->{$this->database}->or_like($name, $value, $format);
 		$this->where_count = $this->where_count+1;
 		return $this;
@@ -73,7 +69,6 @@ abstract class Base_model extends CI_Model
 	/* ------------------------------------------------------------------------------------------------------------- */
 	public function where($name, $value=NULL, $format=TRUE)
 	{
-		$this->initialize();
 		$this->{$this->database}->where($name, $value, $format);
 		$this->where_count = $this->where_count+1;
 		return $this;
@@ -81,7 +76,6 @@ abstract class Base_model extends CI_Model
 	/* ------------------------------------------------------------------------------------------------------------- */	
 	public function or_where($name, $value)
 	{
-		$this->initialize();
 		$this->{$this->database}->or_where($name,$value);
 		$this->where_count = $this->where_count+1;
 		return $this;
@@ -89,7 +83,6 @@ abstract class Base_model extends CI_Model
 	/* ------------------------------------------------------------------------------------------------------------- */	
 	public function between($start_date, $end_date)
 	{
-		$this->initialize();
 		$this->start_date = $start_date;
 		$this->end_date = $end_date;
 		$this->where_count = $this->where_count+1;
@@ -98,28 +91,24 @@ abstract class Base_model extends CI_Model
 	/* ------------------------------------------------------------------------------------------------------------- */	
 	public function order_by($param)
 	{
-		$this->initialize();
 		$this->{$this->database}->order_by($param);
 		return $this;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	public function limit($value, $offset = 0)
-	{	
-		$this->initialize();
+	{
 		$this->{$this->database}->limit($value, $offset);
 		return $this;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	public function query($query)
 	{
-		$this->initialize();
 		$this->where_count = 0;
 		return $this->{$this->database}->query($query);
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */	
 	public function get( $table = NULL, $limit = NULL, $offset = NULL )
 	{
-		$this->initialize();
 		$this->benchmark->mark('Base_model_get_start');
 		if(is_null($table)) $table = $this->view;
 		
@@ -146,7 +135,6 @@ abstract class Base_model extends CI_Model
 	{
 		if(is_array($data))
 		{
-			$this->initialize();			
 			// Frissítem az adatbázist
 			$query = $this->{$this->database}->insert($this->table, $data);
 			//Debug( trim(preg_replace('/\s+/', ' ', $this->{$this->database}->last_query())), 'last query' );
@@ -164,12 +152,11 @@ abstract class Base_model extends CI_Model
 	{
 		if(is_array($data))
 		{
-			$this->initialize();
 			// Frissítem az adatbázist
 			$query = $this->{$this->database}->insert($this->lang_table, $data);
 			//Debug( trim(preg_replace('/\s+/', ' ', $this->{$this->database}->last_query())), 'last query' );
 			$insert_id = $this->insert_id = $this->{$this->database}->insert_id();
-	
+			
 			return $insert_id;
 		}
 		return FALSE;
@@ -178,8 +165,7 @@ abstract class Base_model extends CI_Model
 	public function update($data=NULL)
 	{
 		if(is_array($data))
-		{		
-			$this->initialize();	
+		{
 			if(count($this->where_count)<1)$this->{$this->database}->where($this->id_field,$this->id);			
 			return $this->{$this->database}->update($this->table, $data);
 		}
@@ -190,7 +176,6 @@ abstract class Base_model extends CI_Model
 	{
 		if(is_array($data))
 		{
-			$this->initialize();
 			if(count($this->where_count)<1)$this->{$this->database}->where($this->id_lang_field,$this->id);
 			return $this->{$this->database}->update($this->lang_table, $data);
 		}
@@ -199,8 +184,6 @@ abstract class Base_model extends CI_Model
 	/* ------------------------------------------------------------------------------------------------------------- */	
 	public function delete($id=NULL)
 	{
-		$this->initialize();
-	
 		if(!is_null($id))
 			return $this->where($this->id_field, $id)->update(array('deleted' => date('Y-m-d H:i:s')));
 		

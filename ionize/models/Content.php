@@ -9,7 +9,7 @@
 class Content //extends CI_Model
 {
 	/* ------------------------------------------------------------------------------------------------------------- */
-
+	
 	public $id = NULL;
 	
 	/* ------------------------------------------------------------------------------------------------------------- */
@@ -27,7 +27,7 @@ class Content //extends CI_Model
 		if( $data != NULL )
 		{
 			$this->raw_data = $data;
-		
+			
 			foreach($data as $name => $value) $this->$name = $value;
 			foreach($data as $name => $value) self::$data[$name] = $value;
 			$this->_data = self::$data;
@@ -49,15 +49,22 @@ class Content //extends CI_Model
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
-	public function getSerialized()
+	public function __sleep()
 	{
-		return serialize($this);
+		$this->_data = self::$data;
+		return $this;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
-	public function restoreSerialized()
+	public function __wakeup()
 	{
 		self::$data = $this->_data;
+	}
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	public function getSerialized()
+	{
+		return serialize($this);
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	

@@ -76,11 +76,8 @@ class Output extends IO_Controller
 		$cache = $this->cache->file->get($cache_key);
 		if($cache != FALSE)
 		{
-			$this->benchmark->mark('Output_controller__get_content_end');
-			
 			$content = unserialize($cache);
-			$content->restoreSerialized();
-			
+			$this->benchmark->mark('Output_controller__get_content_end');
 			return $this->render( $content );
 		}
 		
