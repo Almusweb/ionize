@@ -31,57 +31,59 @@ abstract class Base_model extends CI_Model
 		parent::__construct();
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
-	public function __call($name, $arguments)
+	public function __call($method,$arguments)
 	{
 		$this->benchmark->mark('Base_model_load_database_start');
 		
 		if( ! property_exists($this, $this->database) ) $this->{$this->database} = NULL;		
 		if($this->{$this->database} == NULL) $this->{$this->database} = $this->load->database($this->database, TRUE);
 		
+		if(method_exists($this, $method)) return call_user_func_array(array($this,$method),$arguments);
+		
 		$this->benchmark->mark('Base_model_load_database_end');
-	}	
+	}
 	/* ------------------------------------------------------------------------------------------------------------- */		
-	public function select($select)
+	protected function select($select)
 	{
 		$this->{$this->database}->select($select);
 		return $this;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
-	public function set($name, $value = '', $escape = NULL)
+	protected function set($name, $value = '', $escape = NULL)
 	{
 		$this->{$this->database}->set($name, $value, $escape);
 		return $this;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */	
-	public function like($name, $value, $format=TRUE)
+	protected function like($name, $value, $format=TRUE)
 	{
 		$this->{$this->database}->like($name, $value, $format);
 		$this->where_count = $this->where_count+1;
 		return $this;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
-	public function or_like($name, $value, $format=TRUE)
+	protected function or_like($name, $value, $format=TRUE)
 	{
 		$this->{$this->database}->or_like($name, $value, $format);
 		$this->where_count = $this->where_count+1;
 		return $this;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
-	public function where($name, $value=NULL, $format=TRUE)
+	protected function where($name, $value=NULL, $format=TRUE)
 	{
 		$this->{$this->database}->where($name, $value, $format);
 		$this->where_count = $this->where_count+1;
 		return $this;
 	}	
 	/* ------------------------------------------------------------------------------------------------------------- */	
-	public function or_where($name, $value)
+	protected function or_where($name, $value)
 	{
 		$this->{$this->database}->or_where($name,$value);
 		$this->where_count = $this->where_count+1;
 		return $this;
 	}	
 	/* ------------------------------------------------------------------------------------------------------------- */	
-	public function between($start_date, $end_date)
+	protected function between($start_date, $end_date)
 	{
 		$this->start_date = $start_date;
 		$this->end_date = $end_date;
@@ -89,25 +91,25 @@ abstract class Base_model extends CI_Model
 		return $this;
 	}	
 	/* ------------------------------------------------------------------------------------------------------------- */	
-	public function order_by($param)
+	protected function order_by($param)
 	{
 		$this->{$this->database}->order_by($param);
 		return $this;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
-	public function limit($value, $offset = 0)
+	protected function limit($value, $offset = 0)
 	{
 		$this->{$this->database}->limit($value, $offset);
 		return $this;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
-	public function query($query)
+	protected function query($query)
 	{
 		$this->where_count = 0;
 		return $this->{$this->database}->query($query);
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */	
-	public function get( $table = NULL, $limit = NULL, $offset = NULL )
+	protected function get( $table = NULL, $limit = NULL, $offset = NULL )
 	{
 		$this->benchmark->mark('Base_model_get_start');
 		if(is_null($table)) $table = $this->view;
@@ -126,12 +128,12 @@ abstract class Base_model extends CI_Model
 		return FALSE;
 	}	
 	/* ------------------------------------------------------------------------------------------------------------- */	
-	public function create($data=NULL)
+	protected function create($data=NULL)
 	{
 		return $this->insert($data);
 	}	
 	/* ------------------------------------------------------------------------------------------------------------- */	
-	public function insert($data=NULL)
+	protected function insert($data=NULL)
 	{
 		if(is_array($data))
 		{
@@ -148,7 +150,7 @@ abstract class Base_model extends CI_Model
 		return FALSE;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
-	public function insert_lang($data=NULL)
+	protected function insert_lang($data=NULL)
 	{
 		if(is_array($data))
 		{
@@ -162,7 +164,7 @@ abstract class Base_model extends CI_Model
 		return FALSE;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */	
-	public function update($data=NULL)
+	protected function update($data=NULL)
 	{
 		if(is_array($data))
 		{
@@ -172,7 +174,7 @@ abstract class Base_model extends CI_Model
 		return FALSE;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
-	public function update_lang($data=NULL)
+	protected function update_lang($data=NULL)
 	{
 		if(is_array($data))
 		{
@@ -182,7 +184,7 @@ abstract class Base_model extends CI_Model
 		return FALSE;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */	
-	public function delete($id=NULL)
+	protected function delete($id=NULL)
 	{
 		if(!is_null($id))
 			return $this->where($this->id_field, $id)->update(array('deleted' => date('Y-m-d H:i:s')));

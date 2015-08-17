@@ -19,7 +19,7 @@ class Output extends IO_Controller
 		//echo '<pre>'.(defined('HHVM_VERSION') ? 'Using HHVM' : 'Not using HHVM').'</pre>';
 		
 		$this->request_url = $this->uri->uri_string();
-		$this->output->cache(120);
+		//$this->output->cache(120);
 	}
 
 	/* ------------------------------------------------------------------------------------------------------------- */	

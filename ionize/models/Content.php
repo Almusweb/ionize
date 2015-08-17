@@ -49,10 +49,20 @@ class Content //extends CI_Model
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
+	public function __call($method,$arguments)
+	{
+		// if method is a variable
+	}
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
 	public function __sleep()
 	{
 		$this->_data = self::$data;
-		return $this;
+		
+		$serialize_array = array('_data','raw_data','id');
+		foreach($this->raw_data as $name => $value) $serialize_array[] = $name;
+		
+		return $serialize_array;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
