@@ -1,4 +1,6 @@
 cache/*
+
+*.log
 *.View
 *.Views
 *.Content
