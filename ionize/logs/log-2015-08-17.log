@@ -1,0 +1,18 @@
+ERROR - 2015-08-17 08:04:11 --> Severity: Parsing Error --> syntax error, unexpected ')' /home/adamos42/Public_HTML/ionize200/ionize/core/IO_Controller.php 33
+ERROR - 2015-08-17 08:04:11 --> Severity: Parsing Error --> syntax error, unexpected ')' /home/adamos42/Public_HTML/ionize200/ionize/core/IO_Controller.php 33
+ERROR - 2015-08-17 08:04:28 --> Severity: Parsing Error --> syntax error, unexpected ',' /home/adamos42/Public_HTML/ionize200/ionize/core/IO_Controller.php 33
+ERROR - 2015-08-17 08:04:28 --> Severity: Parsing Error --> syntax error, unexpected ',' /home/adamos42/Public_HTML/ionize200/ionize/core/IO_Controller.php 33
+ERROR - 2015-08-17 08:04:39 --> Severity: Parsing Error --> syntax error, unexpected ',' /home/adamos42/Public_HTML/ionize200/ionize/core/IO_Controller.php 33
+ERROR - 2015-08-17 08:04:39 --> Severity: Parsing Error --> syntax error, unexpected ',' /home/adamos42/Public_HTML/ionize200/ionize/core/IO_Controller.php 33
+ERROR - 2015-08-17 08:04:40 --> Severity: Parsing Error --> syntax error, unexpected ',' /home/adamos42/Public_HTML/ionize200/ionize/core/IO_Controller.php 33
+ERROR - 2015-08-17 08:04:40 --> Severity: Parsing Error --> syntax error, unexpected ',' /home/adamos42/Public_HTML/ionize200/ionize/core/IO_Controller.php 33
+ERROR - 2015-08-17 08:05:06 --> Could not find the language line "elapsed"
+ERROR - 2015-08-17 08:05:06 --> Could not find the language line "memory"
+ERROR - 2015-08-17 08:05:06 --> Severity: Warning --> Cannot modify header information - headers already sent /home/adamos42/Public_HTML/ionize200/ionize/framework/core/Output.php 793
+ERROR - 2015-08-17 08:05:06 --> Severity: Warning --> Cannot modify header information - headers already sent /home/adamos42/Public_HTML/ionize200/ionize/framework/core/Output.php 794
+ERROR - 2015-08-17 08:05:06 --> Severity: Warning --> Cannot modify header information - headers already sent /home/adamos42/Public_HTML/ionize200/ionize/framework/core/Output.php 795
+ERROR - 2015-08-17 08:05:06 --> Severity: Warning --> Cannot modify header information - headers already sent /home/adamos42/Public_HTML/ionize200/ionize/framework/core/Output.php 796
+ERROR - 2015-08-17 08:07:31 --> Severity: Warning --> Cannot modify header information - headers already sent /home/adamos42/Public_HTML/ionize200/ionize/framework/core/Output.php 802
+ERROR - 2015-08-17 08:07:31 --> Severity: Warning --> Cannot modify header information - headers already sent /home/adamos42/Public_HTML/ionize200/ionize/framework/core/Output.php 803
+ERROR - 2015-08-17 08:07:31 --> Severity: Warning --> Cannot modify header information - headers already sent /home/adamos42/Public_HTML/ionize200/ionize/framework/core/Output.php 804
+ERROR - 2015-08-17 08:07:31 --> Severity: Warning --> Cannot modify header information - headers already sent /home/adamos42/Public_HTML/ionize200/ionize/framework/core/Output.php 805

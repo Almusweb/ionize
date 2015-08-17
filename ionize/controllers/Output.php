@@ -19,6 +19,7 @@ class Output extends IO_Controller
 		//echo '<pre>'.(defined('HHVM_VERSION') ? 'Using HHVM' : 'Not using HHVM').'</pre>';
 		
 		$this->request_url = $this->uri->uri_string();
+		$this->output->cache(120);
 	}
 
 	/* ------------------------------------------------------------------------------------------------------------- */	
@@ -40,21 +41,24 @@ class Output extends IO_Controller
 		else
 		{
 			$this->benchmark->mark('Output_controller_render_start');
+			ob_start();
 			
 			$cache_key = $this->language.'.'.str_replace('/','.',$this->request_url).'.View';
 			$cache_info = $this->cache->file->get_metadata($cache_key);
 			
 			$cache = $this->cache->file->get($cache_key);
 			if($cache != FALSE && $this->renderer->checkViewUpdated( $content, $cache_info ) == FALSE)
-			{
-				echo $cache;
+			{			
+				// Rendering content by cached view
+				$this->output->set_output($cache); flush(); ob_flush();
 			}
 			else
 			{
 				// Rendering content by Content class
 				$parsed_view = $this->renderer->parseView( $content );
 				$cache = $this->cache->file->save($cache_key, $parsed_view, $this->setting->cache_time );
-				echo $parsed_view;
+				
+				$this->output->set_output($parsed_view); flush(); ob_flush();
 			}
 			
 			$this->benchmark->mark('Output_controller_render_end');

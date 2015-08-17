@@ -439,12 +439,21 @@ class CI_Output {
 		// Parse out the elapsed time and memory usage,
 		// then swap the pseudo-variables with the data
 
-		$elapsed = $BM->elapsed_time('total_execution_time_start', 'total_execution_time_end');
-
 		if ($this->parse_exec_vars === TRUE)
 		{
+			$elapsed = $BM->elapsed_time('total_execution_time_start', 'total_execution_time_end');		
+			$elapsed = round((((double) $elapsed) * 1000), 3) .'ms';
+		
+			if(isset($_SERVER['REQUEST_TIME_FLOAT']))
+			{
+				$current_microtime = microtime(TRUE);
+				$request_microtime = $_SERVER['REQUEST_TIME_FLOAT'];
+			
+				$request = round((($current_microtime-$request_microtime) * 1000), 3) .'ms';
+			}
+		
 			$memory	= round(memory_get_usage() / 1024 / 1024, 2).'MB';
-			$output = str_replace(array('{elapsed_time}', '{memory_usage}'), array($elapsed, $memory), $output);
+			$output = str_replace(array('{elapsed_time}', '{memory_usage}', '{request_time}'), array($elapsed, $memory, $request), $output);
 		}
 
 		// --------------------------------------------------------------------
