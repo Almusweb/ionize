@@ -4,5 +4,8 @@ cache/*
 *.View
 *.Views
 *.Content
+*.Rawdata
+*.Output
+*.DebugInfo
 *.*~
 
