@@ -1,15 +1,11 @@
+*.*~
+
 cache/*
 
 *.log
-*.View
-*.Views
-*.Content
-*.Rawdata
-*.Output
-*.DebugInfo
-*.*~
 
 *.bak
 *.ned
 
 themes/*/.check_result
+*.Views
