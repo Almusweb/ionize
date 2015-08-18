@@ -80,7 +80,7 @@ abstract class Base extends \CI_Model
 	private function get( $table = NULL, $limit = NULL, $offset = NULL )
 	{
 		$this->benchmark->mark('Base_model_get_start');
-		if(is_null($table)) $table = $this->view;
+		if(is_null($table)) $table = ($this->view != "" ? $this->view : $this->table);
 		
 		$this->benchmark->mark('Base_model_get_query_start');
 		$query = $this->{$this->database}->get($table, $limit, $offset);

@@ -1,10 +1,9 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+<?php defined('BASEPATH') OR exit('No direct script access allowed');
 
 /*
-| -------------------------------------------------------------------
+| ---------------------------------------------------------------------------------------------------------------------
 | AUTO-LOADER
-| -------------------------------------------------------------------
+| ---------------------------------------------------------------------------------------------------------------------
 | This file specifies which systems should be loaded by default.
 |
 | In order to keep the framework as light-weight as possible only the
@@ -14,9 +13,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | you globally define which systems you would like loaded with every
 | request.
 |
-| -------------------------------------------------------------------
+| ---------------------------------------------------------------------------------------------------------------------
 | Instructions
-| -------------------------------------------------------------------
+| ---------------------------------------------------------------------------------------------------------------------
 |
 | These are the things you can load automatically:
 |
@@ -31,9 +30,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 
 /*
-| -------------------------------------------------------------------
+| ---------------------------------------------------------------------------------------------------------------------
 |  Auto-load Drivers
-| -------------------------------------------------------------------
+| ---------------------------------------------------------------------------------------------------------------------
 | These classes are located in system/libraries/ or in your
 | application/libraries/ directory, but are also placed inside their
 | own subdirectory and they extend the CI_Driver_Library class. They
@@ -46,9 +45,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $autoload['drivers'] = array('cache');
 
 /*
-| -------------------------------------------------------------------
+| ---------------------------------------------------------------------------------------------------------------------
 |  Auto-load Helper Files
-| -------------------------------------------------------------------
+| ---------------------------------------------------------------------------------------------------------------------
 | Prototype:
 |
 |	$autoload['helper'] = array('url', 'file');
@@ -56,9 +55,9 @@ $autoload['drivers'] = array('cache');
 $autoload['helper'] = array('url','file','html','language','directory');
 
 /*
-| -------------------------------------------------------------------
+| ---------------------------------------------------------------------------------------------------------------------
 |  Auto-load Config files
-| -------------------------------------------------------------------
+| ---------------------------------------------------------------------------------------------------------------------
 | Prototype:
 |
 |	$autoload['config'] = array('config1', 'config2');
@@ -70,9 +69,9 @@ $autoload['helper'] = array('url','file','html','language','directory');
 $autoload['config'] = array();
 
 /*
-| -------------------------------------------------------------------
+| ---------------------------------------------------------------------------------------------------------------------
 |  Auto-load Language files
-| -------------------------------------------------------------------
+| ---------------------------------------------------------------------------------------------------------------------
 | Prototype:
 |
 |	$autoload['language'] = array('lang1', 'lang2');
@@ -84,34 +83,31 @@ $autoload['config'] = array();
 $autoload['language'] = array();
 
 /*
-| -------------------------------------------------------------------
+| ---------------------------------------------------------------------------------------------------------------------
 |  Auto-load Interfaces
-| -------------------------------------------------------------------
+| ---------------------------------------------------------------------------------------------------------------------
 | Prototype:
 |
 |   $autoload['interfaces'] = array('interface1', 'interface2');
 |
 */
-
 $autoload['interfaces'] = array();
 
-
 /*
-| -------------------------------------------------------------------
+| ---------------------------------------------------------------------------------------------------------------------
 |  Auto-load Abstracts
-| -------------------------------------------------------------------
+| ---------------------------------------------------------------------------------------------------------------------
 | Prototype:
 |
 |   $autoload['abstracts'] = array('abstract1', 'abstract2');
 |
 */
-
 $autoload['abstracts'] = array('Base');
 
 /*
-| -------------------------------------------------------------------
+| ---------------------------------------------------------------------------------------------------------------------
 |  Auto-load Libraries
-| -------------------------------------------------------------------
+| ---------------------------------------------------------------------------------------------------------------------
 | These are the classes located in system/libraries/ or your
 | application/libraries/ directory, with the addition of the
 | 'database' library, which is somewhat of a special case.
@@ -128,11 +124,10 @@ $autoload['abstracts'] = array('Base');
 $autoload['libraries'] = array('session','theme','renderer','tagmanager','ionize');
 $autoload['libraries']['user_agent'] = "client";
 
-
 /*
-| -------------------------------------------------------------------
+| ---------------------------------------------------------------------------------------------------------------------
 |  Auto-load Models
-| -------------------------------------------------------------------
+| ---------------------------------------------------------------------------------------------------------------------
 | Prototype:
 |
 |	$autoload['model'] = array('first_model', 'second_model');
@@ -144,11 +139,13 @@ $autoload['libraries']['user_agent'] = "client";
 */
 $autoload['model'] = array();
 
-// Content models and classes
-$autoload['model']['data/Content'] = 'content_data';
-$autoload['model']['database/Content'] = 'content_model';
+// Content model and class
+$autoload['model']['database/Content'] 		= 'content_model';
+$autoload['model']['data/Content'] 			= 'content_data';
 
-// Settings models and classes
-$autoload['model']['data/Settings'] = 'settings_data';
+// Settings model and class
+$autoload['model']['database/Settings'] 	= 'settings_model';
+$autoload['model']['data/Settings'] 		= 'settings_data';
 
-
+/* End of file: autoload.php */
+/* Location: ./ionize/config/autoload.php */

@@ -17,6 +17,8 @@ class IO_Controller extends CI_Controller
 		
 		$http = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https' : 'http';
 		$this->data['base_url'] = sprintf("%s://%s%s",$http,$_SERVER['SERVER_NAME'],$_SERVER['REQUEST_URI']);
+		
+		$this->session->language = \Model\Data\Settings::get_instance()->language;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 }

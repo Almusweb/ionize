@@ -78,7 +78,6 @@ class Content
 		self::$instance = $this;
 		
 		$this->benchmark->mark('Content_class_construct_end');
-		return $this;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
@@ -155,34 +154,34 @@ class Content
 	 * @return	json
 	 */
 	public function __toString()
-    {
-    	$this->benchmark->mark('Content_class___toString_start');
+	{
+		$this->benchmark->mark('Content_class___toString_start');
  		$json_data = json_encode($this->_data);
  		$this->benchmark->mark('Content_class___toString_end');
-        return $json_data;
-    }
-    /* ------------------------------------------------------------------------------------------------------------- */
-    
-    // experimental
-    public function __debugInfo()
-    {
-    	$debug = array();
-    	$class_fullname = get_class($this);
-    	
-    	$codeigniter =& get_instance();
-    	$cache_key = md5($class_fullname."::{$this->id}").'.DebugInfo';
-    	$cache_info = $codeigniter->cache->file->get($cache_key);
-    	if($cache_info != FALSE)
-    	{
-    		return unserialize($cache_info);
-    	}
-    	else
-    	{
-		    $class = new \ReflectionClass( $class_fullname );
-		    $class_name = $class->getShortName();
-		    
-		    $filter_properties = array('instance');
-		    $properties = $class->getProperties(\ReflectionMethod::IS_STATIC+\ReflectionMethod::IS_PUBLIC);
+		return $json_data;
+	}
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	// experimental
+	public function __debugInfo()
+	{
+		$debug = array();
+		$class_fullname = get_class($this);
+		
+		$codeigniter =& get_instance();
+		$cache_key = md5($class_fullname."::{$this->id}").'.DebugInfo';
+		$cache_info = $codeigniter->cache->file->get($cache_key);
+		if($cache_info != FALSE)
+		{
+			return unserialize($cache_info);
+		}
+		else
+		{
+			$class = new \ReflectionClass( $class_fullname );
+			$class_name = $class->getShortName();
+			
+			$filter_properties = array('instance');
+			$properties = $class->getProperties(\ReflectionMethod::IS_STATIC+\ReflectionMethod::IS_PUBLIC);
 		
 			// Properties
 			foreach($properties as $prop)
@@ -195,11 +194,11 @@ class Content
 					$debug[$name] = ($prop->isStatic() ? $this::${$prop->name} : $this->{$prop->name});
 				}
 			}
-		    
-		    // Methods
-		    $filter_methods = array('__construct', '__destruct', '__call', '__callStatic', '__get', '__set', '__isset',
-		    						'__unset', '__sleep', '__wakeup', '__toString', '__invoke', '__set_state', '__clone',
-		    						'__debugInfo');
+			
+			// Methods
+			$filter_methods = array('__construct', '__destruct', '__call', '__callStatic', '__get', '__set', '__isset',
+									'__unset', '__sleep', '__wakeup', '__toString', '__invoke', '__set_state', '__clone',
+									'__debugInfo');
 		   			
 			$methods = $class->getMethods(\ReflectionMethod::IS_STATIC+\ReflectionMethod::IS_PUBLIC);
 			foreach($methods as $method)
@@ -217,19 +216,20 @@ class Content
 				}
 			}
 			
-			$codeigniter->cache->file->save($chache_key, serialize($debug), 60*60*24*7*4*12);
+			$codeigniter->cache->file->save($cache_key, serialize($debug), 60*60*24*7*4*12);
 		}
 		return $debug;
-    }
-    
-    /**
+	}
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	/**
 	 * __destruct()
 	 *
 	 * Saving the Content data to the cache folder
 	 *
 	 * @return	void
 	 */
-    function __destruct()
+	function __destruct()
 	{
 		// If has data to cache
 		if($this->id != NULL)
@@ -250,19 +250,19 @@ class Content
 	/* Public Functions -------------------------------------------------------------------------------------------- */
 	/* ------------------------------------------------------------------------------------------------------------- */
 
-    public function initialize( $data )
-    {
-    	$this->benchmark->mark('Content_class_initialize_start');
-    	
-    	// Saving data to properties
-    	$this->raw_data = $this->_data = (array) $data;
-    	
-    	// Creating content ID property
-    	if($this->id == NULL) $this->id = $data->id_content;
-    	
-    	// Declarating Children Contents
-    	if($this->children != "")
-    	{
+	public function initialize( $data )
+	{
+		$this->benchmark->mark('Content_class_initialize_start');
+		
+		// Saving data to properties
+		$this->raw_data = $this->_data = (array) $data;
+		
+		// Creating content ID property
+		if($this->id == NULL) $this->id = $data->id_content;
+		
+		// Declarating Children Contents
+		if($this->children != "")
+		{
 			$children = explode(',',$this->children);
 			if(count($children) > 0)
 			{
@@ -272,21 +272,21 @@ class Content
 					self::$childrens[] = $child_content;
 				}
 			}
-    	}
-    	
-    	// Create reference to datas for static
-    	self::$data = $this->_data;
-    	
-    	$this->benchmark->mark('Content_class_initialize_end');
-    	return $this;
-    }
-    /* ------------------------------------------------------------------------------------------------------------- */
-    
-    public static function get_instance()
-    {
-    	return self::$instance;
-    }
-    /* ------------------------------------------------------------------------------------------------------------- */
+		}
+		
+		// Create reference to datas for static
+		self::$data = $this->_data;
+		
+		$this->benchmark->mark('Content_class_initialize_end');
+		return $this;
+	}
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	public static function get_instance()
+	{
+		return self::$instance;
+	}
+	/* ------------------------------------------------------------------------------------------------------------- */
 	
 	public function getID()
 	{
