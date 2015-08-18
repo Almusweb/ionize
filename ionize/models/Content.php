@@ -27,68 +27,110 @@ class Content //extends CI_Model
 		if( $data != NULL )
 		{
 			$this->raw_data = $data;
+			$this->_data = (array) $data;
+						
+			$this->id = $this->_data['id'] = $this->id_content;
 			
-			foreach($data as $name => $value) $this->$name = $value;
-			foreach($data as $name => $value) self::$data[$name] = $value;
-			$this->_data = self::$data;
-			
-			$this->id = self::$data['id'] = $this->id_content;
-			
-			$this->has_children = self::$data['has_children'] = ($this->has_children == 1 ? TRUE : FALSE);
-			$this->homepage = self::$data['homepage'] = ($this->homepage == 1 ? TRUE : FALSE);
-			$this->has_url = self::$data['has_url'] = ($this->has_url == 1 ? TRUE : FALSE);
+			$this->has_children = $this->_data['has_children'] = ($this->has_children == 1 ? TRUE : FALSE);
+			$this->homepage = $this->_data['homepage'] = ($this->homepage == 1 ? TRUE : FALSE);
+			$this->has_url = $this->_data['has_url'] = ($this->has_url == 1 ? TRUE : FALSE);
 			
 			if($this->has_children == 1)
 			{
 				
 			}
 			// @todo: internal data of content
-			//$this->contents->
+			// $this->contents->
+			
+			// Copy datas from dinamic to static
+			self::$data = $this->_data;
 		}
 		//$this->benchmark->mark('Content_class_construct_end');
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
-	public function __call($method,$arguments)
+	/**
+	 * __get()
+	 *
+	 * @param	string	$key	Content data key
+	 * @return	mixed
+	 */
+	public function __get($key)
 	{
-		// if method is a variable
+		if (isset($this->_data[$key])) return $this->_data[$key];
+		return NULL;
+	}
+	/* ------------------------------------------------------------------------------------------------------------- */
+
+	/**
+	 * __set()
+	 *
+	 * @param	string	$key	Content data key
+	 * @param	mixed	$value	Content data value
+	 * @return	void
+	 */
+	public function __set($key, $value)
+	{
+		$this->_data[$key] = $value;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
+	/**
+	 * __sleep()
+	 *
+	 * @return	array
+	 */
 	public function __sleep()
 	{
-		$this->_data = self::$data;
-		
-		$serialize_array = array('_data','raw_data','id');
-		foreach($this->raw_data as $name => $value) $serialize_array[] = $name;
-		
+		$serialize_array = array('id','raw_data','_data');
 		return $serialize_array;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
+	/**
+	 * __wakeup()
+	 *
+	 * @return	void
+	 */
 	public function __wakeup()
 	{
 		self::$data = $this->_data;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
-	public function getSerialized()
-	{
-		return serialize($this);
-	}
+	/**
+	 * __toString()
+	 *
+	 * @return	json
+	 */
+	public function __toString()
+    {
+        return json_encode($this->_data);
+    }
+	/* ------------------------------------------------------------------------------------------------------------- */
+	/* ------------------------------------------------------------------------------------------------------------- */
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
-	public function save()
-	{
-		
-	}
+	
+	
+	/* ------------------------------------------------------------------------------------------------------------- */
+	/* ------------------------------------------------------------------------------------------------------------- */
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
-	public function assign()
+	function __destruct()
 	{
+		$changed = array();
 		
-	}
-	/* ------------------------------------------------------------------------------------------------------------- */
+    	foreach($this->raw_data as $name => $value)
+    		if( $this->_data[$name] != $value ) $changed[$name] = $this->_data[$name];
+    	
+    	if(count($changed) > 0)
+    	{
+    		echo "<pre>Changed content:".print_r($changed, true)."</pre>";
+    		// @todo permission check and database save
+    	}
+   	}
+   	/* ------------------------------------------------------------------------------------------------------------- */
 }
 /* End of file: Content.php */
 /* Location: ./ionize/models/Content.php */

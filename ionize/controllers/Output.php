@@ -91,8 +91,7 @@ class Output extends IO_Controller
 		{
 			// Parsing content data and creating content class
 			$content = new Content( $content->row() );
-			
-			$cache = $this->cache->file->save($cache_key, $content->getSerialized(), $this->setting->cache_time );
+			$this->cache->file->save($cache_key, serialize($content), Settings::get('cache_time'));
 			
 			$this->benchmark->mark('Output_controller__get_content_end');
 			return $this->render( $content );

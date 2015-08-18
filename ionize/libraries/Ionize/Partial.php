@@ -32,7 +32,8 @@ class Partial extends Tagmanager
 		Renderer::$_loaded_views[] = $file.$extension;
 		
 		// Load the view file
-		return $this->codeigniter->load->view(Theme::getRelativeRoute().'views/'.$file.$extension, Renderer::$_data, TRUE);
+		$view_file = Theme::getRelativeRoute().'views/'.$file.$extension;
+		return $this->codeigniter->load->view($view_file, Renderer::$_data, TRUE);
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 }
