@@ -77,8 +77,8 @@ $db['default'] = array
 (
 	'dsn'			=> '',
 	'hostname' 		=> 'localhost',
-	'username' 		=> 'root',
-	'password' 		=> 'Voyag3r',
+	'username' 		=> 'ionize',
+	'password' 		=> 'AdparauxQSATBqQ2',
 	'database' 		=> 'ionize_200',
 	'dbdriver' 		=> 'mysqli',
 	'dbprefix' 		=> '',

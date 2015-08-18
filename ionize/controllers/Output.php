@@ -56,7 +56,7 @@ class Output extends IO_Controller
 			{
 				// Rendering content by Content class
 				$parsed_view = $this->renderer->parseView( $content );
-				$cache = $this->cache->file->save($cache_key, $parsed_view, $this->setting->cache_time );
+				$cache = $this->cache->file->save($cache_key, $parsed_view, 3600);
 				
 				$this->output->set_output($parsed_view); flush(); ob_flush();
 			}
@@ -82,16 +82,19 @@ class Output extends IO_Controller
 		}
 		
 		$this->benchmark->mark('Output_controller__get_content_query_start');
-		if(trim($this->request_url) == "") $this->contents->where('homepage','1');
-		else $this->contents->where("(short_url = '{$this->request_url}' OR long_url = '{$this->request_url}')",NULL);
-		$content = $this->contents->limit(1)->where('language', $this->language)->get();
+		
+		if(trim($this->request_url) == "") $this->content_model->where('homepage','1');
+		else $this->content_model->where("(short_url = '{$this->request_url}' OR long_url = '{$this->request_url}')",NULL);
+		$content = $this->content_model->limit(1)->where('language', $this->language)->get();
+		
 		$this->benchmark->mark('Output_controller__get_content_query_end');
 		
 		if($content->num_rows() == 1)
 		{
 			// Parsing content data and creating content class
-			$content = new Content( $content->row() );
-			$this->cache->file->save($cache_key, serialize($content), Settings::get('cache_time'));
+			$content = new Model\Data\Content( $content->row() );
+			
+			$this->cache->file->save($cache_key, serialize($content), 3600);
 			
 			$this->benchmark->mark('Output_controller__get_content_end');
 			return $this->render( $content );

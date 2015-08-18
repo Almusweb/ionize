@@ -106,7 +106,7 @@ $autoload['interfaces'] = array();
 |
 */
 
-$autoload['abstracts'] = array('Base_model');
+$autoload['abstracts'] = array('Base');
 
 /*
 | -------------------------------------------------------------------
@@ -145,10 +145,10 @@ $autoload['libraries']['user_agent'] = "client";
 $autoload['model'] = array();
 
 // Content models and classes
-$autoload['model']['Content'] = 'content';
-$autoload['model']['Content_model'] = 'contents'; 
+$autoload['model']['data/Content'] = 'content_data';
+$autoload['model']['database/Content'] = 'content_model';
 
 // Settings models and classes
-$autoload['model']['Settings'] = 'setting';
+$autoload['model']['data/Settings'] = 'settings_data';
 
 

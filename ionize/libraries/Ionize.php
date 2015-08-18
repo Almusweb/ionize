@@ -12,12 +12,12 @@ class Ionize extends Tagmanager
 	private static $_classes = array();
 	/* ------------------------------------------------------------------------------------------------------------- */
 		
-	private static $_directory = APPPATH.'libraries/Ionize';
+	private static $_directory = NULL;
 	/* ------------------------------------------------------------------------------------------------------------- */
 
 	public function __construct()
 	{
-		
+		self::$_directory = APPPATH.'libraries/Ionize';
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	

@@ -1,4 +1,4 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Model\Data;
 
 /**
  * @package	Ionize
@@ -6,7 +6,7 @@
  * @link	http://ionizecms.com
  * @since	Version 2.0.0
  */
-class Content //extends CI_Model
+class Content
 {
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
@@ -17,34 +17,14 @@ class Content //extends CI_Model
 	protected $raw_data = array();
 	
 	public static $data = array();
-	protected $_data = array();
+	private $_data = array();
 	
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
 	public function __construct( $data = NULL )
 	{
 		//$this->benchmark->mark('Content_class_construct_start');
-		if( $data != NULL )
-		{
-			$this->raw_data = $data;
-			$this->_data = (array) $data;
-						
-			$this->id = $this->_data['id'] = $this->id_content;
-			
-			$this->has_children = $this->_data['has_children'] = ($this->has_children == 1 ? TRUE : FALSE);
-			$this->homepage = $this->_data['homepage'] = ($this->homepage == 1 ? TRUE : FALSE);
-			$this->has_url = $this->_data['has_url'] = ($this->has_url == 1 ? TRUE : FALSE);
-			
-			if($this->has_children == 1)
-			{
-				
-			}
-			// @todo: internal data of content
-			// $this->contents->
-			
-			// Copy datas from dinamic to static
-			self::$data = $this->_data;
-		}
+		if( $data != NULL ) $this->initialize( $data );
 		//$this->benchmark->mark('Content_class_construct_end');
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
@@ -58,7 +38,7 @@ class Content //extends CI_Model
 	public function __get($key)
 	{
 		if (isset($this->_data[$key])) return $this->_data[$key];
-		return NULL;
+		return "NULL";
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 
@@ -94,7 +74,7 @@ class Content //extends CI_Model
 	 */
 	public function __wakeup()
 	{
-		self::$data = $this->_data;
+		$this->initialize( $this->_raw_data );
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
@@ -110,8 +90,29 @@ class Content //extends CI_Model
 	/* ------------------------------------------------------------------------------------------------------------- */
 	/* ------------------------------------------------------------------------------------------------------------- */
 	/* ------------------------------------------------------------------------------------------------------------- */
-	
-	
+
+    public function initialize($data)
+    {
+    	$this->raw_data = $data;
+    	$this->_data = (array) $data;
+    	
+    	$this->id = $this->_data['id'] = $this->id_content;
+    		
+    	$this->has_children = $this->_data['has_children'] = ($this->has_children == 1 ? TRUE : FALSE);
+    	$this->homepage = $this->_data['homepage'] = ($this->homepage == 1 ? TRUE : FALSE);
+    	$this->has_url = $this->_data['has_url'] = ($this->has_url == 1 ? TRUE : FALSE);
+    		
+    	if($this->has_children == 1)
+    	{
+    	
+    	}
+    	// @todo: internal data of content
+    	// $this->contents->
+    		
+    	// Copy datas from dinamic to static
+    	self::$data = $this->_data;
+    }
+
 	
 	/* ------------------------------------------------------------------------------------------------------------- */
 	/* ------------------------------------------------------------------------------------------------------------- */
@@ -133,4 +134,4 @@ class Content //extends CI_Model
    	/* ------------------------------------------------------------------------------------------------------------- */
 }
 /* End of file: Content.php */
-/* Location: ./ionize/models/Content.php */
+/* Location: ./ionize/models/data/Content.php */

@@ -32,7 +32,9 @@ class Renderer extends Theme
 		$this->codeigniter->benchmark->mark('Renderer_library_parse_view_start');
 		
 		// Assing the data
-		self::$_data[(Content::$data['type'])] = Content::$data;
+		self::$_data[(Model\Data\Content::$data['type'])] = Model\Data\Content::$data;
+		
+		echo "<pre>".print_r($context, true)."</pre>";
 		
 		// Parse view file
 		$view_path = Theme::getRelativeRoute().'views/'.$context->view;
@@ -81,7 +83,7 @@ class Renderer extends Theme
 	
 	public function error_file_exists($file_path)
 	{
-		
+		show_error("Missing view file: $file_path");
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 }

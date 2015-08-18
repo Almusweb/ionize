@@ -1,4 +1,4 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php namespace Model\Database;
 
 /**
  * @package	Ionize
@@ -6,7 +6,7 @@
  * @link	http://ionizecms.com
  * @since	Version 2.0.0
  */
-class Content_model extends Base_model
+class Content extends \Model\Base
 {
 	public $table 			= 'contents';
 	public $id_field 		= 'id_content';
@@ -17,4 +17,4 @@ class Content_model extends Base_model
 	public $view 			= 'content';
 }
 /* End of file: Content_model.php */
-/* Location: ./ionize/models/Content_model.php */
+/* Location: ./ionize/models/database/Content.php */

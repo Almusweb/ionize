@@ -299,13 +299,31 @@ class CI_Loader {
 				{
 					continue;
 				}
-
+				
 				require_once($mod_path.'models/'.$path.$model.'.php');
-				if ( ! class_exists($model, FALSE))
+				
+				// Generate namespaced class name
+				$segments = explode(DIRECTORY_SEPARATOR, $path); $namespace = "Model";
+				foreach($segments as $item) $namespace .= '\\'.ucwords($item);
+				$class_name = "{$namespace}{$model}";
+				
+				if( class_exists($class_name))
+				{
+					$class = new ReflectionClass($class_name);
+					$namespace = $class->getNamespaceName();
+					
+					$model = $class_name;
+				}
+				else if( class_exists($model))
+				{
+					$class = new ReflectionClass($model);
+					$namespace = "";
+				}
+				else
 				{
 					throw new RuntimeException($mod_path."models/".$path.$model.".php exists, but doesn't declare class ".$model);
 				}
-
+				
 				break;
 			}
 
@@ -318,11 +336,10 @@ class CI_Loader {
 		{
 			throw new RuntimeException("Class ".$model." already exists and doesn't extend CI_Model");
 		}
-
+		
 		$this->_ci_models[] = $name;
 		
-		$class = new ReflectionClass($model);
-		if( ! $class->isAbstract() ) $CI->$name = new $model();
+		if(!$class->isAbstract()) $CI->$name = new $model();
 		
 		return $this;
 	}
