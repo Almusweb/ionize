@@ -9,3 +9,5 @@ cache/*
 *.DebugInfo
 *.*~
 
+*.bak
+*.ned
