@@ -41,16 +41,15 @@ class Output extends IO_Controller
 		else
 		{
 			$this->benchmark->mark('Output_controller_render_start');
-			ob_start();
 			
-			$cache_key = $this->language.'.'.str_replace('/','.',$this->request_url).'.View';
+			$cache_key = md5($this->language.'.'.$this->request_url).'.Output';
 			$cache_info = $this->cache->file->get_metadata($cache_key);
 			
-			$cache = $this->cache->file->get($cache_key);
-			if($cache != FALSE && $this->renderer->checkViewUpdated( $content, $cache_info ) == FALSE)
-			{			
+			$cached_view = $this->cache->file->get($cache_key);
+			if($cached_view != FALSE && $this->renderer->checkViewUpdated( $content, $cache_info ) == FALSE)
+			{
 				// Rendering content by cached view
-				$this->output->set_output($cache); flush(); ob_flush();
+				$this->output->set_output($cached_view);
 			}
 			else
 			{
@@ -58,7 +57,7 @@ class Output extends IO_Controller
 				$parsed_view = $this->renderer->parseView( $content );
 				$cache = $this->cache->file->save($cache_key, $parsed_view, 3600);
 				
-				$this->output->set_output($parsed_view); flush(); ob_flush();
+				$this->output->set_output($parsed_view);
 			}
 			
 			$this->benchmark->mark('Output_controller_render_end');
@@ -71,35 +70,38 @@ class Output extends IO_Controller
 	{
 		$this->benchmark->mark('Output_controller__get_content_start');
 		
-		$cache_key = $this->language.'.'.str_replace('/','.',$this->request_url).'.Content';
-		
-		$cache = $this->cache->file->get($cache_key);
-		if($cache != FALSE)
+		$cache_key = md5($this->language.'.'.$this->request_url).'.Rawdata';
+		$cache_data = $this->cache->file->get($cache_key);
+		if($cache_data != FALSE)
 		{
-			$content = unserialize($cache);
+			$content_data = unserialize($cache_data); // Restoring data by URL
+			
+			// Restoring Content Data class by Cached Content ID
+			$content = \Model\Data\Content::get_instance()->getByID( $content_data->id_content );
+			
 			$this->benchmark->mark('Output_controller__get_content_end');
 			return $this->render( $content );
 		}
 		
 		$this->benchmark->mark('Output_controller__get_content_query_start');
-		
 		if(trim($this->request_url) == "") $this->content_model->where('homepage','1');
 		else $this->content_model->where("(short_url = '{$this->request_url}' OR long_url = '{$this->request_url}')",NULL);
 		$content = $this->content_model->limit(1)->where('language', $this->language)->get();
-		
 		$this->benchmark->mark('Output_controller__get_content_query_end');
 		
 		if($content->num_rows() == 1)
 		{
 			// Parsing content data and creating content class
-			$content = new Model\Data\Content( $content->row() );
+			$content_data = $content->row();
+			$content = new \Model\Data\Content( $content_data );
 			
-			$this->cache->file->save($cache_key, serialize($content), 3600);
+			// Saving the url cache data
+			$this->cache->file->save($cache_key, serialize($content_data), 3600);
 			
 			$this->benchmark->mark('Output_controller__get_content_end');
 			return $this->render( $content );
 		}
-		//else $this->error_404();
+		else $this->error_404();
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	

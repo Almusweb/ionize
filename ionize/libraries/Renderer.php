@@ -32,7 +32,7 @@ class Renderer extends Theme
 		$this->codeigniter->benchmark->mark('Renderer_library_parse_view_start');
 		
 		// Assing the data
-		self::$_data['content'] = Model\Data\Content::$data;
+		self::$_data['content'] = \Model\Data\Content::get_instance();
 		
 		$view_file = $context->view;
 		if($view_file == NULL) $view_file = $context->default_list_view;
