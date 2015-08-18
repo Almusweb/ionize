@@ -11,3 +11,5 @@ cache/*
 
 *.bak
 *.ned
+
+themes/*/.check_result
