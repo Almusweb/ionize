@@ -32,12 +32,13 @@ class Renderer extends Theme
 		$this->codeigniter->benchmark->mark('Renderer_library_parse_view_start');
 		
 		// Assing the data
-		self::$_data[(Model\Data\Content::$data['type'])] = Model\Data\Content::$data;
+		self::$_data['content'] = Model\Data\Content::$data;
 		
-		echo "<pre>".print_r($context, true)."</pre>";
+		$view_file = $context->view;
+		if($view_file == NULL) $view_file = $context->default_list_view;
 		
 		// Parse view file
-		$view_path = Theme::getRelativeRoute().'views/'.$context->view;
+		$view_path = Theme::getRelativeRoute().'views/'.$view_file;
 		$extension = "";
 		
 		if( file_exists( str_replace('../../', FCPATH, $view_path))) $extension = $extension;
@@ -52,7 +53,7 @@ class Renderer extends Theme
     	$parsed_view = $this->codeigniter->load->view($view_path, self::$_data, TRUE);
     	
     	// Save the loaded view file
-    	self::$_loaded_views[] = $context->view.$extension;
+    	self::$_loaded_views[] = $view_file.$extension;
 		
 		// Cache the loaded view files list
 		$view_cache_file = Theme::getRoute().'.cache/'.str_replace('/','.',$context->view.'.Views');
@@ -66,7 +67,10 @@ class Renderer extends Theme
 	
 	public function checkViewUpdated( $context, $metadata )
 	{
-		$view_cache_file = Theme::getRoute().'.cache/'.str_replace('/','.',$context->view.'.Views');
+		$view_file = $context->view;
+		if($view_file == NULL) $view_file = $context->default_list_view;
+	
+		$view_cache_file = Theme::getRoute().'.cache/'.str_replace('/','.',$view_file.'.Views');
 		if( file_exists($view_cache_file) )
 		{
 			$view_files = unserialize( file_get_contents( $view_cache_file ));

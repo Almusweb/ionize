@@ -38,7 +38,7 @@ class Content
 	public function __get($key)
 	{
 		if (isset($this->_data[$key])) return $this->_data[$key];
-		return "NULL";
+		return NULL;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 
@@ -75,6 +75,7 @@ class Content
 	public function __wakeup()
 	{
 		$this->initialize( $this->_raw_data );
+		self::$data = $this->_data;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
@@ -120,7 +121,7 @@ class Content
 	
 	function __destruct()
 	{
-		$changed = array();
+		/* $changed = array();
 		
     	foreach($this->raw_data as $name => $value)
     		if( $this->_data[$name] != $value ) $changed[$name] = $this->_data[$name];
@@ -130,6 +131,7 @@ class Content
     		echo "<pre>Changed content:".print_r($changed, true)."</pre>";
     		// @todo permission check and database save
     	}
+    	*/
    	}
    	/* ------------------------------------------------------------------------------------------------------------- */
 }
