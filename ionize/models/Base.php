@@ -1,4 +1,4 @@
-<?php namespace Model;
+<?php
 
 /**
  * @package	Ionize
@@ -6,7 +6,7 @@
  * @link	http://ionizecms.com
  * @since	Version 2.0.0
  */
-abstract class Base extends \CI_Model
+abstract class Base extends CI_Model
 {
 	/* ------------------------------------------------------------------------------------------------------------- */
 	

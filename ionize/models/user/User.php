@@ -1,4 +1,4 @@
-<?php namespace Data;
+<?php namespace User;
 
 /**
  * @package	Ionize

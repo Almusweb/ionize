@@ -1,4 +1,4 @@
-<?php namespace Database;
+<?php namespace Database\User;
 
 /**
  * @package	Ionize
@@ -6,18 +6,18 @@
  * @link	http://ionizecms.com
  * @since	Version 2.0.0
  */
-class Content extends \Base
+class User extends \Base
 {
 	public static $instance = NULL;
 
 	/* ------------------------------------------------------------------------------------------------------------- */
-	public $table 			= 'contents';
-	public $id_field 		= 'id_content';
+	public $table 			= 'users';
+	public $id_field 		= 'id_user';
 	
-	public $lang_table 		= 'contents_translations';
-	public $id_lang_field 	= 'id_translation';
+	public $lang_table 		= '';
+	public $id_lang_field 	= '';
 	
-	public $view 			= 'content';
+	public $view 			= 'user';
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
 	public function __construct()

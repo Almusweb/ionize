@@ -107,13 +107,16 @@ class CI_Loader {
 	 */
 	protected $_ci_models =	array();
 
+	protected $_ci_models_force_namespace = FALSE;
+	protected $_ci_models_base_namespace = '';
+	
 	/**
 	 * List of loaded helpers
 	 *
 	 * @var	array
 	 */
 	protected $_ci_helpers =	array();
-
+	
 	/**
 	 * List of class name mappings
 	 *
@@ -303,7 +306,7 @@ class CI_Loader {
 				require_once($mod_path.'models/'.$path.$model.'.php');
 				
 				// Generate namespaced class name
-				$segments = explode(DIRECTORY_SEPARATOR, $path); $namespace = "Model";
+				$segments = explode(DIRECTORY_SEPARATOR, $path); $namespace = $this->_ci_models_base_namespace;
 				foreach($segments as $item) $namespace .= '\\'.ucwords($item);
 				$class_name = "{$namespace}{$model}";
 				
@@ -876,7 +879,7 @@ class CI_Loader {
 		{
 			$_ci_ext = pathinfo($_ci_view, PATHINFO_EXTENSION);
 			$_ci_file = ($_ci_ext === '') ? $_ci_view.'.php' : $_ci_view;
-
+			
 			foreach ($this->_ci_view_paths as $_ci_view_file => $cascade)
 			{
 				if (file_exists($_ci_view_file.$_ci_file))
@@ -885,7 +888,7 @@ class CI_Loader {
 					$file_exists = TRUE;
 					break;
 				}
-
+			
 				if ( ! $cascade)
 				{
 					break;

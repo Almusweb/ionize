@@ -1,4 +1,4 @@
-<?php namespace Model\Data;
+<?php namespace Data;
 
 /**
  * @package	Ionize

@@ -1,4 +1,4 @@
-<?php namespace Model\Database;
+<?php namespace Database;
 
 /**
  * @package	Ionize
@@ -6,7 +6,7 @@
  * @link	http://ionizecms.com
  * @since	Version 2.0.0
  */
-class Settings extends \Model\Base
+class Settings extends \Base
 {
 	public static $instance = NULL;
 
