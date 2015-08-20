@@ -91,18 +91,18 @@ $autoload['language'] = array();
 |   $autoload['interfaces'] = array('interface1', 'interface2');
 |
 */
-$autoload['interfaces'] = array();
+$autoload['interfaces'] = array('DataModel','IonizeLibrary');
 
 /*
 | ---------------------------------------------------------------------------------------------------------------------
-|  Auto-load Abstracts
+|  Auto-load Namespaces
 | ---------------------------------------------------------------------------------------------------------------------
 | Prototype:
 |
-|   $autoload['abstracts'] = array('abstract1', 'abstract2');
+|   $autoload['namespaces'] = array('namespace1', 'namespace2');
 |
 */
-$autoload['abstracts'] = array('Base');
+$autoload['namespaces'] = array('Model');
 
 /*
 | ---------------------------------------------------------------------------------------------------------------------
@@ -139,13 +139,20 @@ $autoload['libraries']['user_agent'] = "client";
 */
 $autoload['model'] = array();
 
-// Content model and class
-$autoload['model']['database/Content'] 		= 'content_model';
-$autoload['model']['data/Content'] 			= 'content_data';
+// Base abstract model
+$autoload['model']['Base'] 						= "base_model"; 
 
 // Settings model and class
-$autoload['model']['database/Settings'] 	= 'settings_model';
-$autoload['model']['data/Settings'] 		= 'settings_data';
+$autoload['model']['database/Settings'] 		= 'settings_model';
+$autoload['model']['data/Settings'] 			= 'settings_data';
+
+// Content model and class
+$autoload['model']['database/Content'] 			= 'content_model';
+$autoload['model']['data/Content'] 				= 'content_data';
+
+// Content model and class
+$autoload['model']['database/Navigation'] 		= 'navigation_model';
+$autoload['model']['data/Navigation'] 			= 'navigation_data';
 
 /* End of file: autoload.php */
 /* Location: ./ionize/config/autoload.php */

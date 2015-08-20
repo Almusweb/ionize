@@ -15,6 +15,8 @@ class Renderer extends Theme
 
 	public static $_loaded_views = array();
 	public static $_data = array();
+	
+	public static $current_content = NULL;
 
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
@@ -27,15 +29,41 @@ class Renderer extends Theme
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
-	public function parseView( $context )
+	public static function getCurrentContent()
+	{
+		return self::$current_content;
+	}
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	public function assign($key, $value)
+	{
+		if(!array_key_exists($key, self::$_data))
+		{
+			self::$_data[$key] = $value;
+			return TRUE;
+		}
+		else
+		{
+			log_message('ERROR', 'Renderer->assign(): Key already exists in the assigned datas');
+			throw new RuntimeException('Renderer->assign(): Key already exists in the assigned datas');
+			return FALSE;
+		}
+	}
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	public function parseView( $content )
 	{
 		$this->codeigniter->benchmark->mark('Renderer_library_parse_view_start');
 		
 		// Assing the data
-		self::$_data['content'] = \Model\Data\Content::get_instance();
+		self::$_data['content'] = $content;
 		
-		$view_file = $context->view;
-		if($view_file == NULL) $view_file = $context->default_list_view;
+		$view_file = $content->view;
+		if($view_file == NULL) $view_file = $content->default_list_view;
+		
+		self::$_data['title'] = $content->title;
+		self::$_data['window_title'] = ($content->window != "" ? $content->window : $content->title);
+		self::$_data['site_title'] = \Model\Data\Settings::get_instance()->site_title;
 		
 		// Parse view file
 		$view_path = Theme::getRelativeRoute().'views/'.$view_file;
@@ -56,7 +84,7 @@ class Renderer extends Theme
     	self::$_loaded_views[] = $view_file.$extension;
 		
 		// Cache the loaded view files list
-		$view_cache_file = Theme::getRoute().'.cache/'.str_replace('/','.',$context->view.'.Views');
+		$view_cache_file = Theme::getRoute().'.cache/'.str_replace('/','.',$content->view.'.Views');
 		file_put_contents($view_cache_file, serialize(self::$_loaded_views));
 		chmod( $view_cache_file , 0777 );
 		
@@ -65,10 +93,10 @@ class Renderer extends Theme
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
-	public function checkViewUpdated( $context, $metadata )
+	public function checkViewUpdated( $content, $metadata )
 	{
-		$view_file = $context->view;
-		if($view_file == NULL) $view_file = $context->default_list_view;
+		$view_file = $content->view;
+		if($view_file == NULL) $view_file = $content->default_list_view;
 	
 		$view_cache_file = Theme::getRoute().'.cache/'.str_replace('/','.',$view_file.'.Views');
 		if( file_exists($view_cache_file) )

@@ -43,10 +43,10 @@
 		$checklist = array();
 		
 		// PHP version >= 5
-		$checklist['php_version'] = version_compare(substr(phpversion(), 0, 3), '5.3', '>=');
+		$checklist['php_version'] = version_compare(substr(phpversion(), 0, 4), '5.4', '>=');
 
 		// MySQL support
-		$checklist['mysql_support']  = function_exists('mysql_connect');
+		$checklist['mysql_support']  = function_exists('mysqli_connect');
 		
 		// Safe Mode
 		$checklist['safe_mode']  = (ini_get('safe_mode')) ? FALSE : TRUE;

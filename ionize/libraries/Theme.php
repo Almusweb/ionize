@@ -35,10 +35,10 @@ class Theme
 		$this->config =& $this->codeigniter->config;
 		
 		// Load the ionize config
-		$this->config->load('ionize');
+		$this->config->load('ionize', TRUE);
 		
 		// Load the theme folder and the languages
-		self::$folder = $this->config->item('theme');
+		self::$folder = $this->config->config['ionize']['theme'];
 		$this->languages = $this->config->item('languages');
 		
 		// Check the Theme folder

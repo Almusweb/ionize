@@ -51,6 +51,9 @@ AS
 		`ctr`.`window`								AS `window`,
 		`ctr`.`short_url`							AS `short_url`,
 		`ctr`.`long_url`							AS `long_url`,
+
+		`ctr`.`full_url`							AS `url`,
+
 		`ctr`.`content`								AS `content`,
 		`ctr`.`keywords`							AS `keywords`,
 		`ctr`.`description`						AS `description`,
@@ -64,7 +67,8 @@ AS
 		`cnt`.`flag` 									AS `flag`,
 		`cnt`.`priority` 							AS `priority`,
 
-		(SELECT GROUP_CONCAT(id_child SEPARATOR ',') FROM contents_relations ctr WHERE ctr.id_parent = cnt.id_content) AS `children`,
+		(SELECT GROUP_CONCAT(DISTINCT id_content SEPARATOR ',') FROM contents_relations cr WHERE cr.id_parent = cnt.id_content) AS `children`,
+		(SELECT GROUP_CONCAT(DISTINCT id_navigation SEPARATOR ',') FROM navigations_contents ncn WHERE ncn.id_content = cnt.id_content) AS `navigations`,
 
 		`ath`.`id_user`								AS `id_author`,
 		`cnt`.`created` 							AS `created`,

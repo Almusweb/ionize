@@ -1,4 +1,4 @@
-<?php
+<?php namespace Model;
 
 /**
  * @package	Ionize
@@ -6,7 +6,7 @@
  * @link	http://ionizecms.com
  * @since	Version 2.0.0
  */
-abstract class Base extends CI_Model
+abstract class Base extends \CI_Model
 {
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
@@ -47,7 +47,9 @@ abstract class Base extends CI_Model
 		$this->database_initialize();
 		
 		if(method_exists($this, $method))
+		{
 			return call_user_func_array(array($this,$method),$arguments);
+		}
 		
 		if (method_exists($this->{$this->database}, $method))
 		{
@@ -58,8 +60,10 @@ abstract class Base extends CI_Model
 				call_user_func_array(array($this->{$this->database},$method),$arguments);
 				return $this;
 			}
-			else throw new BadMethodCallException();
 		}
+		
+		// Throw Bad Method Call Expetion if nothing cant called
+		throw new BadMethodCallException();
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	

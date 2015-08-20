@@ -6,14 +6,20 @@
  * @link	http://ionizecms.com
  * @since	Version 2.0.0
  */
-class Partial extends Tagmanager
+class Partial extends Tagmanager implements IonizeLibrary
 {
 	public function __construct()
 	{
 		parent::__construct();
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
-
+	
+	public function initialize( $data = NULL )
+	{
+		return $this;	
+	}
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
 	public function View( $file )
 	{	
 		$file_path = Theme::getRoute().'views/'.$file;

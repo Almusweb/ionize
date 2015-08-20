@@ -1,4 +1,4 @@
-<?php namespace Database\User;
+<?php namespace Model\Database\User;
 
 /**
  * @package	Ionize
@@ -6,7 +6,7 @@
  * @link	http://ionizecms.com
  * @since	Version 2.0.0
  */
-class User extends \Base
+class User extends \Model\Base
 {
 	public static $instance = NULL;
 

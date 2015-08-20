@@ -139,9 +139,10 @@ class CI_DB_Cache {
 	 */
 	public function read($sql)
 	{
-		$segment_one = ($this->CI->uri->segment(1) == FALSE) ? 'default' : $this->CI->uri->segment(1);
-		$segment_two = ($this->CI->uri->segment(2) == FALSE) ? 'index' : $this->CI->uri->segment(2);
-		$filepath = $this->db->cachedir.$segment_one.'+'.$segment_two.'/'.md5($sql);
+		$segment_one = $this->CI->router->class;
+		$segment_two = $this->CI->router->method;
+		
+		$filepath = $this->db->cachedir.$segment_one.'+'.$segment_two.'/'.md5($sql).'.Select';
 
 		if (FALSE === ($cachedata = @file_get_contents($filepath)))
 		{
@@ -162,10 +163,11 @@ class CI_DB_Cache {
 	 */
 	public function write($sql, $object)
 	{
-		$segment_one = ($this->CI->uri->segment(1) == FALSE) ? 'default' : $this->CI->uri->segment(1);
-		$segment_two = ($this->CI->uri->segment(2) == FALSE) ? 'index' : $this->CI->uri->segment(2);
+		$segment_one = $this->CI->router->class;
+		$segment_two = $this->CI->router->method;
+		
 		$dir_path = $this->db->cachedir.$segment_one.'+'.$segment_two.'/';
-		$filename = md5($sql);
+		$filename = md5($sql).'.Select';
 
 		if ( ! is_dir($dir_path) && ! @mkdir($dir_path, 0750))
 		{
@@ -192,15 +194,8 @@ class CI_DB_Cache {
 	 */
 	public function delete($segment_one = '', $segment_two = '')
 	{
-		if ($segment_one === '')
-		{
-			$segment_one  = ($this->CI->uri->segment(1) == FALSE) ? 'default' : $this->CI->uri->segment(1);
-		}
-
-		if ($segment_two === '')
-		{
-			$segment_two = ($this->CI->uri->segment(2) == FALSE) ? 'index' : $this->CI->uri->segment(2);
-		}
+		if ($segment_one === '') $segment_one  = $this->CI->router->class;
+		if ($segment_two === '') $segment_two = $this->CI->router->method;
 
 		$dir_path = $this->db->cachedir.$segment_one.'+'.$segment_two.'/';
 		delete_files($dir_path, TRUE);

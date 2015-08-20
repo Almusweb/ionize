@@ -4,17 +4,26 @@ body, td, th {
 }
 
 #header_container {
-	background: #3f73a5;
-	padding: 22px 0;
+	background: #3f73a5;	
 }
 
 #header_container > header,
-#content_container > #content {
+#content_container > #content,
+#site_navigation {
 	width: 996px; margin: 0 auto;
+	padding: 22px 0;
 }
 
 #header_container > header h1 {
 	color: #eee; font-weight: bold;
+}
+
+#site_navigation, #site_navigation_container {
+	background: #333; color: #eee;
+}
+
+#site_navigation {
+	padding: 0;
 }
 
 #content_container {

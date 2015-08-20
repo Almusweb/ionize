@@ -1,32 +1,41 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
+/**
+ * @package	Ionize
+ * @author	Adam Liszkai <contact@liszkaiadam.hu>
+ * @link	http://ionizecms.com
+ * @since	Version 2.0.0
+ */
 class IO_Loader extends CI_Loader
 {
+	/* ------------------------------------------------------------------------------------------------------------ */
+	
     /**
-     * Nesting level of the output buffering mechanism
+     * List of paths to namespaces from
      *
      * @var int
      * @access protected
      */
-
-    protected $_ci_abstracts_paths      = array();
+    protected $_ci_namespaces_paths      = array();
+    /* ------------------------------------------------------------------------------------------------------------ */
     
     /**
-     * List of paths to load models from
+     * List of paths to interfaces from
      *
      * @var array
      * @access protected
      */
     protected $_ci_interfaces_paths     = array();
+    /* ------------------------------------------------------------------------------------------------------------ */
     
     /**
-     * List of paths to load helpers from
+     * List of loaded namespaces
      *
      * @var array
      * @access protected
      */
-
-    protected $_ci_abstracts            = array();
+    protected $_ci_namespaces            = array();
+    /* ------------------------------------------------------------------------------------------------------------ */
     
     /**
      * List of loaded interfaces
@@ -35,29 +44,21 @@ class IO_Loader extends CI_Loader
      * @access protected
      */
     protected $_ci_interfaces           = array();
-    
-    /**
-     * List of loaded helpers
-     *
-     * @var array
-     * @access protected
-     */
+    /* ------------------------------------------------------------------------------------------------------------ */
 
     /**
      * Constructor
      *
      * Sets the path to the view files and gets the initial output buffering level
      */
-
     function __construct()
     {
         parent::__construct();
-        $this->_ci_abstracts_paths = array(APPPATH);
+        $this->_ci_namespaces_paths = array(APPPATH);
         $this->_ci_interfaces_paths = array(APPPATH);
         log_message('debug', "Loader Class Initialized");
     }
-
-    // --------------------------------------------------------------------
+	/* ------------------------------------------------------------------------------------------------------------ */
 
     /**
      * Initialize the Loader
@@ -69,118 +70,18 @@ class IO_Loader extends CI_Loader
      */
     public function initialize()
     {
-
-        $this->_ci_abstracts = array();
         $this->_ci_interfaces = array();
+        $this->_ci_namespaces = array();
         $this->_ci_autoloader();
 
         return $this;
     }
-
-    // --------------------------------------------------------------------
-
-    /**
-     * Abstracts Loader
-     *
-     * This function lets users load and instantiate models.
-     *
-     * 11/14/2012 - Joseff Betancourt - Cloned from Models
-     *
-     * @param   string  the name of the class
-     * @param   string  name for the abstract
-     * @param   bool    database connection
-     * @return  void
-     */
-    public function abstracts($abstracts, $name = '', $db_conn = FALSE)
-    {
-        if (is_array($abstracts))
-        {
-            foreach ($abstracts as $babe)
-            {
-                $this->abstracts($babe);
-            }
-            return;
-        }
-
-        if ($abstracts == '')
-        {
-            return;
-        }
-
-        $path = '';
-
-        // Is the abstracts in a sub-folder? If so, parse out the filename and path.
-        if (($last_slash = strrpos($abstracts, '/')) !== FALSE)
-        {
-            // The path is in front of the last slash
-            $path = substr($abstracts, 0, $last_slash + 1);
-
-            // And the model name behind it
-            $abstracts = substr($abstracts, $last_slash + 1);
-        }
-
-        if ($name == '')
-        {
-            $name = $abstracts;
-        }
-
-        if (in_array($name, $this->_ci_abstracts, TRUE))
-        {
-            return;
-        }
-
-        $CI =& get_instance();
-        if (isset($CI->$name))
-        {
-            show_error('The model name you are loading is the name of a resource that is already being used: '.$name);
-        }
-
-        $abstracts = strtolower($abstracts);
-
-        foreach ($this->_ci_abstracts_paths as $mod_path)
-        {
-            if ( ! file_exists($mod_path.'abstracts/'.$path.$abstracts.'.php'))
-            {
-                continue;
-            }
-
-            if ($db_conn !== FALSE AND ! class_exists('CI_DB'))
-            {
-                if ($db_conn === TRUE)
-                {
-                    $db_conn = '';
-                }
-
-                $CI->load->database($db_conn, FALSE, TRUE);
-            }
-
-            if ( ! class_exists('CI_Abstracts'))
-            {
-                load_class('Abstracts', 'core');
-            }
-
-            require_once($mod_path.'abstracts/'.$path.$abstracts.'.php');
-
-            $abstracts = ucfirst($abstracts);
-
-            $CI->$name = new $abstracts();
-
-            $this->_ci_abstracts[] = $name;
-            return;
-        }
-
-        // couldn't find the abstracts
-        show_error('Unable to locate the abstracts you have specified: '.$abstracts);
-    }
-
-    // --------------------------------------------------------------------
+	/* ------------------------------------------------------------------------------------------------------------ */
 
     /**
      * Interface Loader
      *
      * This function lets users load and instantiate interfaces.
-     *
-     * 11/14/2012 - Joseff Betancourt - Cloned from Models
      *
      * @param   string  the name of the class
      * @param   string  name for the interface
@@ -215,23 +116,9 @@ class IO_Loader extends CI_Loader
             $interfaces = substr($interfaces, $last_slash + 1);
         }
 
-        if ($name == '')
-        {
-            $name = $interfaces;
-        }
+        if ($name == '') $name = $interfaces;
 
-        if (in_array($name, $this->_ci_interfaces, TRUE))
-        {
-            return;
-        }
-
-        $CI =& get_instance();
-        if (isset($CI->$name))
-        {
-            show_error('The interface name you are loading is the name of a resource that is already being used: '.$name);
-        }
-
-        $interfaces = strtolower($interfaces);
+        if (in_array($name, $this->_ci_interfaces, TRUE)) return;
 
         foreach ($this->_ci_interfaces_paths as $mod_path)
         {
@@ -239,28 +126,8 @@ class IO_Loader extends CI_Loader
             {
                 continue;
             }
-
-            if ($db_conn !== FALSE AND ! class_exists('CI_DB'))
-            {
-                if ($db_conn === TRUE)
-                {
-                    $db_conn = '';
-                }
-
-                $CI->load->database($db_conn, FALSE, TRUE);
-            }
-
-            if ( ! class_exists('CI_Interfaces'))
-            {
-                load_class('Interfaces', 'core');
-            }
-
+            
             require_once($mod_path.'interfaces/'.$path.$interfaces.'.php');
-
-            $interfaces = ucfirst($interfaces);
-
-            $CI->$name = new $interfaces();
-
             $this->_ci_interfaces[] = $name;
             return;
         }
@@ -268,9 +135,62 @@ class IO_Loader extends CI_Loader
         // couldn't find the interfaces
         show_error('Unable to locate the interfaces you have specified: '.$interfaces);
     }
+	/* ------------------------------------------------------------------------------------------------------------ */
+    
+    /**
+     * Namespaces Loader
+     *
+     * This function lets users load namespaces default codes and functions
+     *
+     * @param   string  the name of the namespace
+     * @return  void
+     */
+    public function namespaces($namespace)
+    {
+        if (is_array($namespace))
+        {
+            foreach ($namespace as $item)
+            {
+                $this->namespaces($item);
+            }
+            return;
+        }
 
-    // --------------------------------------------------------------------
+        if ($namespace == '')
+        {
+            return;
+        }
 
+        $path = '';
+
+        // Is the abstracts in a sub-folder? If so, parse out the filename and path.
+        if (($last_slash = strrpos($namespace, '/')) !== FALSE)
+        {
+            // The path is in front of the last slash
+            $path = substr($namespace, 0, $last_slash + 1);
+
+            // And the model name behind it
+            $namespace = substr($namespace, $last_slash + 1);
+        }
+
+		// If already loaded the namespace then exit the function
+        if (in_array($namespace, $this->_ci_namespaces, TRUE)) return;
+        
+        foreach ($this->_ci_namespaces_paths as $mod_path)
+        {
+            if (!file_exists($mod_path.'namespaces/'.$path.$namespace.'.php'))
+            	continue;
+
+            require_once($mod_path.'namespaces/'.$path.$namespace.'.php');
+
+            $this->_ci_abstracts[] = $namespace;
+            return;
+        }
+
+        // couldn't find the abstracts
+        show_error('Unable to locate the namespace you have specified: '.$namespace);
+    }
+	/* ------------------------------------------------------------------------------------------------------------ */
 
     /**
      * Autoloader
@@ -337,13 +257,13 @@ class IO_Loader extends CI_Loader
 		// Interfaces models
         if (isset($autoload['interfaces']))
         {
-            $this->model($autoload['interfaces']);
+            $this->interfaces($autoload['interfaces']);
         }
-    
-        // Abstracts models
-        if (isset($autoload['abstracts']))
+        
+        // Namespaces models
+        if (isset($autoload['namespaces']))
         {
-            $this->model($autoload['abstracts']);
+            $this->namespaces($autoload['namespaces']);
         }
 
 		// Load libraries

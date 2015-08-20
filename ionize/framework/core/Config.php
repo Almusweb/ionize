@@ -117,7 +117,7 @@ class CI_Config {
 	 * @return	bool	TRUE if the file was loaded correctly or FALSE on failure
 	 */
 	public function load($file = '', $use_sections = FALSE, $fail_gracefully = FALSE)
-	{
+	{		
 		$file = ($file === '') ? 'config' : str_replace('.php', '', $file);
 		$loaded = FALSE;
 
@@ -150,9 +150,8 @@ class CI_Config {
 
 				if ($use_sections === TRUE)
 				{
-					$this->config[$file] = isset($this->config[$file])
-						? array_merge($this->config[$file], $config)
-						: $config;
+					$this->config[$file] = isset($this->config[$file]) ?
+					array_merge($this->config[$file], $config) : $config;
 				}
 				else
 				{

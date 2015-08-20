@@ -3,8 +3,7 @@
 
 <div id="content_container">
 	<div id="content">
-		<pre><?php print_r($content); ?></pre>
-		<pre><?php print_r(\Model\Data\Settings::get_instance()); ?></pre>
+		<?=$content->content?>
 	</div>
 </div>
 

@@ -8,7 +8,16 @@
  */
 class IO_Controller extends CI_Controller
 {
-	public $language = 'en_US';
+	protected $language = 'en_US';
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	protected $io_config = NULL;
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	protected $settings = NULL;
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	protected $hhvm = FALSE;
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
 	public function __construct()
@@ -18,7 +27,15 @@ class IO_Controller extends CI_Controller
 		$http = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https' : 'http';
 		$this->data['base_url'] = sprintf("%s://%s%s",$http,$_SERVER['SERVER_NAME'],$_SERVER['REQUEST_URI']);
 		
-		$this->session->language = \Model\Data\Settings::get_instance()->language;
+		// Detect Facebook HipHop
+		$this->hhvm = (defined('HHVM_VERSION') ? HHVM_VERSION : FALSE);
+		
+		// Load the ionize config
+		$this->config->load('ionize', TRUE);
+		$this->io_config = (object) $this->config->config['ionize'];
+		
+		$this->settings = \Model\Data\Settings::get_instance();
+		$this->session->language = $this->settings->language;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 }

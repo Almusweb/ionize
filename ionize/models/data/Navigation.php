@@ -6,7 +6,7 @@
  * @link	http://ionizecms.com
  * @since	Version 2.0.0
  */
-class Content implements \DataModel
+class Navigation implements \DataModel
 {
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
@@ -40,22 +40,9 @@ class Content implements \DataModel
 	
 	/**
 	 * @var $childrens array Child Content instances array
-	 * @access private
+	 * @access protected
 	 */
-	private $childrens = array();
-	/* ------------------------------------------------------------------------------------------------------------- */
-	
-	/**
-	 * @var $benchmark \CI_Benchmark Codeigniter Benchmark Class
-	 * @access private
-	 */
-	private $benchmark = NULL;
-	
-	/**
-	 * @var $_cache \CI_Cache Codeigniter Cache Class
-	 * @access private
-	 */
-	private $cache = NULL;
+	protected $items = array();
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
 	/**
@@ -78,7 +65,7 @@ class Content implements \DataModel
 	public function __construct( $data = NULL )
 	{
 		$codeigniter =& get_instance();		
-		$codeigniter->benchmark->mark('Content_class_construct_start');
+		$codeigniter->benchmark->mark('Navigation_class_construct_start');
 		
 		// Set the cache time from the config file
 		$codeigniter->config->load('ionize', TRUE);
@@ -90,7 +77,7 @@ class Content implements \DataModel
 		// Saving instance reference
 		self::$instance = $this;
 		
-		$codeigniter->benchmark->mark('Content_class_construct_end');
+		$codeigniter->benchmark->mark('Navigation_class_construct_end');
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
@@ -103,6 +90,7 @@ class Content implements \DataModel
 	public function __get($key)
 	{
 		if (isset($this->_data[$key])) return $this->_data[$key];
+		if ($key == 'items') return $this->items;
 		return NULL;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
@@ -129,7 +117,7 @@ class Content implements \DataModel
 	 */
 	public function __sleep()
 	{
-		$serialize_array = array('id','_data');
+		$serialize_array = array('id','_data','items');
 		return $serialize_array;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
@@ -144,7 +132,7 @@ class Content implements \DataModel
 	public function __wakeup()
 	{
 		$codeigniter =& get_instance();
-		$codeigniter->benchmark->mark('Content_class___wakeup_start');
+		$codeigniter->benchmark->mark('Navigation_class___wakeup_start');
 		
 		// Initialize class by raw data
 		$class = $this->initialize( $this->_data );
@@ -152,7 +140,7 @@ class Content implements \DataModel
 		// Saving instance reference
 		self::$instance = $this;
 		
-		$codeigniter->benchmark->mark('Content_class___wakeup_end');
+		$codeigniter->benchmark->mark('Navigation_class___wakeup_end');
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
@@ -184,12 +172,12 @@ class Content implements \DataModel
 		{
 			$codeigniter =& get_instance();
 			// If cache not available then create cache from data
-			$cache = $codeigniter->cache->file->get(md5($this->id).'.Content');
+			$cache = $codeigniter->cache->file->get(md5($this->id).'.Navigation');
 			if($cache == FALSE)
 			{
-				$codeigniter->benchmark->mark('Content_class___destruct_start');
-				$codeigniter->cache->file->save(md5($this->id).'.Content', serialize($this), $this->cache_time);
-				$codeigniter->benchmark->mark('Content_class___destruct_end');
+				$codeigniter->benchmark->mark('Navigation_class___destruct_start');
+				$codeigniter->cache->file->save(md5($this->id).'.Navigation', serialize($this), $this->cache_time);
+				$codeigniter->benchmark->mark('Navigation_class___destruct_end');
 			}
 		}
    	}
@@ -202,31 +190,29 @@ class Content implements \DataModel
 	public function initialize( $data )
 	{
 		$codeigniter =& get_instance();
-		$codeigniter->benchmark->mark('Content_class_initialize_start');
+		$codeigniter->benchmark->mark('Navigation_class_initialize_start');
 		
 		// Saving data to properties
 		$this->_data = (array) $data;
 		
-		// Creating content ID property
-		if($this->id == NULL) $this->id = $data->id_content;
-		
-		// Declarating Children Contents
-		if($this->children != "")
+		if(is_object($data))
 		{
-			$children = explode(',',$this->children);
-			if(count($children) > 0)
+			// Creating content ID property
+			if($this->id == NULL) $this->id = $data->id_navigation;
+		
+			// Get the Items
+			$this->getItems();
+		}
+		elseif(is_array($data))
+		{
+			foreach($data as $index => $navigation)
 			{
-				foreach($children as $index => $id_content)
-				{
-					$this->childrens[] = \Model\Data\Content::get_instance()->getByID( $id_content );
-				}
+				$this->_data[($navigation->code)] = new Navigation( $navigation );
+				unset($this->_data[$index]);
 			}
 		}
 		
-		// Create reference to datas for static
-		self::$data = $this->_data;
-		
-		$codeigniter->benchmark->mark('Content_class_initialize_end');
+		$codeigniter->benchmark->mark('Navigation_class_initialize_end');
 		return $this;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
@@ -239,15 +225,7 @@ class Content implements \DataModel
 	
 	public function is( $type )
 	{
-		if(strtolower($type) === "active") if($this->isActive() === TRUE) return TRUE;
-		return (strtolower($type) === "content" ? TRUE : FALSE);
-	}
-	/* ------------------------------------------------------------------------------------------------------------- */
-	
-	public function isActive()
-	{
-		if($this->id == \Output::$current_content->getID()) return TRUE;
-		else return FALSE;
+		return (strtolower($type) === "navigation" ? TRUE : FALSE);
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
@@ -256,8 +234,8 @@ class Content implements \DataModel
 		if($this->id != NULL) return $this->id;
 		else
 		{
-			log_message('ERROR', 'Data\Content->getID(): Data must be loaded first before geting ID');
-			throw new \RuntimeException('Model\Data\Content->getID(): Data must be loaded first before geting ID');
+			log_message('ERROR', 'Model\Data\Navigation->getID(): Data must be loaded first before geting ID');
+			throw new RuntimeException('Navigation Data must be loaded first before geting ID');
 		}
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
@@ -266,42 +244,102 @@ class Content implements \DataModel
 	{
 		$codeigniter =& get_instance();
 		$codeigniter->benchmark->mark('Content_class_getByID_start');
-		if( $forceSelect === FALSE )
+		if( $forceSelect === FALSE && $this->cache_time > 0 )
 		{
 			// Restoring cached data
-			$cache = $codeigniter->cache->file->get(md5($id).'.Content');
+			$cache = $codeigniter->cache->file->get(md5($id).'.Navigation');
 			if($cache != FALSE)
 			{
-				log_message('DEBUG', 'Data\Content->getByID(): Load Content Data from Cache: #'.$id);
+				log_message('DEBUG', 'Model\Data\Navigation->getByID(): Load Content Data from Cache: #'.$id);
 				$codeigniter->benchmark->mark('Content_class_getByID_end');
 				return unserialize($cache);
 			}
-			// If class has the current content data already
-			else if( $this->id === $id ) return $this;
 			// If cache was unsuccesfull then select the content
 			else return $this->getByID( $id, TRUE );
 		}
 		else if(is_numeric($id))
 		{
-			$content = \Model\Database\Content::get_instance();
-			$query = $content->where('id_content', $id)->get();
+			$navigation = \Model\Database\Navigation::get_instance();
+			$query = $navigation->where('id_navigation', $id)->get();
 			if($query->num_rows() > 0)
 			{
-				log_message('DEBUG', 'Data\Content->getByID(): Load Content Data from Database: #'.$id);
+				log_message('DEBUG', 'Model\Data\Navigation->getByID(): Load Content Data from Database: #'.$id);
 				$codeigniter->benchmark->mark('Content_class_getByID_end');
 				return $this->initialize( $query->row() );
 			}
 		}
 		else
 		{
-			log_message('ERROR', 'Data\Content->getByID(): ID parameter must be numeric type');
+			log_message('ERROR', 'Model\Data\Content->getByID(): ID parameter must be numeric type');
 			$codeigniter->benchmark->mark('Content_class_getByID_end');
 			
 			// Throwning Exception about invalid parameter
-			throw new \InvalidArgumentException('Model\Data\Content->getByID(): ID parameter must be numeric type');
+			throw new \InvalidArgumentException('Navigation ID parameter must be numeric type');
 		}
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	public function getByCode( $code = NULL, $forceSelect = FALSE )
+	{
+		$codeigniter =& get_instance();
+		$codeigniter->benchmark->mark('Content_class_getByCode_start');
+		if(is_numeric($id))
+		{
+			$content = \Model\Database\Navigation::get_instance();
+			$query = $content->where('code', $code)->get();
+			if($query->num_rows() > 0)
+			{
+				log_message('DEBUG', 'Model\Data\Navigation->getByCode(): Load Content Data from Database: #'.$id);
+				$codeigniter->benchmark->mark('Content_class_getByCode_end');
+				return $this->initialize( $query->row() );
+			}
+		}
+		else
+		{
+			log_message('ERROR', 'Model\Data\Content->getByCode(): ID parameter must be numeric type');
+			$codeigniter->benchmark->mark('Content_class_getByID_end');
+			
+			// Throwning Exception about invalid parameter
+			throw new \InvalidArgumentException('Navigation ID parameter must be numeric type');
+		}
+	}
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	private function getItems( $forceSelect = FALSE )
+	{
+		$codeigniter =& get_instance();
+		$codeigniter->benchmark->mark('Content_class_getItems_start');
+		if( $forceSelect === FALSE && $this->cache_time > 0 )
+		{
+	
+			$codeigniter->benchmark->mark('Content_class_getItems_end');
+		}
+		else
+		{
+			$navigation = \Model\Database\Navigation::get_instance();
+			$query = $navigation->get_items( $this->id );
+		
+			if($query->num_rows() > 0)
+			{
+				foreach($query->result() as $row)
+				{
+					if(!is_null($row->id_content))
+					{
+						// Checking the current content if is the current content we want						
+						if(\Output::$current_content->getID() == $row->id_content) $content = \Output::$current_content;
+						else
+						{
+							$content = new Content(); $content->getById( $row->id_content );
+						}
+						
+						$this->items[] =& $content;
+					}
+				}
+			}
+			
+			$codeigniter->benchmark->mark('Content_class_getItems_start');
+		}
+	}
 }
-/* End of file: Content.php */
-/* Location: ./ionize/models/data/Content.php */
+/* End of file: Navigation.php */
+/* Location: ./ionize/models/data/Navigation.php */

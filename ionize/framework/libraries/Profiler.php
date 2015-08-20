@@ -180,7 +180,7 @@ class CI_Profiler {
 		{
 			$key = ucwords(str_replace(array('_', '-'), ' ', $key));
 			$output .= '<tr><td style="padding:5px;width:50%;color:#000;font-weight:bold;background-color:#ddd;">'
-					.$key.'&nbsp;&nbsp;</td><td style="padding:5px;width:50%;color:#900;font-weight:normal;background-color:#ddd;">'
+					.str_replace(array('Model ','Controller ','Class '), array('Model &raquo; ', 'Controller &raquo; ', 'Class &raquo; '),$key).'&nbsp;&nbsp;</td><td style="padding:5px;width:50%;color:#900;font-weight:normal;background-color:#ddd;">'
 					.'<span style="display: inline-block; width: 30%">'.($val*1000)."ms</span> (<small>".$val."</small>)</td></tr>\n";
 		}
 

@@ -138,6 +138,18 @@ class CI_Loader {
 	 */
 	public function __construct()
 	{
+		if(file_exists( APPPATH."config/environment.php" ))
+		{
+			$config = array();
+			include(APPPATH."config/environment.php");
+			
+			if(array_key_exists('force_models_namespace', $config))
+				$this->_ci_models_force_namespace = $config['force_models_namespace'];
+				
+			if(array_key_exists('models_namespace', $config))
+				$this->_ci_models_base_namespace = $config['models_namespace'];
+		}
+		
 		$this->_ci_ob_level = ob_get_level();
 		$this->_ci_classes =& is_loaded();
 
@@ -310,14 +322,14 @@ class CI_Loader {
 				foreach($segments as $item) $namespace .= '\\'.ucwords($item);
 				$class_name = "{$namespace}{$model}";
 				
-				if( class_exists($class_name))
+				if(class_exists($class_name))
 				{
 					$class = new ReflectionClass($class_name);
 					$namespace = $class->getNamespaceName();
 					
 					$model = $class_name;
 				}
-				else if( class_exists($model))
+				else if(class_exists($model))
 				{
 					$class = new ReflectionClass($model);
 					$namespace = "";
