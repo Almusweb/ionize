@@ -33,7 +33,7 @@ abstract class Base extends \CI_Model
 	public $where_count = 0;
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
-	private $filter_methods = array('where','or_where','limit','or_limit','like','or_like');
+	private $filter_methods = array('where','or_where','where_in','or_where_in','limit','or_limit','like','or_like');
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
 	public function __construct()
@@ -53,13 +53,9 @@ abstract class Base extends \CI_Model
 		
 		if (method_exists($this->{$this->database}, $method))
 		{
-			$reflection = new \ReflectionMethod($this->{$this->database}, $method);
-			if ($reflection->isPublic())
-			{
-				if(in_array($method, $this->filter_methods)) $this->where_count++;
-				call_user_func_array(array($this->{$this->database},$method),$arguments);
-				return $this;
-			}
+			if(in_array($method, $this->filter_methods)) $this->where_count++;
+			call_user_func_array(array($this->{$this->database},$method),$arguments);
+			return $this;
 		}
 		
 		// Throw Bad Method Call Expetion if nothing cant called
@@ -69,7 +65,7 @@ abstract class Base extends \CI_Model
 	
 	private function database_initialize()
 	{
-		$this->benchmark->mark('Base_model_database_initialize_start');
+		$this->benchmark->mark('Base_model_'.$this->database.'_database_initialize_start');
 		
 		// Creating property if not exits
 		if( ! property_exists($this, $this->database) ) $this->{$this->database} = NULL;
@@ -77,22 +73,16 @@ abstract class Base extends \CI_Model
 		// If property is Empty then load database instance
 		if($this->{$this->database} == NULL) $this->{$this->database} = $this->load->database($this->database, TRUE);
 		
-		$this->benchmark->mark('Base_model_database_initialize_end');
+		$this->benchmark->mark('Base_model_'.$this->database.'_database_initialize_end');
 	}
 	
 	/* ------------------------------------------------------------------------------------------------------------- */
 	private function get( $table = NULL, $limit = NULL, $offset = NULL )
 	{
-		$this->benchmark->mark('Base_model_get_start');
 		if(is_null($table)) $table = ($this->view != "" ? $this->view : $this->table);
-		
-		$this->benchmark->mark('Base_model_get_query_start');
 		$query = $this->{$this->database}->get($table, $limit, $offset);
-		$this->benchmark->mark('Base_model_get_query_end');
 		
 		$this->last_query = $this->{$this->database}->last_query();
-		
-		$this->benchmark->mark('Base_model_get_end');
 		$this->where_count = 0;
 		
 		if($query != FALSE) return $query;

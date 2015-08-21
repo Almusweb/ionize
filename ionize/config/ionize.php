@@ -9,7 +9,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | Data models cache time
 |
 */
-$config['data_model_cache'] = 3600;
+$config['data_model_cache'] = 0;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +19,7 @@ $config['data_model_cache'] = 3600;
 | Using database cache or not
 |
 */
-$config['select_cache'] = TRUE;
+$config['select_cache'] = FALSE;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,7 +29,7 @@ $config['select_cache'] = TRUE;
 | Loaded views cache time
 |
 */
-$config['views_cache'] = 3600;
+$config['views_cache'] = 0;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,7 +39,7 @@ $config['views_cache'] = 3600;
 | Loaded views output time
 |
 */
-$config['output_cache'] = 3600;
+$config['output_cache'] = 0;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,6 +50,17 @@ $config['output_cache'] = 3600;
 |
 */
 $config['theme'] = 'Default_Native';
+
+
+/*
+|--------------------------------------------------------------------------
+| Active Language
+|--------------------------------------------------------------------------
+|
+| Active language in ISO code
+|
+*/
+$config['language'] = 'en_US';
 
 /*
 |--------------------------------------------------------------------------

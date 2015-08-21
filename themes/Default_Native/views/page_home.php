@@ -3,6 +3,7 @@
 
 <div id="content_container">
 	<div id="content">
+		<h2><?=$content->subtitle?></h2>
 		<?=$content->content?>
 	</div>
 </div>

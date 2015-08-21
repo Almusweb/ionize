@@ -52,7 +52,7 @@ $autoload['drivers'] = array('cache');
 |
 |	$autoload['helper'] = array('url', 'file');
 */
-$autoload['helper'] = array('url','file','html','language','directory');
+$autoload['helper'] = array('url','file','directory','html','form','language','lang');
 
 /*
 | ---------------------------------------------------------------------------------------------------------------------
@@ -152,7 +152,9 @@ $autoload['model']['data/Content'] 				= 'content_data';
 
 // Content model and class
 $autoload['model']['database/Navigation'] 		= 'navigation_model';
+$autoload['model']['data/navigation/Item'] 		= 'navigation_item_data';
 $autoload['model']['data/Navigation'] 			= 'navigation_data';
+
 
 /* End of file: autoload.php */
 /* Location: ./ionize/config/autoload.php */

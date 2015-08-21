@@ -53,7 +53,7 @@ class Settings implements \DataModel
 	public function __construct()
 	{
 		$codeigniter =& get_instance();
-		$codeigniter->benchmark->mark('Settings_class_construct_start');
+		$codeigniter->benchmark->mark('Model\Data\Settings_class_construct_start');
 		
 		// Set the cache time from the config file
 		$codeigniter->config->load('ionize', TRUE);
@@ -73,13 +73,13 @@ class Settings implements \DataModel
 			}
 		}
 		
+		$codeigniter->benchmark->mark('Model\Data\Settings_class_construct_end');
+		
 		// Generating class
 		$this->initialize();
 		
 		// Saving instance reference
 		self::$instance = $this;
-		
-		$codeigniter->benchmark->mark('Settings_class_construct_end');
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
@@ -133,7 +133,7 @@ class Settings implements \DataModel
 	public function __wakeup()
 	{
 		$codeigniter =& get_instance();
-		$codeigniter->benchmark->mark('Settings_class___wakeup_start');
+		$codeigniter->benchmark->mark('Model\Data\Settings_class___wakeup_start');
 		
 		// Initialize class by raw data
 		$class = $this->initialize();
@@ -141,7 +141,7 @@ class Settings implements \DataModel
 		// Saving instance reference
 		self::$instance = $this;
 		
-		$codeigniter->benchmark->mark('Settings_class___wakeup_end');
+		$codeigniter->benchmark->mark('Model\Data\Settings_class___wakeup_end');
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
@@ -162,9 +162,9 @@ class Settings implements \DataModel
 			$cache = $codeigniter->cache->file->get(md5($this->language).'.Settings');
 			if($cache == FALSE)
 			{
-				$codeigniter->benchmark->mark('Settings_class___destruct_start');
+				$codeigniter->benchmark->mark('Model\Data\Settings_class___destruct_start');
 				$codeigniter->cache->file->save(md5($this->language).'.Settings', serialize($this), $this->cache_time);
-				$codeigniter->benchmark->mark('Settings_class___destruct_end');
+				$codeigniter->benchmark->mark('Model\Data\Settings_class___destruct_end');
 			}
 		}
    	}
@@ -177,12 +177,14 @@ class Settings implements \DataModel
 	public function initialize( $forceSelect = FALSE )
 	{
 		$codeigniter =& get_instance();
-		$codeigniter->benchmark->mark('Settings_class_initialize_start');
+		$codeigniter->benchmark->mark('Model\Data\Settings_class_initialize_start');
 		
 		if( count($this->_data) == 0 || $forceSelect )
 		{
+			$codeigniter->benchmark->mark('Model\Data\Settings_class_initialize_query_start');
 			$settings = \Model\Database\Settings::get_instance();
 			$query = $settings->select('*')->order_by('id_language ASC')->get();
+			$codeigniter->benchmark->mark('Model\Data\Settings_class_initialize_query_end');
 		
 			if($query->num_rows() > 0)
 			{
@@ -216,7 +218,7 @@ class Settings implements \DataModel
 		self::$data = $this->_data;
 		self::$lang = $this->_lang_data;
 		
-		$codeigniter->benchmark->mark('Settings_class_initialize_end');
+		$codeigniter->benchmark->mark('Model\Data\Settings_class_initialize_end');
 		return $this;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */

@@ -13,7 +13,7 @@ class Navigation extends Tagmanager implements IonizeLibrary
 
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
-	public function __construct( \Model\Data\Navigation $navigation = NULL )
+	public function __construct( $navigation = NULL )
 	{
 		parent::__construct();
 		
@@ -29,34 +29,20 @@ class Navigation extends Tagmanager implements IonizeLibrary
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 
-	public function items()
+	public function items( $items = NULL )
 	{
-		if($this->navigation != NULL)
+		if($this->navigation != NULL) $items = $this->navigation->items;
+	
+		if($items != NULL)
 		{
-			$return_array = array(); $navigation_items = $this->navigation->items;
+			$return_array = array();
 			
-			// Iterating trough array of data models
-			foreach($navigation_items as $index => $item)
+			foreach($items as $navigation_item)
 			{
-				// Setting the default values to the item
-				$item_data = array
-				(
-					'data'		=>	$item,
-					'title'		=>	'#missing_title',
-					'url'		=>	'#',
-				);
-				
-				// If item is content then override the values
-				if( $item->is('content') == TRUE )
-				{
-					$item_data['title'] = ($item->navigation != "" ? $item->navigation : $item->title);
-					$item_data['url'] = site_url($item->url);
-				}
-				
-				// Add item to the output as an object
-				$return_array[] = (object) $item_data;
+				$item = $navigation_item->item;
+				$return_array[] = $item;
 			}
-			
+		
 			return $return_array;
 		}
 		else return array();

@@ -5,10 +5,13 @@ AS
 		`cnt`.`id_content` 						AS `id_content`,
 		`cnt`.`code` 									AS `name`,
 
+		GROUP_CONCAT(DISTINCT `cntp`.`id_parent` ORDER BY `cntp`.`ordering` ASC SEPARATOR ',') AS id_parents,
+		`cntp`.`ordering`							AS `ordering`,
+
+		GROUP_CONCAT(DISTINCT `cntc`.`id_content` ORDER BY `cntc`.`ordering` ASC SEPARATOR ',') AS id_childrens,
+
 		`cnt`.`id_type` 							AS `id_type`,
 		`ctp`.`code`									AS `type`,
-
-		`cnt`.`ordering` 							AS `ordering`,		
 
 		`cnt`.`publish_on` 						AS `publish_on`,
 		UNIX_TIMESTAMP(`cnt`.`publish_on`)
@@ -36,8 +39,8 @@ AS
 		`cnt`.`item_view` 						AS `item_view`,
 
 		(CASE
-			WHEN cnt.has_child = 1 AND cnt.site_root = 0 THEN COALESCE(cnt.list_view,ctp.default_list_view)
-			WHEN cnt.has_child = 0 AND cnt.site_root = 0 THEN COALESCE(cnt.single_view,ctp.default_single_view)
+			WHEN COALESCE(cntc.id_content,0,1) = 1 AND cnt.site_root = 0 THEN COALESCE(cnt.list_view,ctp.default_list_view)
+			WHEN COALESCE(cntc.id_content,0,1) = 0 AND cnt.site_root = 0 THEN COALESCE(cnt.single_view,ctp.default_single_view)
 			WHEN cnt.site_root = 1 THEN 'page_home'
 			ELSE NULL
 		END)													AS `view`,
@@ -63,12 +66,9 @@ AS
 
 		`cnt`.`indexed` 							AS `indexed`,
 		COALESCE(`cnt`.`has_url`,0) 	AS `has_url`,
-		COALESCE(`cnt`.`has_child`,0) AS `has_children`,
+		COALESCE(cntc.id_content,0,1) AS `has_children`,
 		`cnt`.`flag` 									AS `flag`,
 		`cnt`.`priority` 							AS `priority`,
-
-		(SELECT GROUP_CONCAT(DISTINCT id_content SEPARATOR ',') FROM contents_relations cr WHERE cr.id_parent = cnt.id_content) AS `children`,
-		(SELECT GROUP_CONCAT(DISTINCT id_navigation SEPARATOR ',') FROM navigations_contents ncn WHERE ncn.id_content = cnt.id_content) AS `navigations`,
 
 		`ath`.`id_user`								AS `id_author`,
 		`cnt`.`created` 							AS `created`,
@@ -109,6 +109,14 @@ AS
 		`ctr`.id_content = cnt.id_content
 	)
 
+	LEFT JOIN contents_relations cntp ON (
+		cntp.id_content = cnt.id_content
+	)
+
+  LEFT JOIN contents_relations cntc ON (
+		cntc.id_parent = cnt.id_content
+	)
+
 	LEFT JOIN contents_types ctp ON (
 		cnt.id_type = ctp.id_type
 	)	
@@ -123,3 +131,5 @@ AS
 
 	WHERE
 		cnt.deleted IS NULL
+
+	GROUP BY id_translation

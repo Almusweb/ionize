@@ -8,7 +8,9 @@
 	<link rel="stylesheet" href="<?=Ionize::theme_url()?>assets/foundation.min.css" />
 	<link rel="stylesheet" href="<?=Ionize::theme_url()?>assets/theme.css" />
 	
+	<script src="<?=Ionize::theme_url()?>libraries/jquery-1.11.3.min.js"></script>
+	<script src="<?=Ionize::theme_url()?>libraries/jquery-migrate-1.2.1.min.js"></script>
+	<script src="<?=Ionize::theme_url()?>libraries/foundation-5.5.2.min.js"></script>
+	
 </head>
 <body>
-
-

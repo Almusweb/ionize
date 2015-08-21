@@ -28,11 +28,8 @@ class Output extends IO_Controller
 
 	public function index()
 	{
-		/*
-		$homepage = $this->contents->where('homepage','1')->where('language', $this->language)->get();
-		if($homepage->num_rows() > 0) $this->render( $homepage->row()->id_content );
-		else redirect( 'setup' );
-		*/
+		// @todo: check install
+	
 		$this->render( NULL );
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */	
@@ -44,29 +41,37 @@ class Output extends IO_Controller
 		{
 			$this->benchmark->mark('Output_controller_render_start');
 			
-			self::$current_content = $content;
+			// Create a reference to the current content
+			self::$current_content =& $content;
 			
-			$cache_key = md5($this->language.'.'.$this->request_url).'.Output';
-			$cache_info = $this->cache->file->get_metadata($cache_key);
-			
+			// Load the navigations
 			$this->_getNavigations();
 			
-			$cached_view = ($this->io_config->views_cache > 0 ? $this->cache->file->get($cache_key) : FALSE);
-			if($cached_view != FALSE && $this->renderer->checkViewUpdated( $content, $cache_info ) == FALSE)
+			if($this->io_config->views_cache > 0)
 			{
-				// Rendering content by cached view
-				$this->output->set_output($cached_view);
+				// Check the Output cache file
+				$cache_key = md5($this->language.'.'.$this->request_url).'.Output';
+				$cache_info = $this->cache->file->get_metadata($cache_key);
+			
+				$cached_view = $this->cache->file->get($cache_key);
+				if($cached_view != FALSE && $this->renderer->checkViewUpdated( $content, $cache_info ) == FALSE)
+				{					
+					// Rendering content by cached view
+					$this->output->set_output($cached_view);
+					
+					return; // Exit the code
+				}
 			}
-			else
-			{
-				// Rendering content by Content class
-				$parsed_view = $this->renderer->parseView( $content );
-				
-				if($this->io_config->views_cache > 0)
-					$this->cache->file->save($cache_key, $parsed_view, $this->io_config->views_cache);
-				
-				$this->output->set_output($parsed_view);
-			}
+			
+			// Rendering content by Content class
+			$parsed_view = $this->renderer->parseView( $content );
+			
+			// Save Output cache if enabled
+			if($this->io_config->views_cache > 0)
+				$this->cache->file->save($cache_key, $parsed_view, $this->io_config->views_cache);
+			
+			// Set Output to the parsed view
+			$this->output->set_output($parsed_view);
 			
 			$this->benchmark->mark('Output_controller_render_end');
 		}
@@ -79,32 +84,45 @@ class Output extends IO_Controller
 		$this->benchmark->mark('Output_controller__getContent_start');
 		$this->benchmark->mark('Output_controller__getContent_query_start');
 		
+		// Delete cache if disabled
 		if($this->io_config->select_cache == FALSE) $this->content_model->cache_delete('output', 'render');
+		
+		// Start Content Select Cache if enabled
 		if($this->io_config->select_cache == TRUE) $this->content_model->cache_on();
-		if(trim($this->request_url) == "")
+		
+		// Detect the current Content
+		if($this->request_url == "")
 		{
 			$this->content_model->where('homepage','1');
 		}
 		else
 		{
-			$url = $this->request_url;
-			$this->content_model->where("(short_url = '{$url}' OR long_url = '{$url}')",NULL);
+			$this->content_model->where("url",'/'.$this->request_url);
 		}
-		$content = $this->content_model->limit(1)->where('language', $this->language)->get();
+		
+		// Get the current Content
+		$content = $this->content_model->get();
+				
+		// End Content Select Cache if enabled
 		if($this->io_config->select_cache == TRUE) $this->content_model->cache_off();
 		
 		$this->benchmark->mark('Output_controller__getContent_query_end');
 		
+		// If Content available
 		if($content->num_rows() == 1)
 		{
 			// Parsing content data and creating content class
 			$content_data = $content->row();
-			$content = new \Model\Data\Content( $content_data );
+			$content = new \Model\Data\Content( $content_data, TRUE );
 			
 			$this->benchmark->mark('Output_controller__getContent_end');
 			return $this->render( $content );
 		}
-		else $this->error_404();
+		else
+		{
+			$this->benchmark->mark('Output_controller__getContent_end');
+			return $this->error_404();
+		}
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	

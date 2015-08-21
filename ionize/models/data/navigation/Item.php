@@ -1,4 +1,4 @@
-<?php namespace Model\Data;
+<?php namespace Model\Data\Navigation;
 
 /**
  * @package	Ionize
@@ -6,7 +6,7 @@
  * @link	http://ionizecms.com
  * @since	Version 2.0.0
  */
-class Navigation implements \DataModel
+class Item implements \DataModel
 {
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
@@ -39,10 +39,17 @@ class Navigation implements \DataModel
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
 	/**
-	 * @var $childrens array Child Content instances array
+	 * @var $items array Child Items
 	 * @access protected
 	 */
 	protected $items = array();
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	/**
+	 * @var $item Item class
+	 * @access protected
+	 */
+	protected $item = NULL;
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
 	/**
@@ -65,7 +72,7 @@ class Navigation implements \DataModel
 	public function __construct( $data = NULL )
 	{
 		$codeigniter =& get_instance();		
-		$codeigniter->benchmark->mark('Model\Data\Navigation_class_construct_start');
+		$codeigniter->benchmark->mark('Model\Data\Navigation\Item_class_construct_start');
 		
 		// Set the cache time from the config file
 		$codeigniter->config->load('ionize', TRUE);
@@ -77,7 +84,7 @@ class Navigation implements \DataModel
 		// Saving instance reference
 		self::$instance = $this;
 		
-		$codeigniter->benchmark->mark('Model\Data\Navigation_class_construct_end');
+		$codeigniter->benchmark->mark('Model\Data\Navigation\Item_class_construct_end');
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
@@ -90,7 +97,7 @@ class Navigation implements \DataModel
 	public function __get($key)
 	{
 		if (isset($this->_data[$key])) return $this->_data[$key];
-		if ($key == 'items') return $this->items;
+		if ($key == 'item') return $this->item;
 		return NULL;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
@@ -132,7 +139,7 @@ class Navigation implements \DataModel
 	public function __wakeup()
 	{
 		$codeigniter =& get_instance();
-		$codeigniter->benchmark->mark('Model\Data\Navigation_class___wakeup_start');
+		$codeigniter->benchmark->mark('Model\Data\Navigation\Item_class___wakeup_start');
 		
 		// Initialize class by raw data
 		$class = $this->initialize( $this->_data );
@@ -140,7 +147,7 @@ class Navigation implements \DataModel
 		// Saving instance reference
 		self::$instance = $this;
 		
-		$codeigniter->benchmark->mark('Model\Data\Navigation_class___wakeup_end');
+		$codeigniter->benchmark->mark('Model\Data\Navigation\Item_class___wakeup_end');
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
@@ -175,9 +182,9 @@ class Navigation implements \DataModel
 			$cache = $codeigniter->cache->file->get(md5($this->id).'.Navigation');
 			if($cache == FALSE)
 			{
-				$codeigniter->benchmark->mark('Model\Data\Navigation_class___destruct_start');
-				$codeigniter->cache->file->save(md5($this->id).'.Navigation', serialize($this), $this->cache_time);
-				$codeigniter->benchmark->mark('Model\Data\Navigation_class___destruct_end');
+				$codeigniter->benchmark->mark('Model\Data\Navigation\Item_class___destruct_start');
+				$codeigniter->cache->file->save(md5($this->id).'.Navigation.Item', serialize($this), $this->cache_time);
+				$codeigniter->benchmark->mark('Model\Data\Navigation\Item_class___destruct_end');
 			}
 		}
    	}
@@ -190,44 +197,27 @@ class Navigation implements \DataModel
 	public function initialize( $data )
 	{
 		$codeigniter =& get_instance();
-		$codeigniter->benchmark->mark('Model\Data\Navigation_class_initialize_start');	
+		$codeigniter->benchmark->mark('Model\Data\Navigation\Item_class_initialize_start');	
 		
 		if(is_object($data))
 		{
 			$this->_data = (array) $data;
-			$this->id = $data->id_navigation;
-		}		
-		if(is_array($data))
-		{
-			foreach($data as $index => $dat)
+			$this->id = $data->id_item;
+			
+			if(!is_null($data->id_content))
 			{
-				if(!array_key_exists($dat->code, self::$classes))
+				if(!array_key_exists($data->id_content, \Model\Data\Content::$classes))
 				{
-					$navigation = array
-					(
-						'id_navigation' => $dat->id_navigation,
-						'ordering'		=> $dat->navigation_ordering,
-						'code'			=> $dat->code,
-						'name'			=> $dat->name
-					);
-				
-					$navigation = new Navigation( (object) $navigation );
-					self::$classes[($dat->code)] =& $navigation;
+					$content = new \Model\Data\Content( $data->id_content, FALSE );
+				}
 					
-					$this->_data[($dat->code)] =& $navigation;
-					//continue;
-				}
-				
-				if(!array_key_exists($dat->id_item, Navigation\Item::$classes))
-				{
-					$item = new Navigation\Item( $dat );
-				}
-				
-				$this->_data[($dat->code)]->items[] = Navigation\Item::$classes[$dat->id_item];
+				$this->item =& \Model\Data\Content::$classes[$data->id_content];
 			}
+			
+			self::$classes[ $this->id ] =& $this;
 		}
 		
-		$codeigniter->benchmark->mark('Model\Data\Navigation_class_initialize_end');
+		$codeigniter->benchmark->mark('Model\Data\Navigation\Item_class_initialize_end');
 		return $this;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
@@ -240,7 +230,7 @@ class Navigation implements \DataModel
 	
 	public function is( $type )
 	{
-		return (strtolower($type) === "navigation" ? TRUE : FALSE);
+		return (strtolower($type) === "navigation_item" ? TRUE : FALSE);
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
@@ -249,8 +239,8 @@ class Navigation implements \DataModel
 		if($this->id != NULL) return $this->id;
 		else
 		{
-			log_message('ERROR', 'Model\Data\Navigation->getID(): Data must be loaded first before geting ID');
-			throw new RuntimeException('Navigation Data must be loaded first before geting ID');
+			$error_message = 'Model\Data\Navigation\Item->getID(): Data must be loaded first before geting ID';
+			log_message('ERROR', $error_message); throw new RuntimeException($error_message);
 		}
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
@@ -258,15 +248,15 @@ class Navigation implements \DataModel
 	public function getByID( $id = NULL, $forceSelect = FALSE )
 	{
 		$codeigniter =& get_instance();
-		$codeigniter->benchmark->mark('Content_class_getByID_start');
+		$codeigniter->benchmark->mark('Model\Data\Navigation\Item_class_getByID_start');
 		if( $forceSelect === FALSE && $this->cache_time > 0 )
 		{
 			// Restoring cached data
 			$cache = $codeigniter->cache->file->get(md5($id).'.Navigation');
 			if($cache != FALSE)
 			{
-				log_message('DEBUG', 'Model\Data\Navigation->getByID(): Load Content Data from Cache: #'.$id);
-				$codeigniter->benchmark->mark('Content_class_getByID_end');
+				log_message('DEBUG', 'Model\Data\Navigation\Item->getByID(): Load Content Data from Cache: #'.$id);
+				$codeigniter->benchmark->mark('Model\Data\Navigation\Item_class_getByID_end');
 				return unserialize($cache);
 			}
 			// If cache was unsuccesfull then select the content
@@ -275,48 +265,20 @@ class Navigation implements \DataModel
 		else if(is_numeric($id))
 		{
 			$navigation = \Model\Database\Navigation::get_instance();
-			$query = $navigation->where('id_navigation', $id)->get();
+			$query = $navigation->where('id_item', $id)->get_item();
 			if($query->num_rows() > 0)
 			{
-				log_message('DEBUG', 'Model\Data\Navigation->getByID(): Load Content Data from Database: #'.$id);
-				$codeigniter->benchmark->mark('Content_class_getByID_end');
+				log_message('DEBUG', 'Model\Data\Navigation\Item->getByID(): Load Content Data from Database: #'.$id);
+				$codeigniter->benchmark->mark('Model\Data\Navigation\Item_class_getByID_end');
 				return $this->initialize( $query->row() );
 			}
 		}
 		else
 		{
-			log_message('ERROR', 'Model\Data\Content->getByID(): ID parameter must be numeric type');
-			$codeigniter->benchmark->mark('Content_class_getByID_end');
-			
-			// Throwning Exception about invalid parameter
-			throw new \InvalidArgumentException('Navigation ID parameter must be numeric type');
+			$error_message = 'Model\Data\Navigation\Item->getByID(): ID parameter must be numeric type';
+			log_message('ERROR', $error_message); throw new \InvalidArgumentException($error_message);
 		}
-	}
-	/* ------------------------------------------------------------------------------------------------------------- */
-	
-	public function getByCode( $code = NULL, $forceSelect = FALSE )
-	{
-		$codeigniter =& get_instance();
-		$codeigniter->benchmark->mark('Content_class_getByCode_start');
-		if(is_numeric($id))
-		{
-			$content = \Model\Database\Navigation::get_instance();
-			$query = $content->where('code', $code)->get();
-			if($query->num_rows() > 0)
-			{
-				log_message('DEBUG', 'Model\Data\Navigation->getByCode(): Load Content Data from Database: #'.$id);
-				$codeigniter->benchmark->mark('Content_class_getByCode_end');
-				return $this->initialize( $query->row() );
-			}
-		}
-		else
-		{
-			log_message('ERROR', 'Model\Data\Content->getByCode(): ID parameter must be numeric type');
-			$codeigniter->benchmark->mark('Content_class_getByID_end');
-			
-			// Throwning Exception about invalid parameter
-			throw new \InvalidArgumentException('Navigation ID parameter must be numeric type');
-		}
+		$codeigniter->benchmark->mark('Model\Data\Navigation\Item_class_getByID_end');
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 }

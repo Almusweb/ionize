@@ -1,4 +1,3 @@
-
 <div id="site_navigation_container">
 	<nav id="site_navigation" class="top-bar" data-topbar role="navigation">
 		<ul class="title-area">
@@ -8,8 +7,17 @@
 
 		<section class="top-bar-section">
 			<ul class="right">
-			<?php foreach(Ionize::Navigation( $navigations->main )->items() as $item): ?>
-				<li> <a href="<?=$item->url;?>"> <?=$item->title;?> </a> </li>
+			<?php foreach(Ionize::Navigation( $navigations->main )->items() as $page): ?>
+				<li class="<?=($page->isActive() ? 'active' : '')?> <?=($page->has_children ? 'has-dropdown' : '')?>">
+					<a href="<?=$page->url;?>"> <?=$page->title;?> </a> 
+					<?php if($page->has_children): ?>
+					<ul class="dropdown">
+						<?php foreach($page->items as $article): ?>
+						<li class=""> <a href="<?=$article->url;?>"> <?=$article->title;?> </a> </li>
+						<?php endforeach; ?>
+					</ul>
+					<?php endif; ?>
+				</li>
 			<?php endforeach; ?>
 			</ul>
 		</section>

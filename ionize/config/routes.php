@@ -58,5 +58,5 @@ $route['404_override'] = 'output/error_404';
 $route['setup'] = "setup";
 $route['setup/(:any)'] = "setup/$1";
 
-$route['(:any)'] = 'output/render';
+$route['(.*)'] = 'output/render';
 

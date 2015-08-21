@@ -3,7 +3,28 @@
 
 <div id="content_container">
 	<div id="content">
-		<pre><?php print_r($content); ?></pre>
+	
+		<?=Ionize::tag($content->subtitle, 'h2');?>
+		<?=$content->content?>
+		
+		<?php foreach($content->items as $article): ?>
+		
+		<article>
+			<header>
+				<h3><?=$article->title?></h3>
+			<header>
+			
+			<section class="content">
+				<?=$article->content?>
+			</section>
+			
+			<footer>
+				<a class="button tiny" href="<?=$article->url?>"> <?=lang('read_more')?> </a>
+			</footer>
+		</article>
+		
+		<?php endforeach; ?>
+		
 	</div>
 </div>
 

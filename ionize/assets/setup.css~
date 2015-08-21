@@ -13,7 +13,7 @@ body {
 #installer_wizard {
 	width: 640px; padding: 20px; margin: 0 auto;
 	background: #fff; border: 1px solid #ddd;
-	border-top-color: #5994CE;
+	border-top-color: #3A7FC5;
 	
 	-webkit-box-shadow: 0 0 50px rgba(0,0,0,0.1), inset 0 10px 40px rgba(108, 169, 230, 0.1);
 	-khtml-box-shadow: 0 0 50px rgba(0,0,0,0.1), inset 0 10px 40px rgba(108, 169, 230, 0.1);
@@ -53,7 +53,7 @@ body {
 
 #installer_content .next_step {
 	float: right; display: inline-block;
-	padding: 10px 5px;
+	padding: 20px 5px;
 }
 
 #installer_content .check {

@@ -441,23 +441,16 @@ class CI_Output {
 
 		if ($this->parse_exec_vars === TRUE)
 		{
-			$elapsed = $BM->elapsed_time('total_execution_time_start', 'total_execution_time_end', 7);
-			//$elapsed = "0.".substr($elapsed, 4);
+			$elapsed = $BM->elapsed_time('total_execution_time_start', 'total_execution_time_end', 5);
+			$elapsed = str_replace('.','',$elapsed);
 			
-			//$split = str_split($elapsed,2);
-			//$elapsed = ((int) (str_replace('.','',$split[0]).$split[1]) ).'.'.$split[2].$split[3];
-		
-			$request = "";
-			/* if(isset($_SERVER['REQUEST_TIME_FLOAT']))
-			{
-				$current_microtime = microtime(TRUE);
-				$request_microtime = $_SERVER['REQUEST_TIME_FLOAT'];
-			
-				$request = round((($current_microtime-$request_microtime) * 1000), 3) .'ms';
-			} */
-		
+			$elapsed = ltrim((substr($elapsed, 0, 4)),'0').'.'.substr($elapsed, 4).'ms';
 			$memory	= round(memory_get_usage() / 1024 / 1024, 2).'MB';
-			$output = str_replace(array('{elapsed_time}', '{memory_usage}', '{request_time}'), array($elapsed, $memory, $request), $output);
+			
+			$search = array('{memory_usage}', '{elapsed_time}');
+			$replace = array($memory, $elapsed);
+			
+			$output = str_replace($search, $replace, $output);
 		}
 
 		// --------------------------------------------------------------------

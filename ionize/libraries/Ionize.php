@@ -33,8 +33,6 @@ class Ionize extends Tagmanager
 				self::$_classes[] = str_replace('.php','',$file_name);
 			}
 		}
-		
-		echo "<pre>".print_r(Renderer::getCurrentContent(), true)."</pre>";
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
@@ -72,6 +70,13 @@ class Ionize extends Tagmanager
 	public static function title()
 	{
 		return '#title';
+	}
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	public static function tag( $text, $tag )
+	{
+		if( $text != "" ) return "<$tag> $text </$tag>";
+		else return "";
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	

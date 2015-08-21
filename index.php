@@ -36,6 +36,8 @@
  * @filesource
  */
 
+	define('EXECUTE_STARTIME', microtime(TRUE));
+
 /*
  *---------------------------------------------------------------
  * APPLICATION ENVIRONMENT
