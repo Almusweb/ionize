@@ -39,7 +39,7 @@ class Navigation extends Tagmanager implements IonizeLibrary
 			
 			foreach($items as $navigation_item)
 			{
-				$item = $navigation_item->item;
+				$item = $navigation_item;
 				$return_array[] = $item;
 			}
 		

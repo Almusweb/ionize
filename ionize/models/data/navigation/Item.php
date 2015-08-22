@@ -46,6 +46,13 @@ class Item implements \DataModel
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
 	/**
+	 * @var $items_sort array of ordered Child Items
+	 * @access protected
+	 */
+	protected $items_sort = array();
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	/**
 	 * @var $item Item class
 	 * @access protected
 	 */
@@ -96,8 +103,11 @@ class Item implements \DataModel
 	 */
 	public function __get($key)
 	{
-		if (isset($this->_data[$key])) return $this->_data[$key];
+		if ($key == 'items') return $this->items;
 		if ($key == 'item') return $this->item;
+	
+		if (isset($this->_data[$key])) return $this->_data[$key];
+		
 		return NULL;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
@@ -124,7 +134,7 @@ class Item implements \DataModel
 	 */
 	public function __sleep()
 	{
-		$serialize_array = array('id','_data','items');
+		$serialize_array = array('id','_data','items','items_sort');
 		return $serialize_array;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
@@ -179,7 +189,7 @@ class Item implements \DataModel
 		{
 			$codeigniter =& get_instance();
 			// If cache not available then create cache from data
-			$cache = $codeigniter->cache->file->get(md5($this->id).'.Navigation');
+			$cache = $codeigniter->cache->file->get(md5($this->id).'.Navigation.Item');
 			if($cache == FALSE)
 			{
 				$codeigniter->benchmark->mark('Model\Data\Navigation\Item_class___destruct_start');
@@ -210,11 +220,16 @@ class Item implements \DataModel
 				{
 					$content = new \Model\Data\Content( $data->id_content, FALSE );
 				}
-					
+				
 				$this->item =& \Model\Data\Content::$classes[$data->id_content];
 			}
 			
 			self::$classes[ $this->id ] =& $this;
+			
+			if(!is_null($data->id_parent))
+			{
+				$this->registerItem( $data->id_parent, $this );
+			}
 		}
 		
 		$codeigniter->benchmark->mark('Model\Data\Navigation\Item_class_initialize_end');
@@ -231,6 +246,12 @@ class Item implements \DataModel
 	public function is( $type )
 	{
 		return (strtolower($type) === "navigation_item" ? TRUE : FALSE);
+	}
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	public function hasItems()
+	{
+		return (count($this->items) > 0 ? TRUE : FALSE);
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
@@ -279,6 +300,64 @@ class Item implements \DataModel
 			log_message('ERROR', $error_message); throw new \InvalidArgumentException($error_message);
 		}
 		$codeigniter->benchmark->mark('Model\Data\Navigation\Item_class_getByID_end');
+	}
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	/**
+	 * Register item to the parent
+	 *
+	 * @access public
+	 * @return boolean
+	 */
+	public function registerItem( $id_parent, $item )
+	{
+		$codeigniter =& get_instance();
+		$codeigniter->benchmark->mark('Model\Data\Navigation\Item_class_registerItem_start');
+	
+		// If parent is the current class
+		if( $id_parent == $this->id )
+		{
+			// Get the item ID
+			$id_item = $item->getID();
+		
+			// If reference not exists
+			if(!array_key_exists($id_item, $this->items))
+			{
+				log_message('DEBUG', 'Model\Data\Navigation\Item->registerItem(): Adding #'.$id_item.' to #'.$this->id);
+			
+				// Add reference to the items
+				$this->items[ $id_item ] =& $item;
+				
+				// If item has ordering
+				if(!is_null($item->ordering))
+				{
+					// Add reference to the sorted items
+					$this->items_sort[ ($item->ordering) ] =& $item;
+				}
+				
+				$codeigniter->benchmark->mark('Model\Data\Navigation\Item_class_registerItem_end');
+				return TRUE;
+			}
+			else
+			{
+				$codeigniter->benchmark->mark('Model\Data\Navigation\Item_class_registerItem_end');
+				return FALSE;
+			}
+		}
+		// if parent is not the current class
+		else if(array_key_exists($id_parent, self::$classes))
+		{
+			// Get parent Content from the classes
+			$parent =& self::$classes[ $id_parent ];
+			
+			// Register item on the parent class
+			$parent->registerItem( $id_parent, $item );
+		}
+		else
+		{
+			$codeigniter->benchmark->mark('Model\Data\Navigation\Item_class_registerItem_end');
+			return FALSE;
+		}
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 }

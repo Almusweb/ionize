@@ -196,12 +196,12 @@ class Navigation implements \DataModel
 		{
 			$this->_data = (array) $data;
 			$this->id = $data->id_navigation;
-		}		
+		}
 		if(is_array($data))
 		{
 			foreach($data as $index => $dat)
 			{
-				if(!array_key_exists($dat->code, self::$classes))
+				if(!array_key_exists($dat->code, self::$classes) && $dat->level == 0)
 				{
 					$navigation = array
 					(
@@ -213,7 +213,6 @@ class Navigation implements \DataModel
 				
 					$navigation = new Navigation( (object) $navigation );
 					self::$classes[($dat->code)] =& $navigation;
-					
 					$this->_data[($dat->code)] =& $navigation;
 					//continue;
 				}
@@ -223,7 +222,10 @@ class Navigation implements \DataModel
 					$item = new Navigation\Item( $dat );
 				}
 				
-				$this->_data[($dat->code)]->items[] = Navigation\Item::$classes[$dat->id_item];
+				if(is_null($dat->id_parent))
+				{
+					$this->_data[($dat->code)]->items[] = Navigation\Item::$classes[$dat->id_item];
+				}
 			}
 		}
 		

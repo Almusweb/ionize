@@ -116,6 +116,20 @@ class Content implements \DataModel
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
 	/**
+	 * __set()
+	 *
+	 * @param	string	$key	Content data key
+	 * @param	mixed	$value	Content data value
+	 * @return	void
+	 */
+	public function __set($key, $value)
+	{
+		$language = current_language();
+		$this->_data[$language][$key] = $value;
+	}
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	/**
 	 * __sleep()
 	 *
 	 * During serialization save only the id, raw_data and _data properties

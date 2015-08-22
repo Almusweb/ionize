@@ -7,13 +7,13 @@
 
 		<section class="top-bar-section">
 			<ul class="right">
-			<?php foreach(Ionize::Navigation( $navigations->main )->items() as $page): ?>
-				<li class="<?=($page->isActive() ? 'active' : '')?> <?=($page->has_children ? 'has-dropdown' : '')?>">
-					<a href="<?=$page->url;?>"> <?=$page->title;?> </a> 
-					<?php if($page->has_children): ?>
+			<?php foreach(Ionize::Navigation( $navigations->main )->items() as $nav): ?>
+				<li class="<?=($nav->item->isActive() ? 'active' : '')?> <?=($nav->hasItems() ? 'has-dropdown' : '')?>">
+					<a href="<?=$nav->item->url;?>"> <?=$nav->item->title;?> </a> 
+					<?php if($nav->hasItems()): ?>
 					<ul class="dropdown">
-						<?php foreach($page->items as $article): ?>
-						<li class=""> <a href="<?=$article->url;?>"> <?=$article->title;?> </a> </li>
+						<?php foreach($nav->items as $subnav): ?>
+						<li class=""> <a href="<?=$subnav->item->url;?>"> <?=$subnav->item->title;?> </a> </li>
 						<?php endforeach; ?>
 					</ul>
 					<?php endif; ?>
