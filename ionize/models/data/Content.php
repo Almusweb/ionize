@@ -332,12 +332,43 @@ class Content implements \DataModel
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
 	/**
+	 * Get Content ID
+	 *
+	 * @access public
+	 * @return int
+	 */
+	public function getData( $language = NULL )
+	{
+		if(count($this->_data) > 0)
+		{
+			if($language == NULL) $language = current_language();
+			
+			// If language data not exists then try load it
+			if(!array_key_exists($language, $this->_data)) $this->getByID( $this->id, TRUE, FALSE, $language );
+			
+			// If language data is exists then return it or return FALSE
+			if(array_key_exists($language, $this->_data)) return $this->_data[$language];
+			else return FALSE;
+		}
+		else
+		{
+			$error_message = 'Model\Data\Content->getID(): Data must be loaded first before geting ContentData';
+			if(ENVIRONMENT == 'development') throw new \RuntimeException($error_message);
+			else log_message('ERROR', $error_message);
+			
+			return FALSE;
+		}
+		
+	}
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	/**
 	 * Get Content By ID
 	 *
 	 * @access public
 	 * @return void
 	 */
-	public function getByID( $id = NULL, $forceSelect = FALSE, $getItems = TRUE )
+	public function getByID( $id = NULL, $forceSelect = FALSE, $getItems = TRUE, $language = NULL )
 	{
 		$codeigniter =& get_instance();
 		$codeigniter->benchmark->mark('Model\Data\Content_class_getByID_start');
@@ -379,9 +410,12 @@ class Content implements \DataModel
 		// If id is and array of ids
 		else if(is_array($id))
 		{
+			// Get the current language or the language what specified
+			$language = ($language != NULL ? $language : current_language());
+		
 			// Get Database model instance
 			$content = \Model\Database\Content::get_instance();
-			$query = $content->where_in('id_content', $id)->get();
+			$query = $content->where_in('id_content', $id)->where('language',$language)->get();
 			
 			// If query has results
 			if($query->num_rows() > 0)
@@ -397,6 +431,7 @@ class Content implements \DataModel
 						// Create content from database data
 						$content = new Content( $row, $getItems );
 					}
+					// This should not happend if I filter the language in the select, just in case handle it
 					else
 					{
 						// Get content from the classes
@@ -495,7 +530,7 @@ class Content implements \DataModel
 		}
 		else
 		{
-			// This never should happend
+			// This should never happend, because the content translations table has content+language unique key
 			$error_message = 'Model\Data\Content->addTranslate(): Translate already registered, duplicate data detected!';
 			log_message('ERROR', $error_message); throw new \RuntimeException($error_message);
 			

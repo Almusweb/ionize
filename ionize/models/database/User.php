@@ -1,4 +1,4 @@
-<?php namespace Model\Database\User;
+<?php namespace Model\Database;
 
 /**
  * @package	Ionize

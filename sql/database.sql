@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Hoszt: localhost
--- Létrehozás ideje: 2015. Aug 21. 21:50
+-- Létrehozás ideje: 2015. Aug 22. 16:19
 -- Szerver verzió: 5.6.25-0ubuntu0.15.04.1
 -- PHP verzió: 5.6.4-4ubuntu6.2
 
@@ -190,7 +190,23 @@ DELIMITER //
 CREATE TRIGGER `contents_after_insert` AFTER INSERT ON `contents`
  FOR EACH ROW BEGIN
 
-	
+	DECLARE $id_content, $id_language INTEGER;
+	DECLARE $language VARCHAR(30);
+	DECLARE $done BOOLEAN DEFAULT FALSE;
+
+	DECLARE LANGUAGES_CURSOR CURSOR FOR SELECT `id_language`, `code` FROM `languages`;
+	DECLARE CONTINUE HANDLER FOR NOT FOUND SET $done = TRUE;
+
+	OPEN LANGUAGES_CURSOR; CURSOR_LOOP: LOOP
+		-- Fetch data from the languages
+		FETCH LANGUAGES_CURSOR INTO $id_language, $language;
+		-- If done with the fetch
+		IF $done = TRUE THEN LEAVE CURSOR_LOOP; END IF;
+		
+		-- Create translations for all language
+		INSERT INTO `contents_translations`(`id_content`,`id_language`,`language`) VALUES(NEW.`id_content`, $id_language, $language);
+
+	END LOOP CURSOR_LOOP; CLOSE LANGUAGES_CURSOR;
 
 END
 //
@@ -318,20 +334,6 @@ INSERT INTO `contents_translations` (`id_translation`, `id_content`, `id_languag
 (4, 3, 1, 'en_US', 'Codeigniter 3.0', NULL, NULL, NULL, NULL, 'codeigniter3', '/whats-new/codeigniter3', '<p class="justify">The Codeigniter framework was replaced to Codeigniter 3.0, the core files was rewritten completely, now the database models and the content objects has seperate classes with namespaces. The core now functioning as a HMVVMC Hierarchical Model–View-ViewModel–Controller structure. The database model view access from now forbidden for security reasons.</p>', '<p class="justify">The Codeigniter framework was replaced to Codeigniter 3.0, the core files was rewritten completely, now the database models and the content objects has seperate classes with namespaces. The core now functioning as a HMVVMC Hierarchical Model–View-ViewModel–Controller structure. The database model view access from now forbidden for security reasons.</p>', NULL, NULL, NULL),
 (5, 4, 1, 'en_US', 'Database', NULL, NULL, NULL, NULL, 'database', '/whats-new/database', '<p class="justify">New remaked Database structure with Views, Triggers, Procedures and Functions. The Database now generating and cleaning itself and contents generator functions can be use for developments.</p>', '<p class="justify">New remaked Database structure with Views, Triggers, Procedures and Functions. The Database now generating and cleaning itself and contents generator functions can be use for developments.</p>', NULL, NULL, NULL);
 
---
--- Eseményindítók `contents_translations`
---
-DROP TRIGGER IF EXISTS `contents_translations_after_insert`;
-DELIMITER //
-CREATE TRIGGER `contents_translations_after_insert` AFTER INSERT ON `contents_translations`
- FOR EACH ROW BEGIN
-
-	
-
-END
-//
-DELIMITER ;
-
 -- --------------------------------------------------------
 
 --
@@ -419,6 +421,20 @@ CREATE TABLE IF NOT EXISTS `extends` (
 -- --------------------------------------------------------
 
 --
+-- A nézet helyettes szerkezete `language`
+--
+DROP VIEW IF EXISTS `language`;
+CREATE TABLE IF NOT EXISTS `language` (
+`id_language` int(11) unsigned
+,`language` varchar(20)
+,`ordering` int(11) unsigned
+,`code` varchar(10)
+,`name` varchar(50)
+,`default` tinyint(1) unsigned
+);
+-- --------------------------------------------------------
+
+--
 -- Tábla szerkezet ehhez a táblához `languages`
 --
 
@@ -437,8 +453,7 @@ CREATE TABLE IF NOT EXISTS `languages` (
 --
 
 INSERT INTO `languages` (`id_language`, `code`, `url`, `name`, `ordering`, `default`) VALUES
-(1, 'en_US', 'en', 'English', 0, 1),
-(2, 'hu_HU', 'hu', 'Magyar', 1, 0);
+(1, 'en_US', 'en', 'English', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -551,7 +566,7 @@ CREATE TABLE IF NOT EXISTS `navigations_contents` (
   `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `id_creator` int(11) unsigned DEFAULT NULL,
   `creator` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 --
 -- TÁBLA KAPCSOLATAI `navigations_contents`:
@@ -559,6 +574,8 @@ CREATE TABLE IF NOT EXISTS `navigations_contents` (
 --       `navigations` -> `id_navigation`
 --   `id_content`
 --       `contents` -> `id_content`
+--   `id_parent`
+--       `navigations_contents` -> `id_item`
 --
 
 --
@@ -599,6 +616,29 @@ INSERT INTO `roles` (`id_role`, `code`, `ordering`, `level`, `name`, `descriptio
 -- --------------------------------------------------------
 
 --
+-- Tábla szerkezet ehhez a táblához `sessions`
+--
+
+DROP TABLE IF EXISTS `sessions`;
+CREATE TABLE IF NOT EXISTS `sessions` (
+  `id` varchar(40) NOT NULL,
+  `ip_address` varchar(45) NOT NULL,
+  `timestamp` int(10) unsigned NOT NULL DEFAULT '0',
+  `data` blob NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- A tábla adatainak kiíratása `sessions`
+--
+
+INSERT INTO `sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES
+('7e422a3d87f98bbcca9bb98ad9b27d0a846c65a0', '127.0.0.1', 1440252380, 0x5f5f63695f6c6173745f726567656e65726174657c693a313434303235323038333b6c616e67756167657c733a353a22656e5f5553223b),
+('c1426b487bb5b57240b60530aadb37a078a37f4e', '127.0.0.1', 1440253127, 0x5f5f63695f6c6173745f726567656e65726174657c693a313434303235333131363b6c616e67756167657c733a353a22656e5f5553223b),
+('d5e1a9981e94250df2149f0fe557d260b46cc559', '127.0.0.1', 1440252465, 0x5f5f63695f6c6173745f726567656e65726174657c693a313434303235323431363b6c616e67756167657c733a353a22656e5f5553223b);
+
+-- --------------------------------------------------------
+
+--
 -- Tábla szerkezet ehhez a táblához `settings`
 --
 
@@ -618,8 +658,7 @@ CREATE TABLE IF NOT EXISTS `settings` (
 INSERT INTO `settings` (`id_settings`, `id_language`, `language`, `name`, `value`) VALUES
 (1, NULL, NULL, 'language', 'en_US'),
 (2, NULL, NULL, 'theme', 'Default_Native'),
-(3, 1, 'en_US', 'site_title', 'My Website'),
-(4, 2, 'hu_HU', 'site_title', 'My Website');
+(3, 1, 'en_US', 'site_title', 'My Website');
 
 -- --------------------------------------------------------
 
@@ -653,6 +692,43 @@ CREATE TABLE IF NOT EXISTS `urls` (
 -- --------------------------------------------------------
 
 --
+-- A nézet helyettes szerkezete `user`
+--
+DROP VIEW IF EXISTS `user`;
+CREATE TABLE IF NOT EXISTS `user` (
+`id_user` int(11) unsigned
+,`login` varchar(50)
+,`encryption` enum('text','md5','sha256')
+,`password` varchar(100)
+,`name` varchar(100)
+,`email` varchar(100)
+,`forname` varchar(50)
+,`lastname` varchar(50)
+,`gender` enum('w','m')
+,`birthday` date
+,`birthday_unix` bigint(11)
+,`activated` datetime
+,`activated_unix` bigint(11)
+,`registered` timestamp
+,`registered_unix` bigint(11)
+,`id_role` bigint(11) unsigned
+,`role` varchar(20)
+,`role_name` varchar(100)
+,`role_level` bigint(11)
+,`level` bigint(11)
+,`id_language` int(11) unsigned
+,`language` varchar(30)
+,`last_login` datetime
+,`last_login_unix` bigint(11)
+,`last_ip` varchar(20)
+,`login_try` int(2) unsigned
+,`extends_data` text
+,`deactivated` datetime
+,`deactivated_unix` bigint(11)
+);
+-- --------------------------------------------------------
+
+--
 -- Tábla szerkezet ehhez a táblához `users`
 --
 
@@ -660,8 +736,7 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
 `id_user` int(11) unsigned NOT NULL,
   `login` varchar(50) NOT NULL,
-  `encryption` enum('text','md5','sha') DEFAULT 'text',
-  `hash` varchar(100) DEFAULT NULL,
+  `encryption` enum('text','md5','sha256') DEFAULT 'text',
   `password` varchar(100) NOT NULL,
   `name` varchar(100) DEFAULT NULL,
   `email` varchar(100) NOT NULL,
@@ -692,8 +767,8 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- A tábla adatainak kiíratása `users`
 --
 
-INSERT INTO `users` (`id_user`, `login`, `encryption`, `hash`, `password`, `name`, `email`, `forname`, `lastname`, `gender`, `birthday`, `activated`, `registered`, `id_role`, `id_language`, `language`, `last_login`, `last_ip`, `login_try`, `extends_data`, `deactivated`, `deleted`) VALUES
-(1, 'admin', 'text', NULL, 'admin', 'Admin User', 'admin@ionizecms.com', 'Admin', 'User', NULL, NULL, '2015-08-12 17:07:10', '2015-08-12 14:41:58', 1, 1, 'en_US', NULL, NULL, 0, NULL, NULL, NULL);
+INSERT INTO `users` (`id_user`, `login`, `encryption`, `password`, `name`, `email`, `forname`, `lastname`, `gender`, `birthday`, `activated`, `registered`, `id_role`, `id_language`, `language`, `last_login`, `last_ip`, `login_try`, `extends_data`, `deactivated`, `deleted`) VALUES
+(1, 'admin', 'text', 'admin', 'Admin User', 'admin@ionizecms.com', 'Admin', 'User', NULL, NULL, '2015-08-12 17:07:10', '2015-08-12 14:41:58', 1, 1, 'en_US', NULL, NULL, 0, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -707,11 +782,29 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- --------------------------------------------------------
 
 --
+-- Nézet szerkezete `language`
+--
+DROP TABLE IF EXISTS `language`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `language` AS select `l`.`id_language` AS `id_language`,`l`.`code` AS `language`,`l`.`ordering` AS `ordering`,`l`.`url` AS `code`,`l`.`name` AS `name`,`l`.`default` AS `default` from `languages` `l` order by `l`.`ordering`;
+
+-- --------------------------------------------------------
+
+--
 -- Nézet szerkezete `navigation`
 --
 DROP TABLE IF EXISTS `navigation`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `navigation` AS select `n`.`id_navigation` AS `id_navigation`,`n`.`ordering` AS `navigation_ordering`,`n`.`code` AS `code`,`n`.`name` AS `name`,`nc`.`id_item` AS `id_item`,`nc`.`level` AS `level`,`nc`.`ordering` AS `ordering`,`nc`.`id_url` AS `id_url`,`nc`.`id_content` AS `id_content`,`nc`.`id_parent` AS `id_parent`,`ncp`.`id_item` AS `parent_item`,`ncp`.`level` AS `parent_level`,`ncp`.`ordering` AS `parent_ordering`,`ncp`.`id_content` AS `parent_content`,`ncp`.`id_url` AS `parent_link` from ((`navigations` `n` join `navigations_contents` `nc` on((`nc`.`id_navigation` = `n`.`id_navigation`))) left join `navigations_contents` `ncp` on((`nc`.`id_parent` = `ncp`.`id_content`))) order by `n`.`ordering`,`nc`.`level`,`ncp`.`ordering`,`nc`.`ordering`;
+
+-- --------------------------------------------------------
+
+--
+-- Nézet szerkezete `user`
+--
+DROP TABLE IF EXISTS `user`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `user` AS select `u`.`id_user` AS `id_user`,`u`.`login` AS `login`,`u`.`encryption` AS `encryption`,`u`.`password` AS `password`,`u`.`name` AS `name`,`u`.`email` AS `email`,`u`.`forname` AS `forname`,`u`.`lastname` AS `lastname`,`u`.`gender` AS `gender`,`u`.`birthday` AS `birthday`,unix_timestamp(`u`.`birthday`) AS `birthday_unix`,`u`.`activated` AS `activated`,unix_timestamp(`u`.`activated`) AS `activated_unix`,`u`.`registered` AS `registered`,unix_timestamp(`u`.`registered`) AS `registered_unix`,coalesce(`ur`.`id_role`,`dr`.`id_role`) AS `id_role`,coalesce(`ur`.`code`,`dr`.`code`) AS `role`,coalesce(`ur`.`name`,`dr`.`name`) AS `role_name`,coalesce(`ur`.`level`,`dr`.`level`) AS `role_level`,coalesce(`ur`.`level`,`dr`.`level`) AS `level`,`u`.`id_language` AS `id_language`,`u`.`language` AS `language`,`u`.`last_login` AS `last_login`,unix_timestamp(`u`.`last_login`) AS `last_login_unix`,`u`.`last_ip` AS `last_ip`,`u`.`login_try` AS `login_try`,`u`.`extends_data` AS `extends_data`,`u`.`deactivated` AS `deactivated`,unix_timestamp(`u`.`deactivated`) AS `deactivated_unix` from ((`users` `u` left join `roles` `ur` on((`ur`.`id_role` = `u`.`id_role`))) left join `roles` `dr` on((`dr`.`level` <= 100))) where isnull(`u`.`deleted`);
 
 --
 -- Indexes for dumped tables
@@ -805,13 +898,19 @@ ALTER TABLE `navigations`
 -- Indexes for table `navigations_contents`
 --
 ALTER TABLE `navigations_contents`
- ADD PRIMARY KEY (`id_item`), ADD KEY `id_navigation` (`id_navigation`), ADD KEY `id_content` (`id_content`), ADD KEY `id_creator` (`id_creator`,`creator`);
+ ADD PRIMARY KEY (`id_item`), ADD KEY `id_navigation` (`id_navigation`), ADD KEY `id_content` (`id_content`), ADD KEY `id_creator` (`id_creator`,`creator`), ADD KEY `id_parent` (`id_parent`);
 
 --
 -- Indexes for table `roles`
 --
 ALTER TABLE `roles`
  ADD PRIMARY KEY (`id_role`,`code`), ADD KEY `id_role` (`id_role`);
+
+--
+-- Indexes for table `sessions`
+--
+ALTER TABLE `sessions`
+ ADD PRIMARY KEY (`id`), ADD KEY `key_sessions_timestamp` (`timestamp`);
 
 --
 -- Indexes for table `settings`
@@ -904,7 +1003,7 @@ MODIFY `id_navigation` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2
 -- AUTO_INCREMENT for table `navigations_contents`
 --
 ALTER TABLE `navigations_contents`
-MODIFY `id_item` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
+MODIFY `id_item` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `roles`
 --
@@ -1013,7 +1112,8 @@ ADD CONSTRAINT `medias_translations_ibfk_2` FOREIGN KEY (`id_language`, `languag
 ALTER TABLE `navigations_contents`
 ADD CONSTRAINT `navigations_contents_ibfk_1` FOREIGN KEY (`id_navigation`) REFERENCES `navigations` (`id_navigation`) ON DELETE CASCADE ON UPDATE CASCADE,
 ADD CONSTRAINT `navigations_contents_ibfk_2` FOREIGN KEY (`id_content`) REFERENCES `contents` (`id_content`) ON DELETE CASCADE ON UPDATE CASCADE,
-ADD CONSTRAINT `navigations_contents_ibfk_3` FOREIGN KEY (`id_creator`, `creator`) REFERENCES `users` (`id_user`, `email`) ON DELETE SET NULL ON UPDATE CASCADE;
+ADD CONSTRAINT `navigations_contents_ibfk_3` FOREIGN KEY (`id_creator`, `creator`) REFERENCES `users` (`id_user`, `email`) ON DELETE SET NULL ON UPDATE CASCADE,
+ADD CONSTRAINT `navigations_contents_ibfk_4` FOREIGN KEY (`id_parent`) REFERENCES `navigations_contents` (`id_item`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Megkötések a táblához `settings`

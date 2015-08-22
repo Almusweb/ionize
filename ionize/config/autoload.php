@@ -146,6 +146,14 @@ $autoload['model']['Base'] 						= "base_model";
 $autoload['model']['database/Settings'] 		= 'settings_model';
 $autoload['model']['data/Settings'] 			= 'settings_data';
 
+// Settings model and class
+$autoload['model']['database/Language'] 		= 'language_model';
+$autoload['model']['data/Language'] 			= 'language_data';
+
+// Settings model and class
+$autoload['model']['database/User'] 			= 'user_model';
+$autoload['model']['data/User'] 				= 'user_data';
+
 // Content model and class
 $autoload['model']['database/Content'] 			= 'content_model';
 $autoload['model']['data/Content'] 				= 'content_data';

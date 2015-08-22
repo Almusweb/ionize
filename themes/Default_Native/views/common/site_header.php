@@ -6,7 +6,16 @@
 		</ul>
 
 		<section class="top-bar-section">
-			<ul class="right">
+		
+			<ul id="site_languages" class="right">
+			<?php foreach(Ionize::Language( $languages )->items() as $lang): ?>
+				<li class="<?=($lang->isActive() ? 'active' : '')?>">
+					<a href="<?=$lang->url?>"> <?=strtoupper($lang->code)?> </a>
+				</li>
+			<?php endforeach; ?>
+			</ul>
+		
+			<ul class="right navigation">
 			<?php foreach(Ionize::Navigation( $navigations->main )->items() as $nav): ?>
 				<li class="<?=($nav->item->isActive() ? 'active' : '')?> <?=($nav->hasItems() ? 'has-dropdown' : '')?>">
 					<a href="<?=$nav->item->url;?>"> <?=$nav->item->title;?> </a> 

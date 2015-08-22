@@ -65,8 +65,12 @@ h5 {
 	height: 40px; line-height: 40px;
 }
 
-#site_navigation li.active, #site_navigation li.active a {
+#site_navigation .navigation li.active, #site_navigation .navigation li.active a {
 	background: #222;
+}
+
+#site_languages {
+	margin-left: 20px;
 }
 
 #content_container {

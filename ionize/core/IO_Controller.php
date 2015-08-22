@@ -35,7 +35,6 @@ class IO_Controller extends CI_Controller
 		$this->io_config = (object) $this->config->config['ionize'];
 		
 		$this->settings = \Model\Data\Settings::get_instance();
-		$this->session->language = $this->settings->language;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 }

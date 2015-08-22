@@ -44,6 +44,9 @@ class Output extends IO_Controller
 			// Create a reference to the current content
 			self::$current_content =& $content;
 			
+			// Load the languages
+			$this->_getLanguages();
+			
 			// Load the navigations
 			$this->_getNavigations();
 			
@@ -148,6 +151,15 @@ class Output extends IO_Controller
 		
 		$this->benchmark->mark('Output_controller__getNavigations_start');
 	}
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	private function _getLanguages()
+	{
+		$this->benchmark->mark('Output_controller__getLanguages_start');
+		$this->renderer->assign('languages', $this->language_data);
+		$this->benchmark->mark('Output_controller__getLanguages_end');
+	}
+	
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
 	public function error_404()
