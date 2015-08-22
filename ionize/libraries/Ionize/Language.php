@@ -12,14 +12,6 @@ class Language extends Tagmanager implements IonizeLibrary
 	private $language = NULL;
 
 	/* ------------------------------------------------------------------------------------------------------------- */
-	
-	public function __construct( $language = NULL )
-	{
-		parent::__construct();
-		
-		$this->initialize( $language );
-	}
-	/* ------------------------------------------------------------------------------------------------------------- */
 
 	public function initialize( $data = NULL )
 	{

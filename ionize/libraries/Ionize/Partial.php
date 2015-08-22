@@ -8,10 +8,6 @@
  */
 class Partial extends Tagmanager implements IonizeLibrary
 {
-	public function __construct()
-	{
-		parent::__construct();
-	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
 	public function initialize( $data = NULL )

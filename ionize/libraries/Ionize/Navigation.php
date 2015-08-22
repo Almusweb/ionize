@@ -12,14 +12,6 @@ class Navigation extends Tagmanager implements IonizeLibrary
 	private $navigation = NULL;
 
 	/* ------------------------------------------------------------------------------------------------------------- */
-	
-	public function __construct( $navigation = NULL )
-	{
-		parent::__construct();
-		
-		$this->initialize( $navigation );
-	}
-	/* ------------------------------------------------------------------------------------------------------------- */
 
 	public function initialize( $data = NULL )
 	{

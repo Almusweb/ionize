@@ -4,24 +4,30 @@
 <div id="content_container">
 	<div id="content">
 	
-		<?=Ionize::tag($content->subtitle, 'h2');?>
-		<?=$content->content?>
+		<?php foreach(Ionize::Page()->get() as $page): ?>
 		
-		<?php foreach($content->items as $article): ?>
-		
-		<article>
-			<header>
-				<h3><?=$article->title?></h3>
-			<header>
+			<?=Ionize::tag($page->subtitle, 'h2');?>
+			<?=Ionize::tag($page->content, 'div');?>
 			
-			<section class="content">
-				<?=$article->content?>
-			</section>
+			<?php foreach(Ionize::Articles( $page )->get() as $articles): ?>
+			<?php foreach(Ionize::Article( $articles )->get() as $article): ?>
+				
+			<article>
+				<header>
+					<?=Ionize::tag($article->title, 'h3');?>
+				<header>
 			
-			<footer>
-				<a class="button tiny" href="<?=$article->url?>"> <?=lang('read_more')?> </a>
-			</footer>
-		</article>
+				<section class="content">
+					<?=$article->content?>
+				</section>
+			
+				<footer>
+					<a class="button tiny" href="<?=$article->url?>"> <?=lang('read_more')?> </a>
+				</footer>
+			</article>
+				
+			<?php endforeach; ?>
+			<?php endforeach; ?>
 		
 		<?php endforeach; ?>
 		
