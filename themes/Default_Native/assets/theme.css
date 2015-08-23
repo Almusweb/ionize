@@ -8,6 +8,10 @@ body {
 	background: #eee url('images/background.jpg') repeat top left;
 }
 
+h1, h2, h3, h4, h5, h6 {
+	font-family: 'Century Gothic',futura,'URW Gothic L',Verdana,sans-serif;
+}
+
 h1 {
 	font-size: 250%;
 }
@@ -38,6 +42,20 @@ h5 {
 	border-bottom: 1px solid #3f73a5;
 }
 
+.content_codeigniter3 #header_container {
+	background: rgba(250, 85, 35, 0.90);
+  	
+  	box-shadow: 0 0 10px rgba(250, 85, 35, 0.20);
+  	text-shadow: 0 0 5px #8a361f;
+  	border-color: #8a361f;
+}
+
+.content_codeigniter3 #header_container > header {
+	background: url('images/header-codeigniter.png') no-repeat center center;
+	background-position: -10px 50%;
+  	background-size: auto 100%;
+}
+
 #header_container > header,
 #content_container > #content,
 #site_navigation {
@@ -45,8 +63,12 @@ h5 {
 	padding: 22px 0;
 }
 
+#content_container > #content.narrow {
+	width: 900px;
+}
+
 #header_container > header h1 {
-	color: #eee; font-weight: normal;
+	color: #eee; font-weight: bold;
 }
 
 #site_navigation, #site_navigation_container {
@@ -54,7 +76,9 @@ h5 {
 }
 
 #site_navigation_container {
-	border-bottom: 1px solid #222; position: relative;
+	border-top: 4px solid #222;
+	border-bottom: 1px solid #222;
+	position: relative;
 }
 
 #site_navigation {

@@ -9,7 +9,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | Data models cache time
 |
 */
-$config['data_model_cache'] = 0;
+$config['data_model_cache'] = 3600;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,7 +29,7 @@ $config['select_cache'] = FALSE;
 | Loaded views cache time
 |
 */
-$config['views_cache'] = 0;
+$config['views_cache'] = 3600;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,7 +51,6 @@ $config['output_cache'] = 0;
 */
 $config['theme'] = 'Default_Native';
 
-
 /*
 |--------------------------------------------------------------------------
 | Active Language
@@ -60,7 +59,7 @@ $config['theme'] = 'Default_Native';
 | Active language in ISO code
 |
 */
-$config['language'] = 'en_US';
+$config['language'] = 'en';
 
 /*
 |--------------------------------------------------------------------------
@@ -70,4 +69,4 @@ $config['language'] = 'en_US';
 | Active languages array. The items must be the ISO language code.
 |
 */
-$config['languages'] = array('en_US');
+$config['languages'] = array('en');

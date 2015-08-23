@@ -439,18 +439,16 @@ class CI_Output {
 		// Parse out the elapsed time and memory usage,
 		// then swap the pseudo-variables with the data
 
+		$elapsed = $BM->elapsed_time('total_execution_time_start', 'total_execution_time_end', 5);
+
 		if ($this->parse_exec_vars === TRUE)
 		{
-			$elapsed = $BM->elapsed_time('total_execution_time_start', 'total_execution_time_end', 5);
+			$memory	= round(memory_get_usage() / 1024 / 1024, 2).'MB';
 			$elapsed = str_replace('.','',$elapsed);
 			
 			$elapsed = ltrim((substr($elapsed, 0, 4)),'0').'.'.substr($elapsed, 4).'ms';
-			$memory	= round(memory_get_usage() / 1024 / 1024, 2).'MB';
 			
-			$search = array('{memory_usage}', '{elapsed_time}');
-			$replace = array($memory, $elapsed);
-			
-			$output = str_replace($search, $replace, $output);
+			$output = str_replace(array('{memory_usage}', '{elapsed_time}'), array($memory, $elapsed), $output);
 		}
 
 		// --------------------------------------------------------------------

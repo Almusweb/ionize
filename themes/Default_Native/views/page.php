@@ -2,7 +2,7 @@
 <?php echo Ionize::Partial()->View('common/site_header'); ?>
 
 <div id="content_container">
-	<div id="content">
+	<div id="content" class="narrow">
 	
 		<?php foreach(Ionize::Page()->get() as $page): ?>
 		
@@ -18,7 +18,7 @@
 				<header>
 			
 				<section class="content">
-					<?=$article->content?>
+					<?=$article->preview?>
 				</section>
 			
 				<footer>

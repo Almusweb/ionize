@@ -220,6 +220,8 @@ class Content implements \DataModel
 		$codeigniter =& get_instance();
 		$codeigniter->benchmark->mark('Model\Data\Content_class_initialize_start');
 		
+		if(is_array($data)) $data = (object) $data;
+		
 		// Saving data to properties
 		$this->_data[$data->language] = (array) $data;
 		

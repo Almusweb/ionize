@@ -13,4 +13,4 @@
 	<script src="<?=Ionize::theme_url()?>libraries/foundation-5.5.2.min.js"></script>
 	
 </head>
-<body>
+<body class="content_<?=$content->name?> content_<?=$content->id_content?>" >
