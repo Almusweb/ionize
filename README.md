@@ -10,7 +10,8 @@ the previous confortable Ionize  tags for template parsing but from now Ionize w
 template parser engines like Smarty and Dwoo.
 
 Official website: http://www.ionizecms.com
-Gitter Char: [![Join the chat at https://gitter.im/adamos42/ionize](https://badges.gitter.im/adamos42/ionize.svg)](https://gitter.im/adamos42/ionize?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+Gitter chat: [![Join the chat at https://gitter.im/adamos42/ionize](https://badges.gitter.im/adamos42/ionize.svg)](https://gitter.im/adamos42/ionize?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ### Authors
 
