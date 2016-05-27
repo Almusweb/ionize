@@ -13,6 +13,8 @@ Official website: http://www.ionizecms.com
 
 Official github: https://github.com/ionize/ionize
 
+Travis: ![Build Status](https://travis-ci.org/adamos42/ionize.svg)
+
 ### Requested features
 
 - [x] Composer and PSR, Using PHP 5.4+ Namespaces and Traits

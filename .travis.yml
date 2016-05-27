@@ -25,7 +25,6 @@ env:
   - DB=mysql
   - DB=pgsql
   
-install:
-  - composer install
+before_script: composer install
 
 script: php public/index.php
