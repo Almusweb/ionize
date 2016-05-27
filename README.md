@@ -1,6 +1,6 @@
 # Ionize
 
-![Build Status](https://travis-ci.org/adamos42/ionize.svg)
+[![Latest Stable Version](https://poser.pugx.org/adamos42/ionize/v/stable)](https://packagist.org/packages/adamos42/ionize) [![Total Downloads](https://poser.pugx.org/adamos42/ionize/downloads)](https://packagist.org/packages/adamos42/ionize) [![Latest Unstable Version](https://poser.pugx.org/adamos42/ionize/v/unstable)](https://packagist.org/packages/adamos42/ionize) [![License](https://poser.pugx.org/adamos42/ionize/license)](https://packagist.org/packages/adamos42/ionize) ![Build Status](https://travis-ci.org/adamos42/ionize.svg)
 
 Ionize is an  Open Source PHP Content Management system created for  webdesigners and developers.
 Ionize is a free professional and  natively multilingual  PHP CMS, developed with user experience
