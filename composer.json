@@ -1,8 +1,8 @@
 {
 	"name": "adamos42/ionize",
     "type": "project",
-    "description": "Ionize is an Open Source PHP Content Management system created for webdesigners and developers. Ionize is a free professional and natively multilingual PHP CMS, developed with user experience in mind. Ionize is dedicated to webdesigners and web agencies to simply make their clients happy, but also for developers who does not have his hands tied as in other CMS.",
-    "keywords": ["Content Manager System","CMS"],
+    "description": "Ionize is an Open Source PHP Content Management system created for webdesigners and developers.",
+    "keywords": ["Content Manager System","Content Manager","CMS"],
     "homepage": "https://github.com/adamos42/ionize",
     "license": "MIT",
     "authors": [
