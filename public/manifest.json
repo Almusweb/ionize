@@ -1,0 +1,6 @@
+{
+	"name": "Ionize2.0",
+	"icons": [],
+	"start_url": "index.php",
+	"display": "standalone"
+}

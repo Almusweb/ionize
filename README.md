@@ -7,7 +7,7 @@ but also for developers who does not have his hands tied as in other CMS.
 
 The code is rewritten in  Codeigniter 3.0 PHP Framework  and designed for performance but keeping
 the previous confortable Ionize  tags for template parsing but from now Ionize will support other
-template parser engines like Smarty and Dwoo. Also a bunch of new features should be made!
+template parser engines like Smarty and Dwoo. Also a bunch of new features will be implemented.
 
 Official website: http://www.ionizecms.com
 
@@ -15,9 +15,10 @@ Official github: https://github.com/ionize/ionize
 
 ### Requested features
 
-- [ ] CodeIgniter 3.0.x and PHP5.6+ Support
+- [x] Composer and PSR, Using PHP 5.4+ Namespaces and Traits
+- [x] CodeIgniter 3.0.x and PHP5.6+ Support
 - [ ] Add custom javascript and style for content
-- [ ] Support bower and webcomponents for themes
+- [x] Support bower and webcomponents for themes
 - [ ] Menu and Content split, add Content to multiple menu item
 - [ ] Moving trough the Hiearchy in Content class (parent, children)
 - [ ] Version Control For Content, Revisor publishing the changes
@@ -29,7 +30,6 @@ Official github: https://github.com/ionize/ionize
 - [ ] Form Manage on Administration (configure items and actions)
 - [ ] Update Notification for Plugins and the System
 - [ ] Support the current Ionize tags, but parsing like a template system
-- [ ] Compozer and PSR, Using PHP 5.4+ Namespaces and Traits
 - [ ] Support other Database than MySQL
 - [ ] Responsive Administration, Inline editing (on frontend)
 - [ ] Preview Article from Administration, Live edit

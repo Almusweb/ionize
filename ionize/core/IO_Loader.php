@@ -1,295 +1,259 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php
+/* ----------------------------------------------------------------------------------------------------------------- */
+
+// Load the module loader class
+include_once APPPATH.'core/HMVC/Loader.php';
+
+/* ----------------------------------------------------------------------------------------------------------------- */
 
 /**
- * @package	Ionize
- * @author	Adam Liszkai <contact@liszkaiadam.hu>
+ * Extending the Loader class
+ *
+ * Adding auto-namespace and abstract detection and loading for the models and libraries
+ *
+ * @package Ionize
+ * @subpackage Core
+ *
+ * @author	Ádám Liszkai <contact@liszkaiadam.hu>
  * @link	http://ionizecms.com
  * @since	Version 2.0.0
  */
-class IO_Loader extends CI_Loader
+class IO_Loader extends HMVC_Loader
 {
-	/* ------------------------------------------------------------------------------------------------------------ */
+	public function __construct()
+	{
+		parent::__construct();
+		
+		log_message('debug', 'AKH_Loader Class Initialized');
+	}
+	/* ------------------------------------------------------------------------------------------------------------- */
 	
-    /**
-     * List of paths to namespaces from
-     *
-     * @var int
-     * @access protected
-     */
-    protected $_ci_namespaces_paths      = array();
-    /* ------------------------------------------------------------------------------------------------------------ */
-    
-    /**
-     * List of paths to interfaces from
-     *
-     * @var array
-     * @access protected
-     */
-    protected $_ci_interfaces_paths     = array();
-    /* ------------------------------------------------------------------------------------------------------------ */
-    
-    /**
-     * List of loaded namespaces
-     *
-     * @var array
-     * @access protected
-     */
-    protected $_ci_namespaces            = array();
-    /* ------------------------------------------------------------------------------------------------------------ */
-    
-    /**
-     * List of loaded interfaces
-     *
-     * @var array
-     * @access protected
-     */
-    protected $_ci_interfaces           = array();
-    /* ------------------------------------------------------------------------------------------------------------ */
-
-    /**
-     * Constructor
-     *
-     * Sets the path to the view files and gets the initial output buffering level
-     */
-    function __construct()
-    {
-        parent::__construct();
-        $this->_ci_namespaces_paths = array(APPPATH);
-        $this->_ci_interfaces_paths = array(APPPATH);
-        log_message('debug', "Loader Class Initialized");
-    }
-	/* ------------------------------------------------------------------------------------------------------------ */
-
-    /**
-     * Initialize the Loader
-     *
-     * This method is called once in CI_Controller.
-     *
-     * @param   array
-     * @return  object
-     */
-    public function initialize()
-    {
-        $this->_ci_interfaces = array();
-        $this->_ci_namespaces = array();
-        $this->_ci_autoloader();
-
-        return $this;
-    }
-	/* ------------------------------------------------------------------------------------------------------------ */
-
-    /**
-     * Interface Loader
-     *
-     * This function lets users load and instantiate interfaces.
-     *
-     * @param   string  the name of the class
-     * @param   string  name for the interface
-     * @param   bool    database connection
-     * @return  void
-     */
-    public function interfaces($interfaces, $name = '', $db_conn = FALSE)
-    {
-        if (is_array($interfaces))
-        {
-            foreach ($interfaces as $babe)
-            {
-                $this->interfaces($babe);
-            }
-            return;
-        }
-
-        if ($interfaces == '')
-        {
-            return;
-        }
-
-        $path = '';
-
-        // Is the abstracts in a sub-folder? If so, parse out the filename and path.
-        if (($last_slash = strrpos($interfaces, '/')) !== FALSE)
-        {
-            // The path is in front of the last slash
-            $path = substr($interfaces, 0, $last_slash + 1);
-
-            // And the model name behind it
-            $interfaces = substr($interfaces, $last_slash + 1);
-        }
-
-        if ($name == '') $name = $interfaces;
-
-        if (in_array($name, $this->_ci_interfaces, TRUE)) return;
-
-        foreach ($this->_ci_interfaces_paths as $mod_path)
-        {
-            if ( ! file_exists($mod_path.'interfaces/'.$path.$interfaces.'.php'))
-            {
-                continue;
-            }
-            
-            require_once($mod_path.'interfaces/'.$path.$interfaces.'.php');
-            $this->_ci_interfaces[] = $name;
-            return;
-        }
-
-        // couldn't find the interfaces
-        show_error('Unable to locate the interfaces you have specified: '.$interfaces);
-    }
-	/* ------------------------------------------------------------------------------------------------------------ */
-    
-    /**
-     * Namespaces Loader
-     *
-     * This function lets users load namespaces default codes and functions
-     *
-     * @param   string  the name of the namespace
-     * @return  void
-     */
-    public function namespaces($namespace)
-    {
-        if (is_array($namespace))
-        {
-            foreach ($namespace as $item)
-            {
-                $this->namespaces($item);
-            }
-            return;
-        }
-
-        if ($namespace == '')
-        {
-            return;
-        }
-
-        $path = '';
-
-        // Is the abstracts in a sub-folder? If so, parse out the filename and path.
-        if (($last_slash = strrpos($namespace, '/')) !== FALSE)
-        {
-            // The path is in front of the last slash
-            $path = substr($namespace, 0, $last_slash + 1);
-
-            // And the model name behind it
-            $namespace = substr($namespace, $last_slash + 1);
-        }
-
-		// If already loaded the namespace then exit the function
-        if (in_array($namespace, $this->_ci_namespaces, TRUE)) return;
-        
-        foreach ($this->_ci_namespaces_paths as $mod_path)
-        {
-            if (!file_exists($mod_path.'namespaces/'.$path.$namespace.'.php'))
-            	continue;
-
-            require_once($mod_path.'namespaces/'.$path.$namespace.'.php');
-
-            $this->_ci_abstracts[] = $namespace;
-            return;
-        }
-
-        // couldn't find the abstracts
-        show_error('Unable to locate the namespace you have specified: '.$namespace);
-    }
-	/* ------------------------------------------------------------------------------------------------------------ */
-
-    /**
-     * Autoloader
-     *
-     * The config/autoload.php file contains an array that permits sub-systems,
-     * libraries, and helpers to be loaded automatically.
-     *
-     * @param   array
-     * @return  void
-     */
-    protected function _ci_autoloader()
-    {
-    	if (file_exists(APPPATH.'config/autoload.php'))
+	/**
+	 * Model Loader
+	 * Loads and instantiates models.
+	 *
+	 * @param string $model
+	 *        	Model name
+	 * @param string $name
+	 *        	An optional object name to assign to
+	 * @param bool $db_conn
+	 *        	An optional database connection configuration to initialize
+	 * @return object
+	 */
+	public function model( $model, $name = NULL, $db_conn = FALSE )
+	{
+		if ( empty($model) )
 		{
-			include(APPPATH.'config/autoload.php');
+			return $this;
 		}
-
-		if (file_exists(APPPATH.'config/'.ENVIRONMENT.'/autoload.php'))
+		elseif ( is_array($model) )
 		{
-			include(APPPATH.'config/'.ENVIRONMENT.'/autoload.php');
-		}
-
-		if ( ! isset($autoload))
-		{
-			return;
-		}
-
-		// Autoload packages
-		if (isset($autoload['packages']))
-		{
-			foreach ($autoload['packages'] as $package_path)
-			{
-				$this->add_package_path($package_path);
-			}
-		}
-
-		// Load any custom config file
-		if (count($autoload['config']) > 0)
-		{
-			foreach ($autoload['config'] as $val)
-			{
-				$this->config($val);
-			}
-		}
-
-		// Autoload helpers and languages
-		foreach (array('helper', 'language') as $type)
-		{
-			if (isset($autoload[$type]) && count($autoload[$type]) > 0)
-			{
-				$this->$type($autoload[$type]);
-			}
-		}
-
-		// Autoload drivers
-		if (isset($autoload['drivers']))
-		{
-			foreach ($autoload['drivers'] as $item)
-			{
-				$this->driver($item);
-			}
+			foreach ( $model as $key => $value )
+				is_int($key) ? $this->model($value, '', $db_conn) : $this->model($key, $value, $db_conn);
+			
+			return $this;
 		}
 		
-		// Interfaces models
-        if (isset($autoload['interfaces']))
-        {
-            $this->interfaces($autoload['interfaces']);
-        }
-        
-        // Namespaces models
-        if (isset($autoload['namespaces']))
-        {
-            $this->namespaces($autoload['namespaces']);
-        }
-
-		// Load libraries
-		if (isset($autoload['libraries']) && count($autoload['libraries']) > 0)
+		$path = '';
+		
+		// Is the model in a sub-folder? If so, parse out the filename and path.
+		if ( ($last_slash = strrpos($model, '/')) !== FALSE )
 		{
-			// Load the database driver.
-			if (in_array('database', $autoload['libraries']))
+			// The path is in front of the last slash
+			$path = substr($model, 0, ++ $last_slash);
+			
+			// And the model name behind it
+			$model = substr($model, $last_slash);
+		}
+		
+		if ( $name == NULL )
+		{
+			$name = $model;
+		}
+		
+		if ( in_array($name, $this->_ci_models, TRUE) )
+		{
+			return $this;
+		}
+		
+		$CI = & get_instance();/* ----------------------------------------------------------------------------------------------------------------- */
+		if ( $name != FALSE && isset($CI->$name) )
+		{
+			throw new RuntimeException('The model name you are loading is the name of a resource that is already being used: ' . $name);
+		}
+		
+		if ( $db_conn !== FALSE && ! class_exists('CI_DB', FALSE) )
+		{
+			if ( $db_conn === TRUE ) $db_conn = '';
+			$this->database($db_conn, FALSE, TRUE);
+		}
+		
+		// If CodeIgniter model is not loaded then load it
+		if ( ! class_exists('CI_Model', FALSE) ) load_class('Model', 'core');
+		
+		// If class is not exist then load it
+		$namespace = 'Model\\'; $parts = explode('/', $path);
+		foreach ( $parts as $dir ) $namespace .= (empty($dir) ? '' : ucfirst($dir).'\\');
+		
+		if ( ! class_exists($model) || (class_exists($model) && ! class_exists($namespace . $model)) )
+		{
+			foreach ( $this->_ci_model_paths as $mod_path )
 			{
-				$this->database();
-				$autoload['libraries'] = array_diff($autoload['libraries'], array('database'));
+				if ( ! file_exists($mod_path . 'models/' . $path . $model . '.php') )
+				{
+					continue;
+				}
+				
+				require_once ($mod_path . 'models/' . $path . $model . '.php');
+				
+				if ( class_exists($namespace . $model, TRUE) )
+				{
+					$model = $namespace . $model;
+				}
+				elseif ( ! class_exists($model, FALSE) )
+				{
+					throw new RuntimeException($mod_path . "models/" . $path . $model . ".php exists, but doesn't declare class " . $model . " or " . $namespace . $model);
+				}
+				
+				break;
 			}
-
-			// Load all other libraries
-			$this->library($autoload['libraries']);
+			
+			if ( ! class_exists($model, FALSE) && ! class_exists($namespace . $model, FALSE) )
+			{
+				if ( ! class_exists($namespace . $model, FALSE) )
+				{
+					throw new RuntimeException('Unable to locate the model you have specified: ' . $namespace . $model . ' in file: '.$mod_path . 'models/' . $path . $model . '.php');
+				}
+				else throw new RuntimeException('Unable to locate the model you have specified: ' . $model . ' in file: '.$mod_path . 'models/' . $path . $model . '.php');
+			}
 		}
-
-		// Autoload models
-		if (isset($autoload['model']))
+		elseif ( ! is_subclass_of($model, 'CI_Model') )
 		{
-			$this->model($autoload['model']);
+			throw new RuntimeException("Class " . $model . " already exists and doesn't extend CI_Model");
 		}
-    }
-
-    // --------------------------------------------------------------------
-    
-    /**
+		
+		$class = new ReflectionClass($model);
+		$abstract = $class->isAbstract();
+		
+		if ( ! $abstract )
+		{
+			if ( $name != FALSE )
+			{
+				$this->_ci_models[] = $name;
+				$CI->$name = new $model();
+			}
+		}
+		return $this;
+	}
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	/**
+	 * Internal CI Library Loader
+	 *
+	 * @used-by	CI_Loader::library()
+	 * @uses	CI_Loader::_ci_init_library()
+	 *
+	 * @param	string	$class		Class name to load
+	 * @param	mixed	$params		Optional parameters to pass to the class constructor
+	 * @param	string	$object_name	Optional object name to assign to
+	 * @return	void
+	 */
+	protected function _ci_load_library($class, $params = NULL, $object_name = NULL)
+	{
+		// Get the class name, and while we're at it trim any slashes.
+		// The directory path can be included as part of the class name,
+		// but we don't want a leading slash
+		$class = str_replace('.php', '', trim($class, '/'));
+	
+		// Was the path included with the class name?
+		// We look for a slash to determine this
+		if (($last_slash = strrpos($class, '/')) !== FALSE)
+		{
+			// Extract the path
+			$subdir = substr($class, 0, ++$last_slash);
+	
+			// Get the filename from the path
+			$class = substr($class, $last_slash);
+		}
+		else
+		{
+			$subdir = '';
+		}
+	
+		// Is this a stock library? There are a few special conditions if so ...
+		if (file_exists(BASEPATH.'libraries/'.ucfirst($subdir).ucfirst($class).'.php'))
+		{
+			//Debug( ucfirst($subdir).ucfirst($class), 'Load stock Library' );
+			return $this->_ci_load_stock_library(ucfirst($class), ucfirst($subdir), $params, $object_name);
+		}
+		
+		// If class is not exist then load it
+		$namespace = 'Libraries\\'; $parts = explode('/', $subdir);
+		foreach ( $parts as $dir ) $namespace .= (empty($dir) ? '' : ucfirst($dir).'\\');
+		
+		// Let's search for the requested library file and load it.
+		foreach ($this->_ci_library_paths as $path)
+		{
+			// BASEPATH has already been checked for
+			if ($path === BASEPATH)
+			{
+				continue;
+			}
+	
+			$filepath = $path.'libraries/'.$subdir.$class.'.php';
+			//Debug( $filepath, '$filepath' );
+			
+			// Safety: Was the class already loaded by a previous call?
+			if (class_exists($class, FALSE) || class_exists($namespace.$class, FALSE))
+			{
+				if( ! class_exists($namespace.$class) ) $namespace = '';
+				
+				// Before we deem this to be a duplicate request, let's see
+				// if a custom object name is being supplied. If so, we'll
+				// return a new instance of the object
+				if ($object_name !== NULL)
+				{
+					$CI =& get_instance();
+					if ( ! isset($CI->$object_name))
+					{
+						//Debug($namespace.$class, 'Init Library');
+						return $this->_ci_init_library($class, $namespace, $params, $object_name);
+					}
+				}
+	
+				log_message('debug', $class.' class already loaded. Second attempt ignored.');
+				return;
+			}
+			// Does the file exist? No? Bummer...
+			elseif ( ! file_exists($filepath))
+			{
+				continue;
+			}
+			
+			//Debug( $filepath, 'Include Once' );
+			include_once($filepath);
+			
+			if( ! class_exists($namespace.$class) ) $namespace = '';
+			//Debug( $namespace.$class, 'Loaded Class' );
+			
+			//Debug($namespace.$class, 'Init Library');
+			return $this->_ci_init_library($class, $namespace, $params, $object_name);
+		}
+	
+		// One last attempt. Maybe the library is in a subdirectory, but it wasn't specified?
+		if ($subdir === '')
+		{
+			//Debug(ucfirst($class).'/'.ucfirst($class), 'Load Library');
+			return $this->_ci_load_library($class.'/'.$class, $params, $object_name);
+		}
+	
+		// If we got this far we were unable to find the requested class.
+		log_message('error', 'Unable to load the requested class: '.$class);
+		show_error('Unable to load the requested class: '.$class);
+	}
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	/**
 	 * Internal CI Library Instantiator
 	 *
 	 * @used-by	CI_Loader::_ci_load_stock_library()
@@ -311,7 +275,7 @@ class IO_Loader extends CI_Loader
 		{
 			// Fetch the config paths containing any package paths
 			$config_component = $this->_ci_get_component('config');
-
+	
 			if (is_array($config_component->_config_paths))
 			{
 				$found = FALSE;
@@ -330,7 +294,7 @@ class IO_Loader extends CI_Loader
 						include($path.'config/'.ucfirst(strtolower($class)).'.php');
 						$found = TRUE;
 					}
-
+	
 					if (file_exists($path.'config/'.ENVIRONMENT.'/'.strtolower($class).'.php'))
 					{
 						include($path.'config/'.ENVIRONMENT.'/'.strtolower($class).'.php');
@@ -341,7 +305,7 @@ class IO_Loader extends CI_Loader
 						include($path.'config/'.ENVIRONMENT.'/'.ucfirst(strtolower($class)).'.php');
 						$found = TRUE;
 					}
-
+	
 					// Break on the first found configuration, thus package
 					// files are not overridden by default paths
 					if ($found === TRUE)
@@ -351,16 +315,16 @@ class IO_Loader extends CI_Loader
 				}
 			}
 		}
-
+	
 		$class_name = $prefix.$class;
-
+	
 		// Is the class name valid?
 		if ( ! class_exists($class_name, FALSE))
 		{
 			log_message('error', 'Non-existent class: '.$class_name);
 			show_error('Non-existent class: '.$class_name);
 		}
-
+	
 		// Set the variable name we will assign the class to
 		// Was a custom class name supplied? If so we'll use it
 		if (empty($object_name))
@@ -371,7 +335,7 @@ class IO_Loader extends CI_Loader
 				$object_name = $this->_ci_varmap[$object_name];
 			}
 		}
-
+	
 		// Don't overwrite existing properties
 		$CI =& get_instance();
 		if (isset($CI->$object_name))
@@ -381,26 +345,30 @@ class IO_Loader extends CI_Loader
 				log_message('debug', $class_name." has already been instantiated as '".$object_name."'. Second attempt aborted.");
 				return;
 			}
-
+	
 			show_error("Resource '".$object_name."' already exists and is not a ".$class_name." instance.");
 		}
-
+	
 		// Save the class name and object name
 		$this->_ci_classes[$object_name] = $class;
-
+		
 		$class = new ReflectionClass($class_name);
 		$abstract = $class->isAbstract();
-
-		if( !$abstract )
+		
+		if ( ! $abstract )
 		{
-			// Instantiate the class
-			$CI->$object_name = isset($config)
+			if(!empty($object_name))
+			{
+				// Instantiate the class
+				$CI->$object_name = isset($config)
 				? new $class_name($config)
 				: new $class_name();
+			}
 		}
+		return $this;
 	}
-
+	/* ------------------------------------------------------------------------------------------------------------- */
 }
-
+/* ----------------------------------------------------------------------------------------------------------------- */
 /* End of file IO_Loader.php */
 /* Location: ./ionize/core/IO_Loader.php */

@@ -1,0 +1,27 @@
+{
+	"name": "Ionize Foundation Theme",
+	"description": "Raktári Koordinátor Alkalmazás",
+	
+	"authors": [
+		"Liszkai Ádám <contact@liszkaiadam.hu>"
+	],
+	
+	"main": "default",
+	"keywords": [],
+	
+	"license": "GPL-3.0",
+	
+	"homepage": "http://adamos42.net/ionize/",
+	"private": true,
+	
+	"ignore": [
+		"**/.*",
+		"*.*~",
+		"node_modules",
+		"bower_components",
+		"components",
+	],
+	
+	"dependencies": {
+	}
+}
