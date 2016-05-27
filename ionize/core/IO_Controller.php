@@ -70,8 +70,11 @@ class IO_Controller extends HMVC_Controller
 	{
 		parent::__construct();
 		
-		$http = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https' : 'http';
-		$this->data['base_url'] = sprintf("%s://%s%s",$http,$_SERVER['SERVER_NAME'],$_SERVER['REQUEST_URI']);
+		if(isset($_SERVER['SERVER_NAME']) && isset($_SERVER['REQUEST_URI']))
+		{
+			$http = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https' : 'http';
+			$this->data['base_url'] = sprintf("%s://%s%s",$http,$_SERVER['SERVER_NAME'],$_SERVER['REQUEST_URI']);
+		}
 		
 		// Detect HHVM
 		$this->hhvm = (defined('HHVM_VERSION') ? HHVM_VERSION : FALSE);
@@ -87,7 +90,9 @@ class IO_Controller extends HMVC_Controller
 	
 	private function initalizeLanguage()
 	{
-		$http_accept_language = $_SERVER["HTTP_ACCEPT_LANGUAGE"];
+		if(isset($_SERVER["HTTP_ACCEPT_LANGUAGE"])) $http_accept_language = $_SERVER["HTTP_ACCEPT_LANGUAGE"];
+		else $http_accept_language = 'en';
+			
 		$available_languages = array_flip( $this->ionize->languages );
 
 		$languages = array();
