@@ -1,5 +1,7 @@
 # Ionize
 
+![Build Status](https://travis-ci.org/adamos42/ionize.svg)
+
 Ionize is an  Open Source PHP Content Management system created for  webdesigners and developers.
 Ionize is a free professional and  natively multilingual  PHP CMS, developed with user experience
 in mind. Ionize is dedicated to webdesigners and web agencies to simply make their clients happy,
@@ -12,8 +14,6 @@ template parser engines like Smarty and Dwoo. Also a bunch of new features will 
 Official website: http://www.ionizecms.com
 
 Official github: https://github.com/ionize/ionize
-
-Travis: ![Build Status](https://travis-ci.org/adamos42/ionize.svg)
 
 ### Requested features
 
