@@ -1,6 +1,6 @@
 # Ionize
 
-[![Latest Stable Version](https://poser.pugx.org/adamos42/ionize/v/stable)](https://packagist.org/packages/adamos42/ionize) [![Total Downloads](https://poser.pugx.org/adamos42/ionize/downloads)](https://packagist.org/packages/adamos42/ionize) [![Latest Unstable Version](https://poser.pugx.org/adamos42/ionize/v/unstable)](https://packagist.org/packages/adamos42/ionize) [![License](https://poser.pugx.org/adamos42/ionize/license)](https://packagist.org/packages/adamos42/ionize) ![Build Status](https://travis-ci.org/adamos42/ionize.svg)
+ [![Join the chat at https://gitter.im/adamos42/ionize](https://badges.gitter.im/adamos42/ionize.svg)](https://gitter.im/adamos42/ionize?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Latest Stable Version](https://poser.pugx.org/adamos42/ionize/v/stable)](https://packagist.org/packages/adamos42/ionize) [![Total Downloads](https://poser.pugx.org/adamos42/ionize/downloads)](https://packagist.org/packages/adamos42/ionize) [![Latest Unstable Version](https://poser.pugx.org/adamos42/ionize/v/unstable)](https://packagist.org/packages/adamos42/ionize) [![License](https://poser.pugx.org/adamos42/ionize/license)](https://packagist.org/packages/adamos42/ionize) ![Build Status](https://travis-ci.org/adamos42/ionize.svg)
 
 Ionize is an  Open Source PHP Content Management system created for  webdesigners and developers.
 Ionize is a free professional and  natively multilingual  PHP CMS, developed with user experience
@@ -37,15 +37,6 @@ Official github: https://github.com/ionize/ionize
 - [ ] Preview Article from Administration, Live edit
 - [ ] Muliple file move, copy trough the MediaManager
 - [ ] Migration from old system, handle old module codes
-
-### Communication
-
-Gitter: [![Join the chat at https://gitter.im/adamos42/ionize](https://badges.gitter.im/adamos42/ionize.svg)](https://gitter.im/adamos42/ionize?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-Forum: http://ionizecms.com/forum/viewtopic.php?id=2136
-
-Twitter: [@adamos42](https://twitter.com/adamos42)
-
 
 ### Authors
 
