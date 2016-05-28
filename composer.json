@@ -22,8 +22,4 @@
 	},
 	
 	"require-dev": {},
-	
-	"scripts": {
-		"post-install-cmd": "php -r \"if(file_exists('vendor/ionize')) rename('vendor/ionize', './');\""
-	}
 }
