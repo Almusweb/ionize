@@ -2,7 +2,9 @@ Ionize CMS - Changelog
 ======================
 
 * Version 2.0.0 - Not released yet
-** Adding Composer and CodeIgniter 3.0.x
+  * Adding Composer and CodeIgniter 3.0.x
+
+======================
 
 * Version 1.0.8 - Released 2015.02.10.
   * Bugfix 1.0.8.1 - 2014.02.10.
