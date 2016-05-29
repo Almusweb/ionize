@@ -1,6 +1,6 @@
-# Ionize
+# Ionize CMS 2.0 Development
 
-[![Join the chat at https://gitter.im/adamos42/ionize](https://badges.gitter.im/adamos42/ionize.svg)](https://gitter.im/adamos42/ionize?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) ![License](http://a42server.net/badges/ionize/license.svg) ![Build Status](https://travis-ci.org/adamos42/ionize.svg)
+[![Join the chat at https://gitter.im/adamos42/ionize](https://badges.gitter.im/adamos42/ionize.svg)](https://gitter.im/adamos42/ionize?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)  [![Changelog](http://a42server.net/badges/ionize/changelog.svg)](CHANGELOG.md)  [![License](http://a42server.net/badges/ionize/license.svg)](LICENSE.md) [![Stable Version](http://a42server.net/badges/ionize/stable.svg)](https://github.com/ionize/ionize/archive/1.0.8.1.zip) [![Develpment Version](http://a42server.net/badges/ionize/unstable.svg)](https://github.com/ionize/ionize/archive/master.zip) [![Build Status](https://travis-ci.org/adamos42/ionize.svg)](https://travis-ci.org/adamos42/ionize)
 
 Ionize is an  Open Source PHP Content Management  system  created for  webdesigners and developers. Ionize is a free
 professional  and  natively  multilingual  PHP CMS, developed  with user experience  in mind. Ionize is dedicated to
@@ -11,7 +11,6 @@ Official website: http://www.ionizecms.com
 
 Official repository: https://github.com/ionize/ionize
 
-# adamos42:
 > The cms need a new version, so  as a developer all I can do is coding the new system in Codeigniter3 PHP Framework
 and designed for  performance  but keeping the  previous  confortable  Ionize tags for template parsing but from now
 Ionize will support other template parser engines like Smarty and Dwoo and I will add lots of modern features.
@@ -39,14 +38,16 @@ Ionize will support other template parser engines like Smarty and Dwoo and I wil
 - [ ] Muliple file move, copy trough the MediaManager
 - [ ] Migration from old system, handle old module codes
 
-### Authors
-
+### Ionize Authors
 * [Michel-Ange Kuntz](http://www.partikule.net) (http://www.partikule.net)
 * [Christophe Prudent](http://www.toopixel.ch) (http://www.toopixel.ch)
 
-### Contributors
+### Ionize Contributors
 * [Kay Stenschke](http://www.coexec.com) (http://www.coexec.com)
 * [İskender Totoğlu](http://www.altivebir.com.tr) (http://www.altivebir.com.tr)
 * [Martin Wernstahl](https://twitter.com/wernstahl) (https://twitter.com/wernstahl)
 * [Bhagya Nirmaan Silva](http://about.me/bhagyas) (http://about.me/bhagyas)
+* [Adam Liszkai](http://liszkaiadam.hu) (http://liszkaiadam.hu)
+
+### Development Authors
 * [Adam Liszkai](http://liszkaiadam.hu) (http://liszkaiadam.hu)
