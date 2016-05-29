@@ -21,5 +21,5 @@
 		"codeigniter/framework": "3.0.*"
 	},
 	
-	"require-dev": {},
+	"require-dev": {}
 }
