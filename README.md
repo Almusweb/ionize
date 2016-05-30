@@ -9,16 +9,25 @@ tied as in other CMS.
 
 Official website: http://www.ionizecms.com
 
-Official repository: https://github.com/ionize/ionize
-
 > The cms need a new version, so  as a developer all I can do is coding the new system in Codeigniter3 PHP Framework
 and designed for  performance  but keeping the  previous  confortable  Ionize tags for template parsing but from now
 Ionize will support other template parser engines like Smarty and Dwoo and I will add lots of modern features.
 > The modern content manager systems need to use the modern solutions with performance in mind.
 
+### Installation & Contribute
+
+###### Installation
+* Clone the repository to a folder
+* Install composer: https://getcomposer.org/download/
+* Use ```composer update``` to download CodeIgniter
+
+###### Contribute
+* The project uses Allman style with tabs, so keep it that way!
+* If you want help, but you dont know what to do ask on Gitter!
+
 ### Requested Features
 
-- [x] Composer and PSR, Using PHP 5.4+ Namespaces, Traits, Interfaces
+- [x] Composer ~~and PSR~~, Using PHP 5.4+ Namespaces, Traits, Interfaces
 - [x] CodeIgniter 3.0.x and PHP5.6+ and PHP7 Support
 - [ ] Add custom javascript and style for content, page, article
 - [ ] Access to the scripts and styles, minifier and autoincluder
