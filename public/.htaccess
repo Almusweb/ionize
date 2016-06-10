@@ -4,7 +4,7 @@ ErrorDocument 500 /error500.html
 RewriteEngine On
 
 # RewriteBase
-# RewriteBase /
+RewriteBase /ionize200/
 
 # Only needed for some hosts, if the front returns 403.
 # Options +FollowSymlinks

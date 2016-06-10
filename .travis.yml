@@ -18,7 +18,16 @@ env:
 
 sudo: false
 
-before_script: composer install
+services:
+  - mysql
+
+before_script:
+  - mysql -uroot -e "CREATE DATABASE IF NOT EXISTS ionize200;"
+  - mysql -uroot -e "CREATE USER 'ionize200'@'localhost' IDENTIFIED BY 'ionize200';"
+  - mysql -uroot -e "GRANT ALL PRIVILEGES ON ionize200.* TO 'ionize200'@'localhost';"
+  - mysql -uroot -e "FLUSH PRIVILEGES;"
+  - mysql -uroot ionize200 < database.sql
+  - composer install
 
 script: php public/index.php
 

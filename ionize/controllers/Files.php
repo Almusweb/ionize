@@ -1,6 +1,6 @@
 <?php
 
-class Assets extends IO_Controller
+class Files extends IO_Controller
 {
     public function __construct()
     {

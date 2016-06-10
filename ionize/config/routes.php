@@ -50,5 +50,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |		my-controller/my-method	-> my_controller/my_method
 */
 $route['default_controller'] = 'output';
-$route['translate_uri_dashes'] = FALSE;
+$route['translate_uri_dashes'] = TRUE;
+
 $route['404_override'] = '';
+
+$route['manifest.json'] = "manifest/get";
+
+$route['assets/.*'] = "assets/get/$1";
+$route['favicon.ico'] = "assets/get/favicon.ico";
+
+$route['scripts/.*'] = "scripts/get/$1";
+$route['components/.*'] = "components/get/$1";
+$route['workers/.*'] = "workers/get/$1";
+
+$route['.*'] = "output/render";

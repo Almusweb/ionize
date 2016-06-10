@@ -199,14 +199,15 @@ class IO_Loader extends HMVC_Loader
 			{
 				continue;
 			}
-	
+			
 			$filepath = $path.'libraries/'.$subdir.$class.'.php';
 			//Debug( $filepath, '$filepath' );
 			
 			// Safety: Was the class already loaded by a previous call?
-			if (class_exists($class, FALSE) || class_exists($namespace.$class, FALSE))
+			if (class_exists($class, FALSE) || class_exists($namespace.$class, FALSE) || class_exists(str_replace('Libraries\\','',$namespace).$class, FALSE))
 			{
-				if( ! class_exists($namespace.$class) ) $namespace = '';
+				if( ! class_exists($namespace.$class) && class_exists(str_replace('Libraries\\','',$namespace).$class) ) $namespace = str_replace('Libraries\\','',$namespace);
+				else if( ! class_exists($namespace.$class) ) $namespace = '';
 				
 				// Before we deem this to be a duplicate request, let's see
 				// if a custom object name is being supplied. If so, we'll
@@ -233,11 +234,15 @@ class IO_Loader extends HMVC_Loader
 			//Debug( $filepath, 'Include Once' );
 			include_once($filepath);
 			
-			if( ! class_exists($namespace.$class) ) $namespace = '';
+			if( ! class_exists($namespace.$class) )
+			{
+				$namespace = str_replace('Libraries\\','', $namespace);
+				if( ! class_exists($namespace.$class) ) $namespace = '';
+			}
 			//Debug( $namespace.$class, 'Loaded Class' );
 			
 			//Debug($namespace.$class, 'Init Library');
-			return $this->_ci_init_library($class, $namespace, $params, $object_name);
+			return $this->_ci_init_library($namespace.$class, '', $params, $object_name);
 		}
 	
 		// One last attempt. Maybe the library is in a subdirectory, but it wasn't specified?

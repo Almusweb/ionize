@@ -54,6 +54,12 @@ class IO_Controller extends HMVC_Controller
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
 	/**
+	 * @var FALSE|\Ionize\User $user User data class pointer if user logged in
+	 */
+	protected $user = FALSE;
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	/**
 	 * @var array $data Array of the elements for the output view file
 	 */
 	public $data = array();
@@ -83,50 +89,91 @@ class IO_Controller extends HMVC_Controller
 		$this->config->load('ionize', TRUE);
 		$this->ionize = (object) $this->config->config['ionize'];
 		
-		// Initialize the Language
+		// Initialize ionize feaures
 		$this->initalizeLanguage();
+		$this->initalizeSettings();
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
 	private function initalizeLanguage()
 	{
-		if(isset($_SERVER["HTTP_ACCEPT_LANGUAGE"])) $http_accept_language = $_SERVER["HTTP_ACCEPT_LANGUAGE"];
-		else $http_accept_language = 'en';
-			
-		$available_languages = array_flip( $this->ionize->languages );
-
-		$languages = array();
-		preg_match_all('~([\w-]+)(?:[^,\d]+([\d.]+))?~', strtolower($http_accept_language), $matches, PREG_SET_ORDER);
-		
-		// Moving trough all match
-		foreach($matches as $match)
+		// Get the language from the SESSION
+		if ( ! empty( $this->session->language )) $this->language = $this->session->language;
+		// If not exists then detect the browser language
+		else
 		{
-			// Creating array from the ISO3166/ALPHA2-ISO639/ALPHA2 format
-		    list($a, $b) = explode('-', $match[1]) + array('', '');
-		    
-		    // If the second segment exists then calculate with that
-		    $value = isset($match[2]) ? (float) $match[2] : 1.0;
-
-			// If that language available
-		    if(isset($available_languages[$match[1]]))
-		    {
-		    	// then add to the possible languages
-		        $languages[$match[1]] = $value;
-		        continue;
-		    }
+			// Detecting browser languages
+			if(isset($_SERVER["HTTP_ACCEPT_LANGUAGE"])) $http_accept_language = $_SERVER["HTTP_ACCEPT_LANGUAGE"];
 			
-			// If the country and the langauge code is same then downgrade the priority
-		    if(isset($available_languages[$a])) $languages[$a] = $value - 0.1;
-
+			// Also make a fallback English
+			else $http_accept_language = 'en';
+			
+			// Get the Available languages and decklare the Languages array
+			$available_languages = array_flip( $this->ionize->languages );
+			$languages = array();
+			
+			// Detect ISO3166/ALPHA2-ISO639/ALPHA2 format
+			preg_match_all('~([\w-]+)(?:[^,\d]+([\d.]+))?~', strtolower($http_accept_language), $matches, PREG_SET_ORDER);
+			
+			// Moving trough all match
+			foreach($matches as $match)
+			{
+				// Creating array from the ISO3166/ALPHA2-ISO639/ALPHA2 format
+				list($a, $b) = explode('-', $match[1]) + array('', '');
+			
+				// If the second segment exists then calculate with that
+				$value = isset($match[2]) ? (float) $match[2] : 1.0;
+			
+				// If that language available
+				if(isset($available_languages[$match[1]]))
+				{
+					// then add to the possible languages
+					$languages[$match[1]] = $value;
+					continue;
+				}
+			
+				// If the country and the langauge code is same then downgrade the priority
+				if(isset($available_languages[$a])) $languages[$a] = $value - 0.1;
+			
+			}
+			
+			// Order by priorty
+			arsort($languages);
+			
+			// Saving the language from the browser language
+			$this->language = key($languages);
+			
+			// Save into the session
+			$this->session->set_userdata('language', $this->language);
 		}
 		
-		// Order by priorty
-		arsort($languages);
-		
-		// Saving the language from the browser language
-		$this->language = key($languages);
+		// Prevent append call feature
+		return $this;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	private function initalizeSettings()
+	{
+		return $this;
+	
+		// Load the Settings Library classes
+		$this->load->library('settings/Settings', NULL);
+		$this->load->library('settings/Item', NULL);
+		
+		// Get the Settings container instance
+		$settings = \Libraries\Settings\Settings::getInstance();
+		
+		// If the settings loaded from cached data then use it
+		if( count($settings->get()) > 0 ) $this->settings = $settings;
+		// else load the datas from the database
+		else
+		{
+			
+		}
+		
+		// Prevent append call feature
+		return $this;
+	}
 }
 /* ----------------------------------------------------------------------------------------------------------------- */
 /* End of file: IO_Controller.php */

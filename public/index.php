@@ -301,6 +301,9 @@ switch (ENVIRONMENT)
 	
 	define('MODPATH', $modules_folder);
 
+
+	define('TIME_BOOTSTRAP', microtime(TRUE));
+
 /*
  * --------------------------------------------------------------------
  * LOAD THE BOOTSTRAP FILE
