@@ -26,6 +26,15 @@ class Theme
 
 	protected $data = array();
 	/* ------------------------------------------------------------------------------------------------------------- */
+
+	protected $view = NULL;
+	/* ------------------------------------------------------------------------------------------------------------- */
+
+	protected $basepath = NULL;
+	/* ------------------------------------------------------------------------------------------------------------- */
+
+	protected $path = NULL;
+	/* ------------------------------------------------------------------------------------------------------------- */
 	
 	private static $instance = NULL;
 	/* ------------------------------------------------------------------------------------------------------------- */
@@ -65,12 +74,18 @@ class Theme
 		// Save the active Theme name
 		$this->active = $this->config->theme;
 
+		// Save the theme paths
+		$this->basepath = key($this->config->themes_basepath) . DIRECTORY_SEPARATOR .'themes' . DIRECTORY_SEPARATOR;
+		$this->path = $this->active . DIRECTORY_SEPARATOR;
+
 		return $this;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 
 	/**
 	 * @param \Contents\Content[] $contents
+	 *
+	 * @return string|false
 	 */
 	public function render( array $contents = array() )
 	{
@@ -88,6 +103,7 @@ class Theme
 			}
 		}
 		else show_404();
+		return FALSE;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 
@@ -117,14 +133,17 @@ class Theme
 	
 	public function getView( $view_name )
 	{
-		$themes_path = key($this->config->themes_basepath) . DIRECTORY_SEPARATOR .'themes' . DIRECTORY_SEPARATOR;
-		$view_path = $this->active . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $view_name;
+		// Saving the first (the main) view name
+		if($this->view == NULL) $this->view = $view_name;
 
-		$file_path = $themes_path . $view_path;
+		// Getting the view file path
+		$view_path = $this->path . 'views' . DIRECTORY_SEPARATOR . $view_name;
+
+		$file_path = $this->basepath . $view_path;
 		if(strpos('.php', $file_path) == FALSE) $file_path = $file_path.'.php';
 
-		if(file_exists($file_path)) return $themes_path . $view_path;
-		else show_error('Theme view file is missing: ' . $themes_path . $view_path, 500);
+		if(file_exists($file_path)) return $this->basepath . $view_path;
+		else show_error('Theme view file is missing: ' . $this->basepath . $view_path, 500);
 
 		return FALSE;
 	}

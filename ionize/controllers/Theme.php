@@ -1,6 +1,6 @@
 <?php
 
-class Assets extends IO_Controller
+class Theme extends IO_Controller
 {
     public function __construct()
     {
@@ -9,6 +9,6 @@ class Assets extends IO_Controller
 
     public function get()
     {
-
+        
     }
 }

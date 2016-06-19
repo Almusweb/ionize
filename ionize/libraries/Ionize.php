@@ -19,114 +19,130 @@
  */
 class Ionize
 {
-    private static $elapsed_time = 0;
-    private static $memory_usage = 0;
+	private static $elapsed_time = 0;
+	private static $memory_usage = 0;
 
-    private static $instance = NULL;
-    private static $_loaded_ionize_elements = array();
+	private static $instance = NULL;
+	private static $_loaded_ionize_elements = array();
 
-    protected $contents = array();
+	protected $contents = array();
 
-    /**
-     * Ionize constructor
-     */
-    public function __construct()
-    {
-        self::$instance = $this;
-    }
+	/**
+	* Ionize constructor
+	*/
+	public function __construct()
+	{
+		self::$instance = $this;
+	}
 
-    /**
-     * Static getInstance method
-     *
-     * @return Ionize|null
-     */
-    public static function getInstance()
-    {
-        if( self::$instance instanceof \Ionize\Ionize ) return self::$instance;
-        else return new self;
-    }
+	/**
+	* Static getInstance method
+	*
+	* @return Ionize|null
+	*/
+	public static function getInstance()
+	{
+		if( self::$instance instanceof \Ionize\Ionize ) return self::$instance;
+		else return new self;
+	}
 
-    /**
-     * Parse theme view file
-     *
-     * @param string $view
-     * @param array $data
-     * @param string $layout
-     */
-    public function parseNativeView( $view, $data=array(), $layout=NULL )
-    {
-        ob_start();
+	/**
+	* Parse theme view file
+	*
+	* @param string $view
+	* @param array $data
+	* @param string $layout
+	* @return string
+	*/
+	public function parseNativeView( $view, $data=array(), $layout=NULL )
+	{
+		ob_start();
+		extract($data);
 
-        extract($data);
+		if(isset($contents)) $this->contents = $contents;
 
-        if(isset($contents)) $this->contents = $contents;
+		$acceptedExtensions = array('php','tpl');
 
-        $acceptedExtensions = array('php','tpl');
+		foreach($acceptedExtensions as $i => $ext)
+			if( file_exists($view.'.'.$ext) ) { $view = $view.'.'.$ext; break; }
 
-        foreach($acceptedExtensions as $i => $ext)
-            if( file_exists($view.'.'.$ext) ) { $view = $view.'.'.$ext; break; }
+		include( $view );
 
-        include( $view );
+		$source_code = ob_get_contents();
+		ob_end_clean();
 
-        $source_code = ob_get_contents();
-        ob_end_clean();
+		return $source_code;
+	}
 
-        return $source_code;
-    }
+	/**
+	* Parse theme view file
+	*
+	* @param string $view
+	* @param array $data
+	* @param string $layout
+	*/
+	public function parseIonizeView( $view, $data=array(), $layout=NULL )
+	{
+		$compiled_view = str_replace('view'.DIRECTORY_SEPARATOR,'compile'.DIRECTORY_SEPARATOR, $view);
+		if(file_exists($compiled_view)) return $this->parseNativeView($compiled_view, $data, $layout);
+		else
+		{
+			require_once('ionize/Parser.php');
+			$ionizeParser = new \Ionize\Parser();
 
-    /**
-     * Parse theme view file
-     *
-     * @param string $view
-     * @param array $data
-     * @param string $layout
-     */
-    public function parseIonizeView( $view, $data=array(), $layout=NULL )
-    {
+			$acceptedExtensions = array('php','tpl');
 
-    }
+			foreach($acceptedExtensions as $i => $ext)
+				if( file_exists($view.'.'.$ext) ) { $view = $view.'.'.$ext; break; }
 
-    /**
-     * Parse theme view file
-     *
-     * @param string $view
-     * @param array $data
-     * @param string $layout
-     */
-    public function parseTemplateView( $template, $view, $data=array(), $layout=NULL )
-    {
+			$view_source = file_get_contents($view);
 
-    }
+			$parsed_source = $ionizeParser->parse( $view_source );
 
-    /**
-     * Static Magic Method
-     *
-     * @param string $name
-     * @param array $arguments
-     * @return mixed
-     */
-    public static function __callStatic( $name, $arguments=array() )
-    {
-        if(method_exists(get_class(), $name))
-        {
-            return call_user_func_array(array(get_class(),$name),$arguments);
-        }
-        else
-        {
-            $class_name = ucwords(strtolower($name));
+		}
+	}
 
-            if( !isset(self::$_loaded_ionize_elements[ $class_name ]) )
-            {
-                $namespaced_name = "\\Ionize\\{$class_name}";
+	/**
+	* Parse theme view file
+	*
+	* @param string $template
+	* @param string $view
+	* @param array $data
+	* @param string $layout
+	*/
+	public function parseTemplateView( $template, $view, $data=array(), $layout=NULL )
+	{
 
-                require_once("ionize/{$class_name}.php");
+	}
 
-                $class = new $namespaced_name( $arguments );
-                self::$_loaded_ionize_elements[ $class_name ] = $class;
+	/**
+	* Static Magic Method
+	*
+	* @param string $name
+	* @param array $arguments
+	* @return mixed
+	*/
+	public static function __callStatic( $name, $arguments=array() )
+	{
+		if(method_exists(get_class(), $name))
+		{
+			return call_user_func_array(array(get_class(),$name),$arguments);
+		}
+		else
+		{
+			$class_name = ucwords(strtolower($name));
 
-                return $class;
-            }
-            else return self::$_loaded_ionize_elements[ $class_name ];
-        }
-    }
+			if( !isset(self::$_loaded_ionize_elements[ $class_name ]) )
+			{
+				$namespaced_name = "\\Ionize\\{$class_name}";
+				require_once("ionize/{$class_name}.php");
+
+				$class = new $namespaced_name( $arguments );
+				self::$_loaded_ionize_elements[ $class_name ] = $class;
+
+				return $class;
+			}
+			else return self::$_loaded_ionize_elements[ $class_name ];
+		}
+	}
 }

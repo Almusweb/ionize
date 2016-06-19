@@ -1,6 +1,6 @@
 {
 	"name": "Ionize Foundation Theme",
-	"description": "Raktári Koordinátor Alkalmazás",
+	"description": "Ionize Foundation 6 based sample theme",
 	
 	"authors": [
 		"Liszkai Ádám <contact@liszkaiadam.hu>"
@@ -18,8 +18,9 @@
 		"**/.*",
 		"*.*~",
 		"node_modules",
+		"modules",
 		"bower_components",
-		"components",
+		"components"
 	],
 	
 	"dependencies": {

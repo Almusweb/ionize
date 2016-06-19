@@ -18,7 +18,9 @@
  * @property \CI_Input $input
  * @property \CI_Loader $load
  * @property \CI_Output $output
- * @property \Contents\Contents $contents
+ *
+ * @property \Model\Data\Contents\Contents $contents
+ * @property \\Ionize\Theme $theme
  */
 class Output extends IO_Controller
 {
@@ -53,20 +55,20 @@ class Output extends IO_Controller
 	public function render()
 	{
 		// Load Contents handler class
-		$this->load->library(['contents/Contents'=>'contents']);
+		$this->load->model('data/contents/Contents', 'contents');
 		
 		// Get the related contents from the URL and language
-		$contents = $this->contents->setLangauge( $this->language )->getByURL( $this->url_string );
+		$contents = $this->contents->setLanguage( $this->language )->getByURL( $this->url_string );
 		
 		// Load Theme handler class
-		$this->load->library('ionize/Theme', NULL);
-		$theme = \Ionize\Theme::getInstance();
+		$this->load->library(['ionize/Theme'=>'theme']);
+		//$theme = \Ionize\Theme::getInstance();
 
 		// Assign global variables to theme renderer
-		$theme->assignData( $this->data );
+		$this->theme->assignData( $this->data );
 
 		// Render the contents
-		$output = $theme->render( $contents );
+		$output = $this->theme->render( $contents );
 
 		// Set the output
 		$this->output->set_output( $output );

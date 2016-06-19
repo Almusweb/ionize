@@ -1,6 +1,6 @@
 <?php
 
-namespace Contents;
+namespace Model\Data\Contents;
 
 class Contents
 {
@@ -11,13 +11,13 @@ class Contents
 	{
 		$ci =& get_instance();
 	
-		$ci->load->library('contents/Content');
-		$ci->load->model('Contents', NULL);
+		$ci->load->model('data/contents/Content', NULL);
+		$ci->load->model('database/Contents', NULL);
 		
-		$this->db = \Model\Contents::getInstance();
+		$this->db = \Model\Database\Contents::getInstance();
 	}
 
-	public function setLangauge( $language )
+	public function setLanguage($language )
 	{
 		$this->db->group_start()->where('language', $language)->group_end();
 		
@@ -34,7 +34,7 @@ class Contents
 		$query = $this->db->get();
 		if( $query != FALSE )
 		{
-			$result = $query->custom_result_object('\\Contents\\Content');
+			$result = $query->custom_result_object('Model\\Data\\Contents\\Content');
 			Debug($result, '$result');
 			
 			return $result;

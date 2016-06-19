@@ -3,7 +3,16 @@ namespace Ionize;
 
 class Partial
 {
-    public function view( $file )
+
+    public function __construct( $arguments=NULL )
+    {
+	    if( $arguments != NULL )
+	    {
+		    // @todo Handling arguments
+	    }
+    }
+
+	public function view( $file )
     {
         $theme = \Ionize\Theme::getInstance();
         $view_path = $theme->getView( $file );

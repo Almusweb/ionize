@@ -21,7 +21,7 @@ if( !function_exists('Debug') )
 		
 		if($debug_enable == TRUE && !defined('ARGV'))
 		{
-			echo "<pre>".'['.date("H:i:s").'] '.($label!=NULL?'<b>'.ucfirst($label).'</b>: ':'').(is_string($msg)?$msg:print_r($msg, true))."</pre>";
+			echo "<pre>".'['.date("H:i:s").'] '.($label!=NULL?'<b>'.ucfirst($label).'</b>: ':'').(is_string($msg)?htmlspecialchars($msg):print_r($msg, true))."</pre>";
 			ob_flush(); flush(); // Kimenet küldése
 		}
 	

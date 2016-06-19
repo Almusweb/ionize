@@ -303,6 +303,7 @@ switch (ENVIRONMENT)
 
 
 	define('TIME_BOOTSTRAP', microtime(TRUE));
+	define('PHPEXT', '.php');
 
 /*
  * --------------------------------------------------------------------

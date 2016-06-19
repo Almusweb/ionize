@@ -7,4 +7,4 @@ $config['languages'] = array('en');
 $config['theme'] = 'foundation';
 
 $config['themes_basepath'] = [realpath( APPPATH . '..' . DIRECTORY_SEPARATOR ) => '../../'];
-$config['theme_parser'] = 'native';
+$config['theme_parser'] = 'ionize';

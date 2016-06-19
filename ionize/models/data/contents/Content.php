@@ -1,5 +1,5 @@
 <?php
-namespace Contents;
+namespace Model\Data\Contents;
 
 include_once APPPATH.'traits/MagicGet.php';
 

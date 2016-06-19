@@ -1,12 +1,17 @@
-<?php echo Ionize::partial()->view('common/header'); ?>
+<ion:partial view="common/header" />
 
-<?php foreach($contents as $content): ?>
-<article id="content_<?php echo $content->id; ?>">
-    <h3><?php echo $content->title; ?></h3>
-    <?php echo $content->content; ?>
-</article>
-<?php endforeach; ?>
+<ion:page>
+    <ion:articles>
+        <ion:article>
+            <article id="content_<ion:id />">
+                <ion:title tag="h3" />
+                <ion:content />
+            </article>
+        </ion:article>
+    </ion:articles>
+
+</ion:page>
 
 <pre><?php print_r($this); ?></pre>
 
-<?php echo Ionize::partial()->view('common/footer'); ?>
+<ion:partial view="common/footer" />
