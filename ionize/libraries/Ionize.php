@@ -19,13 +19,11 @@
  */
 class Ionize
 {
-	private static $elapsed_time = 0;
-	private static $memory_usage = 0;
-
 	private static $instance = NULL;
 	private static $_loaded_ionize_elements = array();
 
 	protected $contents = array();
+	private $acceptedExtensions = ['php','tpl'];
 
 	/**
 	* Ionize constructor
@@ -61,9 +59,7 @@ class Ionize
 
 		if(isset($contents)) $this->contents = $contents;
 
-		$acceptedExtensions = array('php','tpl');
-
-		foreach($acceptedExtensions as $i => $ext)
+		foreach($this->acceptedExtensions as $i => $ext)
 			if( file_exists($view.'.'.$ext) ) { $view = $view.'.'.$ext; break; }
 
 		include( $view );
@@ -83,22 +79,60 @@ class Ionize
 	*/
 	public function parseIonizeView( $view, $data=array(), $layout=NULL )
 	{
-		$compiled_view = str_replace('view'.DIRECTORY_SEPARATOR,'compile'.DIRECTORY_SEPARATOR, $view);
-		if(file_exists($compiled_view)) return $this->parseNativeView($compiled_view, $data, $layout);
-		else
+		get_instance()->benchmark->mark('Ionize_parseIonizeView_start');
+
+		foreach($this->acceptedExtensions as $i => $ext)
+			if( \file_exists($view.'.'.$ext) ) { $view = $view.'.'.$ext; break; }
+
+		$viewtime = \filemtime($view);
+		Debug($viewtime, '$viewtime');
+
+		$compiled_view = str_replace('views'.DIRECTORY_SEPARATOR,'compile'.DIRECTORY_SEPARATOR, $view);
+		Debug($compiled_view, 'check compiled file existence');
+
+		if( \file_exists($compiled_view) )
 		{
+			$cachetime = file_get_contents($compiled_view.'.time');
+
+			if($cachetime == $viewtime)
+			{
+				get_instance()->benchmark->mark('Ionize_parseIonizeView_end');
+				return $this->parseNativeView($compiled_view, $data, $layout);
+			}
+		}
+
+		// Parsing the template
+		{
+			get_instance()->benchmark->mark('Ionize_parseIonizeView_parse_start');
+
 			require_once('ionize/Parser.php');
 			$ionizeParser = new \Ionize\Parser();
 
-			$acceptedExtensions = array('php','tpl');
-
-			foreach($acceptedExtensions as $i => $ext)
-				if( file_exists($view.'.'.$ext) ) { $view = $view.'.'.$ext; break; }
-
 			$view_source = file_get_contents($view);
-
 			$parsed_source = $ionizeParser->parse( $view_source );
 
+			$permissionMasking = umask(0);
+
+			// Create Folder if needed
+			{
+				$segments = explode(DIRECTORY_SEPARATOR, $compiled_view);
+				unset($segments[count($segments)-1]);
+
+				$path = implode(DIRECTORY_SEPARATOR, $segments);
+				if(!file_exists($path)) mkdir($path, 0777, TRUE);
+			}
+
+			file_put_contents($compiled_view, $parsed_source);
+			chmod($compiled_view, 0777);
+
+			file_put_contents($compiled_view.'.time', $viewtime);
+			chmod($compiled_view.'.time', 0777);
+
+			umask($permissionMasking);
+
+			get_instance()->benchmark->mark('Ionize_parseIonizeView_parse_end');
+			get_instance()->benchmark->mark('Ionize_parseIonizeView_end');
+			return $this->parseNativeView($compiled_view, $data, $layout);
 		}
 	}
 
@@ -112,7 +146,7 @@ class Ionize
 	*/
 	public function parseTemplateView( $template, $view, $data=array(), $layout=NULL )
 	{
-
+		// @todo Handle template engines
 	}
 
 	/**

@@ -8,5 +8,7 @@ class Article
 	use \Traits\MagicGet;
 
 	private $id = NULL;
+	private $title = NULL;
+	private $content = NULL;
 
 }

@@ -3,7 +3,7 @@ namespace Ionize;
 
 class Parser
 {
-	private $ionize_pattern = '/<?ion:([a-z:]+)?([^>]*)?>/im';
+	private $ionize_pattern = '/<(|\/)ion:([a-z:]+)?([^>]*)?>/im';
 
 	private $tags = array();
 	private $parents = array();
@@ -20,7 +20,10 @@ class Parser
 	 */
 	public function parse($source)
 	{
+		$this->resetParser();
+
 		preg_match_all($this->ionize_pattern, $source, $matches);
+		Debug($matches, '$matches');
 
 		require_once("Tag.php");
 
@@ -32,13 +35,15 @@ class Parser
 			// If the tag is a closing tag then close the parent
 			if (strpos($src, '</') !== FALSE)
 			{
-				$parent = $this->closeParent()->getParent();
+				$parent = $this->getParent();
 
 				if ($parent != NULL)
 				{
-					$this->compile[$source] = $parent->getNativeCodeClosing();
+					$this->compile[] = [$src=>$parent->getNativeCodeClosing()];
 					$sourceCompiled = TRUE;
 				}
+
+				$this->closeParent();
 			}
 
 			// Creating the tag from the source
@@ -50,7 +55,7 @@ class Parser
 				$tag = new Tag($src, $parent);
 				//Debug($tag, '$tag');
 
-				$this->compile[$source] = $tag->getNativeCodeOpening();
+				$this->compile[] = [$src=>$tag->getNativeCodeOpening()];
 
 				$this->tags[] = $tag;
 				$this->openParent();
@@ -59,16 +64,46 @@ class Parser
 			// If the tag closed in one line then close the parent
 			if (strpos($src, '/>') !== FALSE)
 			{
-				$parent = $this->closeParent()->getParent();
+				$parent = $this->getParent();
 
 				if ($parent != NULL)
-					$this->compile[$source] = $parent->getNativeCodeClosing();
+				{
+					$closingCode = $parent->getNativeCodeClosing();
+
+					if(!empty($closingCode))
+						$this->compile[] = [$src=>$closingCode];
+				}
+
+				$this->closeParent();
 			}
 		}
 
-		$parsed = str_replace(array_keys($this->compile), array_values($this->compile), $source);
+		Debug('Compiler contents:');
+
+		$parsed = $source;
+		foreach($this->compile as $index => $task)
+		{
+			$sourceCode = key($task); Debug($sourceCode, '$sourceCode');
+			$nativeCode = $task[$sourceCode]; Debug($nativeCode, '$nativeCode');
+
+			$preg_search = '/'.preg_quote($sourceCode, '/').'/im';
+			Debug($preg_search, '$preg_search');
+
+			$parsed = preg_replace($preg_search, $nativeCode, $parsed, 1);
+		}
+
+		//$parsed = str_replace(array_keys($this->compile), array_values($this->compile), $source);
+		Debug($parsed, '$parsed');
 
 		return $parsed;
+	}
+
+	private function resetParser()
+	{
+		$this->tags = array();
+		$this->parents = array();
+		$this->compile = array();
+		$this->level = 0;
 	}
 
 	/**

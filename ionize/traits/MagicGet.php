@@ -1,7 +1,7 @@
 <?php /* ----------------------------------------------------------------------------------------------------------- */
 namespace Traits;
 /* ----------------------------------------------------------------------------------------------------------------- */
-use \Exception;
+use \InvalidArgumentException;
 /* ----------------------------------------------------------------------------------------------------------------- */
 trait MagicGet
 {
@@ -23,7 +23,7 @@ trait MagicGet
 		else if ( property_exists($this, strtoupper($name)) ) return $this->{strtoupper($name)};
 	
 		// Else throw exception
-		else throw new Exception(get_class($this)." class does not have '".$name."' property!");
+		else throw new InvalidArgumentException(get_class($this)." class does not have '".$name."' property!");
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
