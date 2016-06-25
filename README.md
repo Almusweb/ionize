@@ -7,56 +7,56 @@ professional  and  natively  multilingual  PHP CMS, developed  with user experie
 webdesigners and webagencies to simply make their clients happy, but also for developers who does not have his hands
 tied as in other CMS.
 
-Official website: http://www.ionizecms.com
-
+##### Project Goals
 > The cms need a new version, so  as a developer all I can do is coding the new system in Codeigniter3 PHP Framework
 and designed for  performance  but keeping the  previous  confortable  Ionize tags for template parsing but from now
 Ionize will support other template parser engines like Smarty and Dwoo and I will add lots of modern features.
 > The modern content manager systems need to use the modern solutions with performance in mind.
 
-### Installation & Contribute
+Official website: http://www.ionizecms.com
 
-###### Installation
-* Clone the repository to a folder
-* Install composer: https://getcomposer.org/download/
-* Use ```composer update``` to download CodeIgniter
-
-###### Contribute
-* The project uses Allman style with tabs, so keep it that way!
-* If you want help, but you dont know what to do ask on Gitter!
-
-### Requested Features
-
-- [x] Composer ~~and PSR~~, Using PHP 5.4+ Namespaces, Traits, Interfaces
-- [x] CodeIgniter 3.0.x and PHP5.6+ and PHP7 Support
-- [ ] Add custom javascript and style for content, page, article
-- [ ] Access to the scripts and styles, minifier and autoincluder
-- [ ] Support bower and webcomponents for theme and minify them with layouts
-- [ ] Menu and Content split, add Content to multiple menu item
-- [ ] Moving trough the Hiearchy in Content class (parent, children)
-- [ ] Version Control For Content, Revisor publishing the changes
-- [ ] Master Template, Desktop/Mobile Templates, Layouts
-- [ ] Language/Group based Template overrides
-- [ ] Social Plugins (Facebook, Google+, Twitter, etc)
-- [ ] Search Aricles and Pages on Admin, better Article management
-- [ ] Form Manage on Administration (configure items and actions)
-- [ ] Update Notification for Plugins and the System
-- [ ] Support the current Ionize tags, but parsing like a template system
-- [ ] Support other Database than MySQL
-- [ ] Preview Article from Administration, Live edit
-- [ ] Muliple file move, copy trough the MediaManager
-- [ ] Migration from old system, handle old module codes
-
-### Ionize Authors
+##### Ionize Authors
 * [Michel-Ange Kuntz](http://www.partikule.net) (http://www.partikule.net)
 * [Christophe Prudent](http://www.toopixel.ch) (http://www.toopixel.ch)
 
-### Ionize Contributors
+##### Ionize Contributors
 * [Kay Stenschke](http://www.coexec.com) (http://www.coexec.com)
 * [İskender Totoğlu](http://www.altivebir.com.tr) (http://www.altivebir.com.tr)
 * [Martin Wernstahl](https://twitter.com/wernstahl) (https://twitter.com/wernstahl)
 * [Bhagya Nirmaan Silva](http://about.me/bhagyas) (http://about.me/bhagyas)
 * [Adam Liszkai](http://liszkaiadam.hu) (http://liszkaiadam.hu)
+
+## Installation & Contribute
+
+### Installation
+* Clone the repository to a folder
+* Install composer: https://getcomposer.org/download/
+* Use ```composer update``` to download CodeIgniter
+
+### Contribute
+Read the [CONTRIBUTION.md](CONTRIBUTION.md)
+
+## Requested Features
+
+- Composer and PSR, Using PHP 5.4+ Namespaces, Traits, Interfaces
+- CodeIgniter 3.0.x and PHP5.6+ and PHP7 Support
+- Add custom javascript and style for content, page, article
+- Access to the scripts and styles, minifier and autoincluder
+- Support bower and webcomponents for theme and minify them with layouts
+- Menu and Content split, add Content to multiple menu item
+- Moving trough the Hiearchy in Content class (parent, children)
+- Version Control For Content, Revisor publishing the changes
+- Master Template, Desktop/Mobile Templates, Layouts
+- Language/Group based Template overrides
+- Social Plugins (Facebook, Google+, Twitter, etc)
+- Search Aricles and Pages on Admin, better Article management
+- Form Manage on Administration (configure items and actions)
+- Update Notification for Plugins and the System
+- Support the current Ionize tags, but parsing like a template system
+- Support other Database than MySQL
+- Preview Article from Administration, Live edit
+- Muliple file move, copy trough the MediaManager
+- Migration from old system, handle old module codes
 
 ### Development Authors
 * [Adam Liszkai](http://liszkaiadam.hu) (http://liszkaiadam.hu)
