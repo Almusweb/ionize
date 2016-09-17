@@ -4,7 +4,10 @@ composer.lock
 .buildpath
 .project
 .settings
-cache.properties
+.idea
+.idea/*
+*/.idea
+*/.idea/*
 build
 vendor/codeigniter
 vendor/composer
