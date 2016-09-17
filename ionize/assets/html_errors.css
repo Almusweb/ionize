@@ -1,0 +1,73 @@
+::selection { background-color: #3a7fc5; color: #eee; }
+::-moz-selection { background-color: #3a7fc5; color: #eee; }
+
+body {
+	background-color: #eee;
+	margin: 40px;
+	font: 13px/20px normal Ubuntu, Helvetica, Arial, sans-serif;
+	color: #4F5155;
+}
+
+a {
+	color: #FFD500;
+	background-color: transparent;
+	font-weight: normal;
+}
+
+h1 {
+	color: #444;
+	font-size: 14px;
+	font-weight: bolder;
+	text-transform: uppercase;
+	
+	margin: 0 0 4px 0;
+	padding: 12px 15px 2px 15px;
+}
+
+code, pre, .backtrace {
+	font-family: "Ubuntu Mono", Consolas, Monaco, Courier New, Courier, monospace;
+	font-size: 11px;
+	background-color: #f9f9f9;
+	border: 1px solid #D0D0D0;
+	color: #002166;
+	display: block;
+	margin: 3px 0 3px 0;
+	padding: 3px 6px 3px 6px;
+	overflow: auto;
+}
+
+.backtrace {
+	text-align: left; width: 70%; margin: 10px auto; padding: 10px 10px 20px 10px;
+}
+
+.backtrace h3 {
+	text-transform: uppercase; font-size: 160%; margin: 5px 10px 5px 10px;
+}
+
+.backtrace ul, .backtrace ul li {
+	padding: 0 10px; margin: 0 0 0 0; font-size: 12px; list-style: none;
+}
+
+.backtrace ul li {
+	border-top: 1px dotted #ccc; padding-top: 5px; margin-top: 8px;
+}
+
+.backtrace ul li span {
+	font-weight: bolder;
+}
+
+#container {
+	margin: 20px auto; width: 900px; padding-top: 60px; z-index: -1;
+	background: url('logo_blue.png') no-repeat center top;
+	text-align: center;
+}
+
+p {
+	margin: 2px 15px 2px 15px; font-size: 11px;
+}
+
+#container.missing_page {
+	text-align: center; height: 300px;
+	
+	position: fixed; top: 50%; left: 50%; margin-left: -450px; margin-top: -150px;
+}

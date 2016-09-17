@@ -1,5 +1,15 @@
 <?php
 
+// Load the MagicGet Trait
+require_once APPPATH.'traits'.DIRECTORY_SEPARATOR.'MagicGet'.PHPEXT;
+
+// Load the Ionize Autoloader class
+include_once APPPATH.'core/IO_Autoloader.php';
+
+// Load required classes for loading the main content
+use \Ionize\Pages\{Pages, Page};
+use \Ionize\Articles\{Articles, Article};
+
 /**
  * Class Ionize
  *
@@ -19,11 +29,17 @@
  */
 class Ionize
 {
+	use \Traits\MagicGet;
+
 	private static $instance = NULL;
 	private static $_loaded_ionize_elements = array();
 
-	protected $contents = array();
-	private $acceptedExtensions = ['php','tpl'];
+	private $theme = NULL;
+
+	private $content = NULL;
+	private $contents = array();
+
+	private $acceptedExtensions = array('php');
 
 	/**
 	* Ionize constructor
@@ -31,18 +47,100 @@ class Ionize
 	public function __construct()
 	{
 		self::$instance = $this;
+		
+		$this->theme = Ionize\Theme::getInstance();
 	}
+	/* ------------------------------------------------------------------------------------------------------------- */
 
 	/**
 	* Static getInstance method
 	*
 	* @return Ionize|null
 	*/
-	public static function getInstance()
+	public static function getInstance() : Ionize
 	{
-		if( self::$instance instanceof \Ionize\Ionize ) return self::$instance;
-		else return new self;
+		return self::$instance;
 	}
+	/* ------------------------------------------------------------------------------------------------------------- */
+
+
+	public function setContent( \Model\Data\Contents\Content $content = NULL ) : Ionize
+	{
+		$this->content = $content;
+		
+		return $this;
+	}
+	/* ------------------------------------------------------------------------------------------------------------- */
+
+	/**
+	 * Rendering the webpage
+	 *
+	 * Getting the layout/view and render the contents of the page
+	 *
+	 * @returns String Source Code of the webpage
+	 */
+	public function render() : String
+	{
+		$layout_file = $this->getLayoutFile('default'); // @todo detect layout type by user agent
+		Debug($layout_file, '$layout_file');
+		
+		$template = $this->parseNativeView( $this->content->view, $this->content->getData() );
+		Debug($template, '$template');
+		
+		extract( $this->content->getData() );
+		
+		ob_start();
+		
+		if(file_exists($layout_file)) include( $layout_file );
+		else echo $template;
+		
+		$source_code = ob_get_contents();
+		ob_end_clean();
+
+		Debug($source_code, '$source_code');
+		return $source_code;
+	}
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	/**
+	 * Getting the layout file
+	 
+	 * @returns String Absolute path of the layout file 
+	 */
+	private function getLayoutFile( $layout ) : String
+	{
+		$layouts_path = $this->theme->path.'layouts'.DS;
+		Debug($layouts_path, '$layouts_path');
+	
+		foreach($this->acceptedExtensions as $i => $ext)
+			if( file_exists($layouts_path . $layout . '.' . $ext) ) { $layout = $layout . '.' . $ext; break; }
+		
+		$layout_content = file_get_contents($layouts_path . $layout);
+		Debug($layout_content, '$layout_content');
+		
+		return $layouts_path . $layout;
+	}
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	/**
+	 * Getting the layout file
+	 
+	 * @returns String Absolute path of the layout file 
+	 */
+	private function getViewFile( $view ) : String
+	{
+		$views_path = $this->theme->path.'views'.DIRECTORY_SEPARATOR;
+		Debug($views_path, '$views_path');
+	
+		foreach($this->acceptedExtensions as $i => $ext)
+			if( file_exists($views_path . $view . '.' . $ext) ) { $view = $view . '.' . $ext; break; }
+		
+		$view_content = file_get_contents($views_path . $view);
+		Debug($view_content, '$view_content');
+		
+		return $views_path . $view;
+	}
+	/* ------------------------------------------------------------------------------------------------------------- */
 
 	/**
 	* Parse theme view file
@@ -52,23 +150,21 @@ class Ionize
 	* @param string $layout
 	* @return string
 	*/
-	public function parseNativeView( $view, $data=array(), $layout=NULL )
+	public function parseNativeView( $view, $data=array() )
 	{
+		$view_file = $this->getViewFile( $view );
+	
 		ob_start();
 		extract($data);
-
-		if(isset($contents)) $this->contents = $contents;
-
-		foreach($this->acceptedExtensions as $i => $ext)
-			if( file_exists($view.'.'.$ext) ) { $view = $view.'.'.$ext; break; }
-
-		include( $view );
+		
+		include( $view_file );
 
 		$source_code = ob_get_contents();
 		ob_end_clean();
 
 		return $source_code;
 	}
+	/* ------------------------------------------------------------------------------------------------------------- */
 
 	/**
 	* Parse theme view file
@@ -77,64 +173,11 @@ class Ionize
 	* @param array $data
 	* @param string $layout
 	*/
-	public function parseIonizeView( $view, $data=array(), $layout=NULL )
+	public function parseIonizeView( $view, $data=array() )
 	{
-		get_instance()->benchmark->mark('Ionize_parseIonizeView_start');
-
-		foreach($this->acceptedExtensions as $i => $ext)
-			if( \file_exists($view.'.'.$ext) ) { $view = $view.'.'.$ext; break; }
-
-		$viewtime = \filemtime($view);
-		Debug($viewtime, '$viewtime');
-
-		$compiled_view = str_replace('views'.DIRECTORY_SEPARATOR,'compile'.DIRECTORY_SEPARATOR, $view);
-		Debug($compiled_view, 'check compiled file existence');
-
-		if( \file_exists($compiled_view) )
-		{
-			$cachetime = file_get_contents($compiled_view.'.time');
-
-			if($cachetime == $viewtime)
-			{
-				get_instance()->benchmark->mark('Ionize_parseIonizeView_end');
-				return $this->parseNativeView($compiled_view, $data, $layout);
-			}
-		}
-
-		// Parsing the template
-		{
-			get_instance()->benchmark->mark('Ionize_parseIonizeView_parse_start');
-
-			require_once('ionize/Parser.php');
-			$ionizeParser = new \Ionize\Parser();
-
-			$view_source = file_get_contents($view);
-			$parsed_source = $ionizeParser->parse( $view_source );
-
-			$permissionMasking = umask(0);
-
-			// Create Folder if needed
-			{
-				$segments = explode(DIRECTORY_SEPARATOR, $compiled_view);
-				unset($segments[count($segments)-1]);
-
-				$path = implode(DIRECTORY_SEPARATOR, $segments);
-				if(!file_exists($path)) mkdir($path, 0777, TRUE);
-			}
-
-			file_put_contents($compiled_view, $parsed_source);
-			chmod($compiled_view, 0777);
-
-			file_put_contents($compiled_view.'.time', $viewtime);
-			chmod($compiled_view.'.time', 0777);
-
-			umask($permissionMasking);
-
-			get_instance()->benchmark->mark('Ionize_parseIonizeView_parse_end');
-			get_instance()->benchmark->mark('Ionize_parseIonizeView_end');
-			return $this->parseNativeView($compiled_view, $data, $layout);
-		}
+		// @todo Make Ionize Parser
 	}
+	/* ------------------------------------------------------------------------------------------------------------- */
 
 	/**
 	* Parse theme view file
@@ -144,10 +187,11 @@ class Ionize
 	* @param array $data
 	* @param string $layout
 	*/
-	public function parseTemplateView( $template, $view, $data=array(), $layout=NULL )
+	public function parseTemplateView( $template, $view, $data=array() )
 	{
 		// @todo Handle template engines
 	}
+	/* ------------------------------------------------------------------------------------------------------------- */
 
 	/**
 	* Static Magic Method
@@ -164,19 +208,42 @@ class Ionize
 		}
 		else
 		{
-			$class_name = ucwords(strtolower($name));
+			$loaded = FALSE;
 
-			if( !isset(self::$_loaded_ionize_elements[ $class_name ]) )
+			$class_name = ucwords(strtolower($name));
+			$namespaced_name = "\\Ionize\\{$class_name}";
+			$filepath = APPPATH."libraries/ionize/{$class_name}".PHPEXT;
+
+			if(file_exists($filepath))
 			{
-				$namespaced_name = "\\Ionize\\{$class_name}";
-				require_once("ionize/{$class_name}.php");
+				require_once($filepath);
 
 				$class = new $namespaced_name( $arguments );
-				self::$_loaded_ionize_elements[ $class_name ] = $class;
+
+				$loaded = TRUE;
 
 				return $class;
 			}
-			else return self::$_loaded_ionize_elements[ $class_name ];
+
+			if($loaded == FALSE)
+			{
+				$namespaced_name = "\\Ionize\\{$class_name}\\{$class_name}";
+				$filepath = APPPATH."libraries/ionize/".strtolower($class_name)."/{$class_name}".PHPEXT;
+
+				if(file_exists($filepath))
+				{
+					require_once($filepath);
+
+					$class = new $namespaced_name( $arguments );
+
+					$loaded = TRUE;
+
+					return $class;
+				}
+			}
+
+			if($loaded == FALSE)
+				throw new \Exception('Unable to load the specified class: '.$namespaced_name.' in path: '.$filepath);
 		}
 	}
 }

@@ -13,15 +13,16 @@ trait MagicGet
 	 */
 	public function __get( $name )
 	{
-		if( $name == 'id' && isset($this->id_property) ) return $this->{$this->id_property};
-		if( $name == 'code' && isset($this->code_property) ) return $this->{$this->code_property};
+		if( $name == 'id' && defined(get_class($this).'::id_property')) return $this->{$this->id_property};
+		if( $name == 'code' && defined(get_class($this).'::code_property')) return $this->{$this->code_property};
 		
 		// Checking the property is exists?
-		if ( property_exists($this, $name) ) return $this->$name;
-
-		// Maybe capitalized?
-		else if ( property_exists($this, strtoupper($name)) ) return $this->{strtoupper($name)};
-	
+		if ( property_exists($this, $name) )
+		{
+			$property = new \ReflectionProperty( $this, $name );
+			if($property->isProtected() || $property->isPublic()) return $this->$name;
+			else throw new InvalidArgumentException(get_class($this)." class '".$name."' property not accessable!");
+		}
 		// Else throw exception
 		else throw new InvalidArgumentException(get_class($this)." class does not have '".$name."' property!");
 	}

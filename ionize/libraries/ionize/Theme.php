@@ -1,6 +1,8 @@
 <?php
 namespace Ionize;
 
+include_once APPPATH.'traits'.DIRECTORY_SEPARATOR.'MagicGet'.PHPEXT;
+
 /**
  * Theme class
  *
@@ -15,6 +17,9 @@ namespace Ionize;
  */
 class Theme
 {
+	use \Traits\MagicGet;
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
 	protected $config = NULL;
 	/* ------------------------------------------------------------------------------------------------------------- */
 
@@ -76,98 +81,11 @@ class Theme
 
 		// Save the theme paths
 		$this->basepath = key($this->config->themes_basepath) . DIRECTORY_SEPARATOR .'themes' . DIRECTORY_SEPARATOR;
-		$this->path = $this->active . DIRECTORY_SEPARATOR;
+		$this->path = $this->basepath . $this->active . DIRECTORY_SEPARATOR;
 
 		return $this;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 
-	/**
-	 * @param \Contents\Content[] $contents
-	 *
-	 * @return string|false
-	 */
-	public function render( array $contents = array() )
-	{
-		if(count($contents) > 0)
-		{
-			$main_content = $contents[0];
-			$view_name = $main_content->getView();
-
-			$view_path = $this->getView( $view_name );
-			if($view_path != FALSE)
-			{
-				$this->getLayout( $main_content );
-				$this->assignData('contents', $contents);
-				return $this->parseView( $view_path );
-			}
-		}
-		else show_404();
-		return FALSE;
-	}
-	/* ------------------------------------------------------------------------------------------------------------- */
-
-	/**
-	 * @param string|string[] $name property name
-	 * @param mixed $value property value
-	 * @return bool
-	 */
-	public function assignData( $name, $value=NULL )
-	{
-		if(is_array($name))
-		{
-			foreach($name as $n => $v) $this->assignData($n, $v);
-			return TRUE;
-		}
-		
-		$this->data[$name] = $value;
-		return TRUE;
-	}
-	/* ------------------------------------------------------------------------------------------------------------- */
 	
-	public function getLayout()
-	{
-		
-	}
-	/* ------------------------------------------------------------------------------------------------------------- */
-	
-	public function getView( $view_name )
-	{
-		// Saving the first (the main) view name
-		if($this->view == NULL) $this->view = $view_name;
-
-		// Getting the view file path
-		$view_path = $this->path . 'views' . DIRECTORY_SEPARATOR . $view_name;
-
-		$file_path = $this->basepath . $view_path;
-		if(strpos('.php', $file_path) == FALSE) $file_path = $file_path.'.php';
-
-		if(file_exists($file_path)) return $this->basepath . $view_path;
-		else show_error('Theme view file is missing: ' . $this->basepath . $view_path, 500);
-
-		return FALSE;
-	}
-	/* ------------------------------------------------------------------------------------------------------------- */
-
-	public function parseView( $file_path )
-	{
-		$method = $this->config->theme_parser;
-		$ionize = \Ionize::getInstance();
-
-		switch( $method )
-		{
-			case "ionize":
-				return $ionize->parseIonizeView( $file_path, $this->data, $this->layout);
-				break;
-
-			case "native":
-				return $ionize->parseNativeView( $file_path, $this->data, $this->layout);
-				break;
-
-			default:
-				return $ionize->parseTemplateView( $method, $file_path, $this->data, $this->layout);
-				break;
-		}
-	}
-	/* ------------------------------------------------------------------------------------------------------------- */
 }

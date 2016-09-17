@@ -4,6 +4,9 @@
 // Load the module loader class
 include_once APPPATH.'core/HMVC/Loader.php';
 
+// Load the Ionize Autoloader class
+include_once APPPATH.'core/IO_Autoloader.php';
+
 /* ----------------------------------------------------------------------------------------------------------------- */
 
 /**
@@ -23,8 +26,6 @@ class IO_Loader extends HMVC_Loader
 	public function __construct()
 	{
 		parent::__construct();
-		
-		log_message('debug', 'AKH_Loader Class Initialized');
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
@@ -66,12 +67,7 @@ class IO_Loader extends HMVC_Loader
 			$model = substr($model, $last_slash);
 		}
 		
-		if ( $name == NULL )
-		{
-			$name = $model;
-		}
-		
-		if ( in_array($name, $this->_ci_models, TRUE) )
+		if ( !empty($name) && in_array($name, $this->_ci_models, TRUE) )
 		{
 			return $this;
 		}
@@ -95,7 +91,7 @@ class IO_Loader extends HMVC_Loader
 		$namespace = 'Model\\'; $parts = explode('/', $path);
 		foreach ( $parts as $dir ) $namespace .= (empty($dir) ? '' : ucfirst($dir).'\\');
 		
-		if ( ! class_exists($model) || (class_exists($model) && ! class_exists($namespace . $model)) )
+		if ( ! class_exists($model, FALSE) || (class_exists($model, FALSE) && ! class_exists($namespace . $model, FALSE)) )
 		{
 			foreach ( $this->_ci_model_paths as $mod_path )
 			{
@@ -103,7 +99,8 @@ class IO_Loader extends HMVC_Loader
 				{
 					continue;
 				}
-				
+
+				Debug($mod_path . 'models/' . $path . $model . '.php', 'Require_once');
 				require_once ($mod_path . 'models/' . $path . $model . '.php');
 				
 				if ( class_exists($namespace . $model, TRUE) )
@@ -137,12 +134,22 @@ class IO_Loader extends HMVC_Loader
 		
 		if ( ! $abstract )
 		{
-			if ( $name != FALSE )
+			if ( !empty($name) )
 			{
 				$this->_ci_models[] = $name;
 				$CI->$name = new $model();
+
+				return $CI->$name;
 			}
+
+			if ( $class->hasMethod('getInstance') )
+			{
+				return $model::getInstance();
+			}
+
+			return new $model();
 		}
+
 		return $this;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
@@ -183,8 +190,7 @@ class IO_Loader extends HMVC_Loader
 		// Is this a stock library? There are a few special conditions if so ...
 		if (file_exists(BASEPATH.'libraries/'.ucfirst($subdir).ucfirst($class).'.php'))
 		{
-			//Debug( ucfirst($subdir).ucfirst($class), 'Load stock Library' );
-			return $this->_ci_load_stock_library(ucfirst($class), ucfirst($subdir), $params, $object_name);
+			return $this->_ci_load_stock_library(ucfirst($class), ucfirst($subdir), $params, NULL);
 		}
 		
 		// If class is not exist then load it
@@ -259,6 +265,96 @@ class IO_Loader extends HMVC_Loader
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
 	/**
+	 * Internal CI Stock Library Loader
+	 *
+	 * @used-by	CI_Loader::_ci_load_library()
+	 * @uses	CI_Loader::_ci_init_library()
+	 *
+	 * @param	string	$library	Library name to load
+	 * @param	string	$file_path	Path to the library filename, relative to libraries/
+	 * @param	mixed	$params		Optional parameters to pass to the class constructor
+	 * @param	string	$object_name	Optional object name to assign to
+	 * @return	void
+	 */
+	protected function _ci_load_stock_library($library_name, $file_path, $params, $object_name)
+	{
+		//Debug([$library_name, $file_path, $params, $object_name], 'Load Stock Library:');
+	
+		$prefix = 'CI_';
+
+		if (class_exists($prefix.$library_name, FALSE))
+		{
+			if (class_exists(config_item('subclass_prefix').$library_name, FALSE))
+			{
+				$prefix = config_item('subclass_prefix');
+			}
+
+			// Before we deem this to be a duplicate request, let's see
+			// if a custom object name is being supplied. If so, we'll
+			// return a new instance of the object
+			if ($object_name !== NULL)
+			{
+				$CI =& get_instance();
+				if ( ! isset($CI->$object_name))
+				{
+					return $this->_ci_init_library($library_name, $prefix, $params, $object_name);
+				}
+			}
+
+			log_message('debug', $library_name.' class already loaded. Second attempt ignored.');
+			return;
+		}
+
+		$paths = $this->_ci_library_paths;
+		array_pop($paths); // BASEPATH
+		array_pop($paths); // APPPATH (needs to be the first path checked)
+		array_unshift($paths, APPPATH);
+		
+		if($object_name == NULL) $object_name = strtolower($library_name);
+
+		foreach ($paths as $path)
+		{
+			if (file_exists($path = $path.'libraries/'.$file_path.$library_name.'.php'))
+			{
+				// Override
+				include_once($path);
+				if (class_exists($prefix.$library_name, FALSE))
+				{
+					return $this->_ci_init_library($library_name, $prefix, $params, $object_name);
+				}
+				else
+				{
+					log_message('debug', $path.' exists, but does not declare '.$prefix.$library_name);
+				}
+			}
+		}
+
+		include_once(BASEPATH.'libraries/'.$file_path.$library_name.'.php');
+
+		// Check for extensions
+		$subclass = config_item('subclass_prefix').$library_name;
+		foreach ($paths as $path)
+		{
+			if (file_exists($path = $path.'libraries/'.$file_path.$subclass.'.php'))
+			{
+				include_once($path);
+				if (class_exists($subclass, FALSE))
+				{
+					$prefix = config_item('subclass_prefix');
+					break;
+				}
+				else
+				{
+					log_message('debug', $path.' exists, but does not declare '.$subclass);
+				}
+			}
+		}
+
+		return $this->_ci_init_library($library_name, $prefix, $params, $object_name);
+	}
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	/**
 	 * Internal CI Library Instantiator
 	 *
 	 * @used-by	CI_Loader::_ci_load_stock_library()
@@ -275,6 +371,8 @@ class IO_Loader extends HMVC_Loader
 	 */
 	protected function _ci_init_library($class, $prefix, $config = FALSE, $object_name = NULL)
 	{
+		//Debug([$class, $prefix, $config, $object_name], 'Init Library:');
+	
 		// Is there an associated config file for this class? Note: these should always be lowercase
 		if ($config === NULL)
 		{
@@ -332,14 +430,14 @@ class IO_Loader extends HMVC_Loader
 	
 		// Set the variable name we will assign the class to
 		// Was a custom class name supplied? If so we'll use it
-		if (empty($object_name))
+		/* if (empty($object_name))
 		{
 			$object_name = strtolower($class);
 			if (isset($this->_ci_varmap[$object_name]))
 			{
 				$object_name = $this->_ci_varmap[$object_name];
 			}
-		}
+		} */
 	
 		// Don't overwrite existing properties
 		$CI =& get_instance();
@@ -373,6 +471,8 @@ class IO_Loader extends HMVC_Loader
 		return $this;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	
 }
 /* ----------------------------------------------------------------------------------------------------------------- */
 /* End of file IO_Loader.php */

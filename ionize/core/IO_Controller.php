@@ -4,13 +4,15 @@
 // Load the module controller class
 include_once APPPATH.'core/HMVC/Controller.php';
 
+// Load the Ionize Autoloader class
+include_once APPPATH.'core/IO_Autoloader.php';
 /* ----------------------------------------------------------------------------------------------------------------- */
 
 /**
  * Ionize Controller class
  *
- * Loading the configuration, the language and the settings for fourther work. Also extending HMVC Controller
- * so the extends of this class will have work as a HMVC module controller.
+ * Loading the configuration, the user, the language and the settings for further work.
+ * Extending HMVC Controller so the extends of this class will have work as a HMVC module controller.
  *
  * @package Ionize
  * @subpackage Core
@@ -25,10 +27,17 @@ include_once APPPATH.'core/HMVC/Controller.php';
  * @property \CI_Config $config
  * @property \CI_Input $input
  * @property \CI_Loader $load
+ * @property \CI_Session $session
  * @property \CI_Output $output
  */
 class IO_Controller extends HMVC_Controller
 {
+	/**
+	 * @var string $base_url Domain string
+	 */
+	protected $base_url = NULL;
+	/* ------------------------------------------------------------------------------------------------------------- */
+
 	/**
 	 * @var string $language ISO 639-1 Alpha2 language code
 	 */
@@ -78,8 +87,10 @@ class IO_Controller extends HMVC_Controller
 		
 		if(isset($_SERVER['SERVER_NAME']) && isset($_SERVER['REQUEST_URI']))
 		{
-			$http = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https' : 'http';
-			$this->data['base_url'] = sprintf("%s://%s%s",$http,$_SERVER['SERVER_NAME'],$_SERVER['REQUEST_URI']);
+			$protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https' : 'http';
+			$this->data['base_url'] = sprintf("%s://%s%s",$protocol,$_SERVER['SERVER_NAME'],$_SERVER['REQUEST_URI']);
+			
+			$this->base_url = "://{$_SERVER['SERVER_NAME']}";
 		}
 		
 		// Detect HHVM
@@ -89,13 +100,15 @@ class IO_Controller extends HMVC_Controller
 		$this->config->load('ionize', TRUE);
 		$this->ionize = (object) $this->config->config['ionize'];
 		
-		// Initialize ionize feaures
-		$this->initalizeLanguage();
-		$this->initalizeSettings();
+		// Initialize core Features for the content management
+		$this->initializeLanguage()->initializeSettings()->initializeUser();
+		
+		// Load the Cache driver
+		$this->load->driver('cache');
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
-	private function initalizeLanguage()
+	private function initializeLanguage() : IO_Controller
 	{
 		// Get the language from the SESSION
 		if ( ! empty( $this->session->language )) $this->language = $this->session->language;
@@ -108,7 +121,7 @@ class IO_Controller extends HMVC_Controller
 			// Also make a fallback English
 			else $http_accept_language = 'en';
 			
-			// Get the Available languages and decklare the Languages array
+			// Get the Available languages and declare the Languages array
 			$available_languages = array_flip( $this->ionize->languages );
 			$languages = array();
 			
@@ -134,7 +147,6 @@ class IO_Controller extends HMVC_Controller
 			
 				// If the country and the langauge code is same then downgrade the priority
 				if(isset($available_languages[$a])) $languages[$a] = $value - 0.1;
-			
 			}
 			
 			// Order by priorty
@@ -147,33 +159,29 @@ class IO_Controller extends HMVC_Controller
 			$this->session->set_userdata('language', $this->language);
 		}
 		
-		// Prevent append call feature
+		// return the Controller so the method can be use in chain
 		return $this;
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
-	private function initalizeSettings()
+	private function initializeSettings() : IO_Controller
 	{
-		return $this;
-	
-		// Load the Settings Library classes
-		$this->load->library('settings/Settings', NULL);
-		$this->load->library('settings/Item', NULL);
-		
-		// Get the Settings container instance
-		$settings = \Libraries\Settings\Settings::getInstance();
-		
-		// If the settings loaded from cached data then use it
-		if( count($settings->get()) > 0 ) $this->settings = $settings;
-		// else load the datas from the database
-		else
-		{
-			
-		}
-		
-		// Prevent append call feature
+		// @todo load Settings to the Controller
+
+		// return the Controller so the method can be use in chain
 		return $this;
 	}
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	private function initializeUser() : IO_Controller
+	{
+		// Get the serialized userdata from the SESSION
+		if ( ! empty( $this->session->user )) $this->user = unserialize($this->session->user);
+
+		// return the Controller so the method can be use in chain
+		return $this;
+	}
+	/* ------------------------------------------------------------------------------------------------------------- */
 }
 /* ----------------------------------------------------------------------------------------------------------------- */
 /* End of file: IO_Controller.php */

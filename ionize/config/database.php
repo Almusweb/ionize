@@ -73,13 +73,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $active_group = 'default';
 $query_builder = TRUE;
 
-$db['default'] = array(
-	'dsn'	=> '',
+$db['default'] = array
+(
+	'dsn'	=> 'mysql:host=localhost; dbname=ionize_200; charset=utf8;',
 	'hostname' => 'localhost',
-	'username' => 'ionize200',
-	'password' => 'ionize200',
-	'database' => 'ionize200',
-	'dbdriver' => 'mysqli',
+	'username' => 'ionize_200',
+	'password' => 'ionize_200',
+	'database' => '',
+	'dbdriver' => 'pdo',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
 	'db_debug' => (ENVIRONMENT !== 'production'),

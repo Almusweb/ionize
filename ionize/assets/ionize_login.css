@@ -1,0 +1,66 @@
+
+body, html {
+	min-height: 100%; margin: 0; padding: 0;
+}
+
+body, html {
+	background: #eee url('login/.random') no-repeat center center !important;
+	background-size: cover !important;
+}
+
+#overlay {
+	position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 10;
+	background: url('grid-30-white.png') repeat top left;
+}
+
+#sidebar {
+	position: fixed; top: 0; bottom: 0; left: 0; z-index: 50; width: 380px;
+	background-color: #eee;
+}
+
+#sidebar .elapsed_time, #sidebar .memory_usage, #sidebar #login {
+	position: absolute;
+}
+
+#sidebar #login {
+	top: 50%;  height: 300px; left: 10px; right: 10px; margin-top: -150px;
+	text-align: center;
+}
+
+#sidebar #login io-login {
+	width: 200px; margin: 0 auto; margin-top: 40px;
+}
+
+#sidebar .elapsed_time, #sidebar .memory_usage, #widget .elapsed_time, #widget .memory_usage {
+	bottom: 10px; font-size: 80%; opacity: 0.5;
+}
+
+#sidebar .elapsed_time, #widget .elapsed_time {
+	left: 10px;
+}
+
+#sidebar .memory_usage, #widget .memory_usage {
+	right: 10px;
+}
+
+
+#widget {
+	position: fixed; top: 50%; left: 50%; z-index: 50; width: 380px; height: 400px;
+	margin-top: -200px; margin-left: -190px; background-color: #eee;
+	
+	box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12), 0 3px 1px -2px rgba(0,0,0,.2);
+}
+
+#widget .elapsed_time, #widget .memory_usage, #widget #login {
+	position: absolute;
+}
+
+#widget #login {
+	top: 50%;  height: 300px; left: 10px; right: 10px; margin-top: -150px;
+	text-align: center;
+}
+
+#widget #login io-login {
+	width: 200px; margin: 0 auto; margin-top: 40px;
+}
+

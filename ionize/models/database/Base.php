@@ -1,22 +1,16 @@
-<?php /* ----------------------------------------------------------------------------------------------------------- */
+<?php
 namespace Model\Database;
-/* ----------------------------------------------------------------------------------------------------------------- */
-use \CI_Model as CodeIgniter_Model;
-/* ----------------------------------------------------------------------------------------------------------------- */
-use \InvalidArgumentException;
+
+use \CI_Model;
 use \BadMethodCallException;
-/* ----------------------------------------------------------------------------------------------------------------- */
 
 /**
  * Main database handler class
  *
- * It's load automatcley the database and use the predefined table, view, procedure or etc for getting result
+ * It's load automatically the database and use the predefined table, view, procedure or etc for getting result
  *
- * @package 	Framework
- * @subpackage	Models
+ * @package 	Ionize/Models/Database
  * @category	Database
- *
- * @since 2015.10.12
  *
  * @author Ádám Liszkai <contact@liszkaiadam.hu>
  *
@@ -70,14 +64,8 @@ use \BadMethodCallException;
  *
  * @property \CI_DB $mysql
  * @property \CI_DB $default
- * @property \CI_DB $firebird
- * @property \CI_DB $firebird_dev
- * @property \CI_DB $firebird_2016
- * @property \CI_DB $firebird_2015
- * @property \CI_DB $firebird_2014
- * @property \CI_DB $firebird_2013
  */
-abstract class Base extends CodeIgniter_Model
+abstract class Base extends CI_Model
 {
 	private static $instance = array();
 	/* ------------------------------------------------------------------------------------------------------------- */
@@ -147,7 +135,7 @@ abstract class Base extends CodeIgniter_Model
 	{
 		$class_name = get_called_class();
 		
-		//if( !isset( self::$instance[ $class_name ] ) ) self::$instance[ $class_name ] = new get_class();
+		if( !isset( self::$instance[ $class_name ] ) ) self::$instance[ $class_name ] = new $class_name();
 		return self::$instance[ $class_name ];
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */

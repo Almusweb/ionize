@@ -1,0 +1,85 @@
+/*
+ * PolymerThemes v1.0.3
+ * Homepage: https://polymerthemes.com
+ * Copyright 2015 Polymer Themes
+ * Licensed under BSD
+ * Based on Polymer: http://www.polymer-project.org/
+ * Compatible with Polymer 1.0
+ */
+
+@import url("https://fonts.googleapis.com/css?family=Oxygen:700|Source+Sans+Pro");
+html { -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; font-size: 16px; }
+
+html, body { margin: 0px; padding: 0px; min-height: 100%; color: #444444; background-color: #eeeeee; font-family: 'Source Sans Pro', sans-serif; font-weight: 400; }
+
+section { padding: 40px 0px; }
+section[hero] { background-color: #e0e0e0; }
+
+h1, h2, h3, h4, h5, h6 { font-weight: 400; margin: 0px; padding: 0px; line-height: 1em; }
+
+h1, h3, h5 { font-family: 'Oxygen', sans-serif; }
+
+h1 { font-size: 50px; margin: 30px 0px; }
+
+h2 { color: #444444; font-size: 35px; margin: 20px 0px; }
+
+h3 { font-size: 25px; margin: 15px 0px; }
+
+h4 { font-size: 20px; }
+
+a, a:active, a:visited, a:focus { color: #444444; text-decoration: none; }
+
+a:hover { color: #444444; text-decoration: underline; }
+
+:root { --default-primary-color: #373b50; --dark-primary-color: #373b50; --light-primary-color: #c5cae9; --text-primary-color: #ffffff; --accent-color: #ff4081; --primary-background-color: #ffffff; --primary-text-color: #444444; --secondary-text-color: #444444; --disabled-text-color: #313238; --divider-color: #e0e0e0; --paper-checkbox-checked-color: #3778bb; --paper-checkbox-checked-ink-color: #373b50; --paper-checkbox-unchecked-color: #444444; --paper-checkbox-unchecked-ink-color: #444444; --paper-checkbox-label-color: #444444; --paper-fab-background: #373b50; --paper-fab-disabled-background: #e0e0e0; --paper-fab-disabled-text: #313238; --paper-icon-button-disabled-text: #e0e0e0; --paper-input-container-color: #919191; --paper-input-container-focus-color: #373b50; --paper-input-container-invalid-color: #ff6e40; --paper-input-container-input-color: #919191; --paper-menu-background-color: #fafafa; --paper-menu-color: #444444; --paper-menu-disabled-color: #afb1b9; --paper-progress-active-color: #3778bb; --paper-progress-secondary-color: #90a4ae; --paper-radio-button-checked-color: #3778bb; --paper-radio-button-checked-ink-color: #d6d8e3; --paper-radio-button-unchecked-color: #444444; --paper-radio-button-unchecked-ink-color: #444444; --paper-radio-button-label-color: #444444; --paper-slider-knob-color: #3778bb; --paper-slider-active-color: #3778bb; --paper-slider-pin-color: #3778bb; --paper-spinner-layer-1-color: #3778bb; --paper-spinner-layer-2-color: #3778bb; --paper-spinner-layer-3-color: #3778bb; --paper-spinner-layer-4-color: #3778bb; --paper-tabs-selection-bar-color: #3778bb; --paper-tab-ink: #3778bb; --paper-toggle-button-checked-bar-color: #3778bb; --paper-toggle-button-checked-button-color: #3778bb; --paper-toggle-button-checked-ink-color: #3778bb; --paper-toggle-button-unchecked-bar-color: #444444; --paper-toggle-button-unchecked-button-color: #e0e0e0; --paper-toggle-button-unchecked-ink-color: #e0e0e0; --paper-toolbar-background: #3778bb; --paper-toolbar-color: #ffffff; }
+
+paper-toolbar a, paper-toolbar a:hover, paper-toolbar a:active, paper-toolbar a:visited, paper-toolbar a:focus { color: #ffffff; }
+
+paper-button.primary, paper-button.btn-primary, paper-button[primary] { color: #3778bb; }
+paper-button.primary[raised], paper-button.btn-primary[raised], paper-button[primary][raised] { background-color: #3778bb; color: #fff; }
+paper-button.secondary, paper-button.btn-secondary, paper-button[secondary] { color: #67a8ea; }
+paper-button.secondary[raised], paper-button.btn-secondary[raised], paper-button[secondary][raised] { background-color: #67a8ea; color: #1f3246; }
+paper-button.success, paper-button.btn-success, paper-button[success] { color: #1b5e20; }
+paper-button.success[raised], paper-button.btn-success[raised], paper-button[success][raised] { background-color: #1b5e20; color: #fff; }
+paper-button.info, paper-button.btn-info, paper-button[info] { color: #ffeb3b; }
+paper-button.info[raised], paper-button.btn-info[raised], paper-button[info][raised] { background-color: #ffeb3b; color: #4d4712; }
+paper-button.warning, paper-button.btn-warning, paper-button[warning] { color: #fb8c00; }
+paper-button.warning[raised], paper-button.btn-warning[raised], paper-button[warning][raised] { background-color: #fb8c00; color: #fff; }
+paper-button.error, paper-button.btn-error, paper-button[error] { color: #d84315; }
+paper-button.error[raised], paper-button.btn-error[raised], paper-button[error][raised] { background-color: #d84315; color: #fff; }
+paper-button.link, paper-button.btn-link, paper-button[link] { text-decoration: underline; }
+paper-button[raised] { color: #444444; }
+paper-button[disabled] { color: #313238 !important; background: #e0e0e0 !important; }
+
+paper-icon-button.primary, paper-icon-button.btn-primary, paper-icon-button[primary] { color: #3778bb; }
+paper-icon-button.primary:hover, paper-icon-button.btn-primary:hover, paper-icon-button[primary]:hover { background-color: #dce2e9; background-color: rgba(55, 120, 187, 0.2); border-radius: 50%; }
+paper-icon-button.secondary, paper-icon-button.btn-secondary, paper-icon-button[secondary] { color: #67a8ea; }
+paper-icon-button.secondary:hover, paper-icon-button.btn-secondary:hover, paper-icon-button[secondary]:hover { background-color: #e1e7ee; background-color: rgba(103, 168, 234, 0.2); border-radius: 50%; }
+paper-icon-button.success, paper-icon-button.btn-success, paper-icon-button[success] { color: #1b5e20; }
+paper-icon-button.success:hover, paper-icon-button.btn-success:hover, paper-icon-button[success]:hover { background-color: #d9e0d9; background-color: rgba(27, 94, 32, 0.2); border-radius: 50%; }
+paper-icon-button.info, paper-icon-button.btn-info, paper-icon-button[info] { color: #ffeb3b; }
+paper-icon-button.info:hover, paper-icon-button.btn-info:hover, paper-icon-button[info]:hover { background-color: #f0eedc; background-color: rgba(255, 235, 59, 0.2); border-radius: 50%; }
+paper-icon-button.warning, paper-icon-button.btn-warning, paper-icon-button[warning] { color: #fb8c00; }
+paper-icon-button.warning:hover, paper-icon-button.btn-warning:hover, paper-icon-button[warning]:hover { background-color: #efe4d6; background-color: rgba(251, 140, 0, 0.2); border-radius: 50%; }
+paper-icon-button.error, paper-icon-button.btn-error, paper-icon-button[error] { color: #d84315; }
+paper-icon-button.error:hover, paper-icon-button.btn-error:hover, paper-icon-button[error]:hover { background-color: #ecddd8; background-color: rgba(216, 67, 21, 0.2); border-radius: 50%; }
+
+paper-checkbox #checkmark.paper-checkbox, paper-checkbox /deep/, paper-checkbox::shadow #checkmark.paper-checkbox { border-color: #fff !important; }
+
+paper-dialog { color: #444444; background-color: #eeeeee; font-family: 'Source Sans Pro', sans-serif; font-weight: 400; }
+paper-dialog h1, paper-dialog h2, paper-dialog h3, paper-dialog h4, paper-dialog h5, paper-dialog h6 { overflow: visible; padding: 0 1em; text-align: center; }
+
+paper-fab { --text-primary-color: white; }
+
+paper-fab { background-color: #3778bb; color: #fff; --paper-fab-keyboard-focus-background: #1a3958; }
+paper-fab.primary, paper-fab.btn-primary, paper-fab[primary] { background-color: #3778bb; color: #fff; --paper-fab-keyboard-focus-background: #1a3958; }
+paper-fab.secondary, paper-fab.btn-secondary, paper-fab[secondary] { background-color: #67a8ea; color: #1f3246; --paper-fab-keyboard-focus-background: #1968b8; }
+paper-fab.success, paper-fab.btn-success, paper-fab[success] { background-color: #1b5e20; color: #fff; --paper-fab-keyboard-focus-background: #37c142; }
+paper-fab.info, paper-fab.btn-info, paper-fab[info] { background-color: #ffeb3b; color: #4d4712; --paper-fab-keyboard-focus-background: #bba700; }
+paper-fab.warning, paper-fab.btn-warning, paper-fab[warning] { background-color: #fb8c00; color: #fff; --paper-fab-keyboard-focus-background: #7b4500; }
+paper-fab.error, paper-fab.btn-error, paper-fab[error] { background-color: #d84315; color: #fff; --paper-fab-keyboard-focus-background: #641f0a; }
+paper-fab[disabled] { color: #313238 !important; background: #e0e0e0 !important; }
+
+section.hero paper-menu, section[hero] paper-menu { --paper-menu-background-color: #fafafa; }
+
+paper-tabs { background-color: #eeeeee; color: #424242; }

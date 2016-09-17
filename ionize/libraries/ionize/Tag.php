@@ -62,7 +62,7 @@ class Tag
 		{
 			if( strpos($this->source, '/>') !== FALSE )
 			{
-				$this->nativeCodeOpening = "<?php Ionize::{$this->name}('{$attr}'); ?>";
+				$this->nativeCodeOpening = "<?php echo Ionize::{$this->name}('{$attr}')->getOutput(); ?>";
 			}
 			elseif( \singular($this->name) == $this->name )
 			{
@@ -78,20 +78,17 @@ class Tag
 
 				if(empty($this->nativeCodeOpening))
 				{
-					$this->nativeCodeOpening = "<?php if(Ionize::{$this->name}('{$attr}') != FALSE): ?>";
+					$this->nativeCodeOpening = "<?php if(Ionize::{$this->name}()->attr('{$attr}')->getOutput() != FALSE): ?>";
 					$this->nativeCodeClosing = "<?php endif; ?>";
 				}
 			}
 			else
 			{
 				$iteratorName = $this->nativeCodeIteratorName = \singular($this->name);
-				$this->nativeCodeOpening = "<?php foreach(Ionize::{$this->name}('{$attr}') as \${$iteratorName}): ?>";
+				$this->nativeCodeOpening = "<?php foreach(Ionize::{$this->name}()->attr('{$attr}')->getItems() as \${$iteratorName}): ?>";
 				$this->nativeCodeClosing = "<?php endforeach; ?>";
 			}
 		}
-
-		Debug($this->nativeCodeOpening, '$this->nativeCodeOpening');
-		Debug($this->nativeCodeClosing, '$this->nativeCodeClosing');
 
 		return $this;
 	}

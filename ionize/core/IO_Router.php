@@ -4,6 +4,9 @@
 // Load the module router class
 include_once APPPATH.'core/HMVC/Router.php';
 
+// Load the Ionize Autoloader class
+include_once APPPATH.'core/IO_Autoloader.php';
+
 /* ----------------------------------------------------------------------------------------------------------------- */
 
 /**

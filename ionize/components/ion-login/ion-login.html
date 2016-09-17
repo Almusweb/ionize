@@ -1,0 +1,82 @@
+<link rel="import" href="../polymer/polymer.html" />
+<link rel="import" href="../paper-button/paper-button.html" />
+<link rel="import" href="../paper-input/paper-input.html" />
+<link rel="import" href="../paper-toast/paper-toast.html" />
+
+<dom-module is="ion-login">
+<template>
+<style>
+	:host {
+		display: block;
+	}
+	
+	:host paper-button {
+		margin-top: 30px;
+	}
+	
+</style>
+
+<paper-input type="text" label="Username or Email"></paper-input>
+<paper-input type="password" label="Password"></paper-input>
+
+<paper-button class="primary" raised on-tap="tryLogin">Login</paper-button>
+
+</template>
+<script>
+Polymer({
+	is: 'ion-login',
+	
+	properties: {
+		api: String,
+	},
+	
+	_generateRequestId: function()
+	{
+		function s4() { return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1); }
+  		return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+	},
+	
+	tryLogin: function( event )
+	{
+		let ApiURL = this.api;
+		let RequestId = this._generateRequestId();
+		
+		let userLogin = this.$$('paper-input[type="text"]').value;
+		let rawPassword = this.$$('paper-input[type="password"]').value;
+	
+		return new Promise(function(resolve, reject)
+		{
+			if( ApiURL == "" ) reject('No API Provided for handle Login');
+			
+			let RequestPayload = {id:RequestId, jsonrpc:'2.0', method: 'login', params: {user:userLogin, password:rawPassword}};
+			
+			fetch( ApiURL, {method: 'POST', body: JSON.stringify(RequestPayload), credentials:'same-origin'} )
+				.then( response =>
+				{
+					if(response.status == 200) return response.json();
+					else throw new Error('Fetch Failed with '+response.status+' error!');
+				})
+				.then( responseJson =>
+				{
+					if(responseJson.id !== null)
+					{
+						resolve(responseJson);
+						location.reload();
+					}
+					else
+					{
+						let errorMessage = []; for( let error of responseJson.error )
+							errorMessage.push( '['+error.code+'] '+error.message+(error.data != '' ? ' - '+error.data : '') );
+					
+						let Toast = document.createElement('PAPER-TOAST');
+							Toast.text = '<p>'+errorMessage.join('</p><p>')+'</p>';
+							Toast.open();
+							
+						throw new EvalError('API ERROR'+errorMessage.join('\n'));
+					}
+				});
+		});
+	},
+});
+</script>
+</dom-module>

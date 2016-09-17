@@ -14,7 +14,7 @@ if( !function_exists('Debug') )
 {
 	function Debug($msg, $label=NULL, $type="debug", $row_color=NULL)
 	{
-		$debug_enable = ( isset($_GET['debug']) ? TRUE : FALSE );
+		$debug_enable = ( isset($_GET['debug']) && ENVIRONMENT != 'production' ? TRUE : FALSE );
 		
 		if($msg === TRUE) $msg = "TRUE";
 		if($msg === FALSE) $msg = "FALSE";

@@ -2,33 +2,57 @@
 
 namespace Model\Data\Contents;
 
-class Contents
-{
-	private static $classes = array();
-	private $db = NULL;
+use Model\Data\Base;
+use Model\Database\Contents as Database;
 
+class Contents extends Base
+{
+	/**
+	 * @var $classes Content[] array of existing content class instances
+	 */
+	private static $classes = array();
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	private $cache_name = 'Model.Data.Contents.Content';
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	/**
+	 * @var $db \Model\Database\Contents|NULL database handler class
+	 */
+	private $db = NULL;
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
 	public function __construct()
 	{
-		$ci =& get_instance();
-	
-		$ci->load->model('data/contents/Content', NULL);
-		$ci->load->model('database/Contents', NULL);
-		
-		$this->db = \Model\Database\Contents::getInstance();
+		$this->db = Database::getInstance();
 	}
+	/* ------------------------------------------------------------------------------------------------------------- */
 
-	public function setLanguage($language )
+
+	public function setLanguage( string $language ) : Contents
 	{
 		$this->db->group_start()->where('language', $language)->group_end();
-		
+		$this->cache_name .= '.'.$language; 
 		
 		return $this;
 	}
+	/* ------------------------------------------------------------------------------------------------------------- */
 	
-	public function getByURL( $url_string )
+	public function getByID( int $id_content ) : Content
 	{
+		$this->cache_name .= '#'.$id_content;
+		
+		$serializedContent = get_instance()->cache->file->get($this->cache_name);
+		if ( $serializedContent != FALSE )
+		{
+			$content = unserialize($serializedContent);
+			debug($content, '$content from cache');
+			
+			if($content instanceof Content) return $content;
+		}
+	
 		$this->db->group_start();
-		$this->db->where('long_url', $url_string)->or_where('short_url', $url_string);
+		$this->db->where('id_content', $id_content);
 		$this->db->group_end();
 		
 		$query = $this->db->get();
@@ -37,8 +61,10 @@ class Contents
 			$result = $query->custom_result_object('Model\\Data\\Contents\\Content');
 			Debug($result, '$result');
 			
-			return $result;
+			$saveCache = get_instance()->cache->file->save($this->cache_name, serialize($result[0]), 3600);
+			return $result[0];
 		}
-		else return FALSE;
+		else throw new \Exception('404 - Content Not Found!');
 	}
+	/* ------------------------------------------------------------------------------------------------------------- */
 }

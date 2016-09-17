@@ -20,12 +20,19 @@
  * @property \CI_Output $output
  *
  * @property \Model\Data\Contents\Contents $contents
- * @property \\Ionize\Theme $theme
  */
 class Output extends IO_Controller
 {
 	private $url = array();
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
 	private $url_string = '';
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	private $contents = NULL;
+	/* ------------------------------------------------------------------------------------------------------------- */
+	
+	private $urls = NULL;
 	/* ------------------------------------------------------------------------------------------------------------- */
 	
 	public function __construct()
@@ -54,24 +61,34 @@ class Output extends IO_Controller
 	
 	public function render()
 	{
-		// Load Contents handler class
-		$this->load->model('data/contents/Contents', 'contents');
+		// Get instance of the urls handler class
+		$this->urls = Model\Data\Urls\Urls::getInstance();
 		
 		// Get the related contents from the URL and language
-		$contents = $this->contents->setLanguage( $this->language )->getByURL( $this->url_string );
+		$url = $this->urls->setBaseURL( $this->base_url )->setLanguage( $this->language )->getByURL( $this->url_string );
 		
-		// Load Theme handler class
-		$this->load->library(['ionize/Theme'=>'theme']);
-		//$theme = \Ionize\Theme::getInstance();
+		if( $url->id_url != NULL )
+		{
+			// Get instance of the contents handler class
+			$this->contents = Model\Data\Contents\Contents::getInstance();
 
-		// Assign global variables to theme renderer
-		$this->theme->assignData( $this->data );
-
-		// Render the contents
-		$output = $this->theme->render( $contents );
-
-		// Set the output
-		$this->output->set_output( $output );
+			// Get the related contents from the URL and language
+			$content = $this->contents->setLanguage( $this->language )->getByID( $url->id_content );
+		
+			// Load Theme handler class
+			$ionize = Ionize::getInstance();
+		
+			// Add conttents data to the Ionize
+			$ionize->setContent( $content );
+		
+			// Render the webpage
+			$output = $ionize->render();
+			Debug($output, '$output');
+		
+			// Set the output
+			$this->output->set_output( $output );
+		}
+		else show_404();
 	}
 	/* ------------------------------------------------------------------------------------------------------------- */
 }

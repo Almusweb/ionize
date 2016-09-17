@@ -49,22 +49,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | Examples:	my-controller/index	-> my_controller/index
 |		my-controller/my-method	-> my_controller/my_method
 */
-$route['default_controller'] = 'output';
+$route['default_controller'] = 'Output';
 $route['translate_uri_dashes'] = FALSE;
 
-$route['404_override'] = '';
+$route['404_override'] = 'Output/render';
 
 $route['manifest.json'] = "manifest/get";
 
-$route['assets/.*'] = "assets/get/$1";
+$route['admin'] = "Admin";
+//$route['admin/(.*)'] = "admin/run/$1/index";
+//$route['admin/(.*)/(.*)'] = "admin/run/$1/$2";
+
 $route['favicon.ico'] = "assets/get/favicon.ico";
 
-$route['scripts/.*'] = "scripts/get/$1";
+$route['assets/.*'] = "Theme/asset";
+$route['scripts/.*'] = "Theme/script";
+$route['components/.*'] = "Theme/component";
+$route['elements/.*'] = "Theme/element";
+$route['workers/.*'] = "Theme/worker";
 
-$route['components/(.*)'] = "components/get/$1";
-$route['components/(.*)/(.*)'] = "components/get/$1/$2";
-$route['components/(.*)/(.*)/(.*)'] = "components/get/$1/$2/$3";
-
-$route['workers/.*'] = "workers/get/$1";
-
-$route['.*'] = "output/render";
+//$route['.*'] = "output/render";
