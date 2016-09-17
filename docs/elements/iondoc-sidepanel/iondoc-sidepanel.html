@@ -1,0 +1,179 @@
+<link rel="import" href="../../components/polymer/polymer.html" />
+
+<!-- Iron Elements -->
+<link rel="import" href="../../components/iron-image/iron-image.html" />
+<link rel="import" href="../../components/iron-pages/iron-pages.html" />
+
+<!-- Icons -->
+<link rel="import" href="../../components/iron-icons/iron-icons.html" />
+<link rel="import" href="../iondoc-iconset/iondoc-iconset.html" />
+
+<!-- Paper Elements -->
+<link rel="import" href="../../components/paper-material/paper-material.html" />
+<link rel="import" href="../../components/paper-icon-button/paper-icon-button.html" />
+<link rel="import" href="../../components/paper-input/paper-input.html" />
+
+<link rel="import" href="../../components/paper-menu/paper-menu.html" />
+<link rel="import" href="../../components/paper-menu/paper-submenu.html" />
+<link rel="import" href="../../components/paper-item/paper-item.html" />
+
+<dom-module is="iondoc-sidepanel">
+	<template>
+		<style>
+			:host {
+				display: block; position: relative;
+			}
+			:host paper-material {
+				position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+				overflow: hidden; overflow-y: scroll;
+				background-color: #3778bb; color: #eee;
+
+				--paper-menu-background-color: #3778bb;
+				--paper-menu-color: #eee;
+
+				--paper-item-min-height: 30px;
+				--paper-item: {
+					height: 30px;
+				};
+			}
+			:host paper-material iron-image {
+				display: block; margin: 20px auto 30px auto;
+			}
+			:host paper-material iron-pages {
+				margin: 2px 10px;
+			}
+			:host paper-material paper-item.menu-trigger {
+				margin: 10px 10px 0 10px; padding: 5px 10px; font-size: 18px;
+				border-bottom: 1px dotted #094d94; color: #eee !important;
+			}
+			:host paper-menu .iron-selected {
+				background-color: rgba(255,255,255,0.2);
+			}
+			:host paper-menu paper-item.menu-trigger.iron-selected {
+				background-color: transparent;
+			}
+			:host paper-material paper-item {
+				--iron-icon-height: 16px; --iron-icon-width: 16px;
+				font-size: 85%; letter-spacing: 1px;
+			}
+			:host paper-material paper-item iron-icon {
+				margin-right: 10px; color: #094d94;
+			}
+		</style>
+
+		<paper-material elevation="1">
+			<iron-image src="../../assets/logo_white.png" alt="Ionize - Create, Publish, Enjoy!"></iron-image>
+
+			<!-- <iron-pages selected="0">
+				<paper-input type="search" label="Search in Contents">
+					<iron-icon prefix icon="search"></iron-icon>
+					<paper-icon-button suffix icon="clear"></paper-icon-button>
+				</paper-input>
+				<div> Back to the Root </div>
+			</iron-pages> -->
+
+			<paper-menu selected="0">
+
+				<paper-item autofocus> <iron-icon icon="ionize:home"></iron-icon> Welcome</paper-item>
+
+				<paper-submenu>
+					<paper-item class="menu-trigger">Basic Information</paper-item>
+					<paper-menu class="menu-content">
+						<paper-item> <iron-icon icon="ionize:server"></iron-icon> Server Requirements</paper-item>
+						<paper-item> <iron-icon icon="ionize:license"></iron-icon> License Agreement</paper-item>
+						<paper-item> <iron-icon icon="ionize:release"></iron-icon> Release Notes</paper-item>
+						<paper-item> <iron-icon icon="ionize:users"></iron-icon> Credits</paper-item>
+					</paper-menu>
+				</paper-submenu>
+
+				<paper-submenu>
+					<paper-item class="menu-trigger">Installation & Upgrade</paper-item>
+					<paper-menu class="menu-content">
+						<paper-item> Server Configuration </paper-item>
+						<paper-item> Manual Download </paper-item>
+						<paper-item> Using Compozer </paper-item>
+						<paper-item> Upgrade </paper-item>
+					</paper-menu>
+				</paper-submenu>
+
+				<paper-submenu>
+					<paper-item class="menu-trigger">Ionize Overview</paper-item>
+					<paper-menu class="menu-content">
+						<paper-item> Base Features </paper-item>
+						<paper-item> Codeigniter 3.x </paper-item>
+						<paper-item> File Structure </paper-item>
+						<paper-item> Bower and NPM support </paper-item>
+						<paper-item> Extending features </paper-item>
+						<paper-item> Quick Start </paper-item>
+					</paper-menu>
+				</paper-submenu>
+
+				<paper-submenu>
+					<paper-item class="menu-trigger">Tutorials</paper-item>
+					<paper-menu class="menu-content">
+						<paper-item> Simple Theme Creation </paper-item>
+						<paper-item> Advanced Theme Creation </paper-item>
+						<paper-item> Creating Modules </paper-item>
+						<paper-item> Must have Forms </paper-item>
+						<paper-item> Creating a Tag </paper-item>
+						<paper-item> Other Tutorials(45) </paper-item>
+					</paper-menu>
+				</paper-submenu>
+
+				<paper-submenu>
+					<paper-item class="menu-trigger">Libraries and Classes</paper-item>
+					<paper-menu class="menu-content">
+						<paper-item> Controllers </paper-item>
+						<paper-item> Data Models </paper-item>
+						<paper-item> Database </paper-item>
+						<paper-item> Helpers </paper-item>
+						<paper-item> Interfaces </paper-item>
+						<paper-item> Traits </paper-item>
+					</paper-menu>
+				</paper-submenu>
+
+				<paper-submenu>
+					<paper-item class="menu-trigger">Ionize Tags Reference</paper-item>
+					<paper-menu class="menu-content">
+						<paper-item> Using Ionize Parser Elements </paper-item>
+						<paper-item> Permission handling </paper-item>
+						<paper-item> Using Expressions </paper-item>
+						<paper-item> Common </paper-item>
+						<paper-item> Navigations </paper-item>
+						<paper-item> Contents </paper-item>
+						<paper-item> Extends </paper-item>
+						<paper-item> Medias </paper-item>
+						<paper-item> Forms </paper-item>
+						<paper-item> Categories Tags </paper-item>
+						<paper-item> Pagination </paper-item>
+						<paper-item> Archives </paper-item>
+						<paper-item> User </paper-item>
+						<paper-item> Static Item </paper-item>
+					</paper-menu>
+				</paper-submenu>
+
+				<paper-submenu>
+					<paper-item class="menu-trigger">Ionize Elements Catalog</paper-item>
+					<paper-menu class="menu-content">
+						<paper-item> Using Web Elements </paper-item>
+						<paper-item> Ion Base Elements </paper-item>
+						<paper-item> Ion Documentation Elements </paper-item>
+						<paper-item> Ion Admin Elements </paper-item>
+					</paper-menu>
+				</paper-submenu>
+
+			</paper-menu>
+		</paper-material>
+
+	</template>
+	<script>
+		class IonDoc_SidePanelElement {
+			beforeRegister() {
+				this.is = 'iondoc-sidepanel';
+				this.properties = {};
+			}
+		}
+		// Init Polymer Element with Class
+		Polymer( IonDoc_SidePanelElement );
+	</script>
+</dom-module>

@@ -2,19 +2,38 @@
 <html>
 <head>
 	<meta charset="UTF-8" />
-	<title> Ionize CMS Documentation </title>
+	<title> Ionize Documentation </title>
 
-	<style>
-	body, html {
-		margin: 0; padding: 0; background-color: #eee;
-	}
-	
-	h1 {
-		text-align: center; margin: 30px auto;
-	}
-	</style>
+	<script>
+		// Polymer settings
+		window.Polymer = {
+			dom: 'shadow',
+			lazyRegister: true,
+			useNativeCSSProperties: true,
+			noUrlSettings: true
+		};
+
+		// Load the Webcomponets Polyfill if it's needed
+		(function() {
+			if('registerElement' in document
+					&& 'import' in document.createElement('link')
+					&& 'content' in document.createElement('template')) {
+				//console.debug('The browser are compatible with webcomponents!');
+			} else {
+				var e = document.createElement('script');
+				e.src = '<?php echo base_url("components/webcomponentsjs/webcomponents-lite.min.js"); ?>';
+				document.head.appendChild(e);
+			}
+		})();
+	</script>
+
+	<link rel="import" href="assets/ionize-styles.html" />
+	<link rel="stylesheet" href="assets/documentation.css" />
+
+	<link rel="import" href="elements/ionize-documentation/ionize-documentation.html" />
+
 </head>
 <body>
-	<h1>Comming Soon!</h1>
+	<ionize-documentation lang="en"></ionize-documentation>
 </body>
 </html>
